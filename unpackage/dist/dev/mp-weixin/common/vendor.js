@@ -9376,9 +9376,9 @@ internalMixin(Vue);
 
 /***/ }),
 /* 25 */
-/*!****************************************!*\
-  !*** D:/Html/demo/blog-uni/pages.json ***!
-  \****************************************/
+/*!*********************************************!*\
+  !*** D:/Html/githubPro/blog-uni/pages.json ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -9519,9 +9519,9 @@ function normalizeComponent (
 
 /***/ }),
 /* 32 */
-/*!********************************************!*\
-  !*** D:/Html/demo/blog-uni/store/index.js ***!
-  \********************************************/
+/*!*************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/store/index.js ***!
+  \*************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10808,9 +10808,9 @@ module.exports = index_cjs;
 
 /***/ }),
 /* 34 */
-/*!*****************************************************!*\
-  !*** D:/Html/demo/blog-uni/store/modules/search.js ***!
-  \*****************************************************/
+/*!**********************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/store/modules/search.js ***!
+  \**********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10831,18 +10831,36 @@ var _default = {
     };
   },
   mutations: {
-    //添加
-    addSearchData: function addSearchData(state, item) {} //删除
-    //全部删除
+    //添加搜索历史 (保存搜索内容到搜索历史)
+    addSearchData: function addSearchData(state, val) {
+      //搜索历史数据的基本业务逻辑：
+      //1.如果当前搜索内容已经存在，则原有搜索内容需要被展示到搜索历史的头部，而不是新增一条搜索内容
+      //2.如果当前搜索内容不存在，则新的搜索内容会被展示到搜索历史的头部
+      var aindex = state.searchData.findIndex(function (item) {
+        return item == val;
+      });
+      if (aindex > -1) {
+        state.searchData.splice(aindex, 1);
+      }
+      state.searchData.unshift(val);
+    },
+    //删除搜索历史
+    removeSearchItem: function removeSearchItem(state, index) {
+      state.searchData.splice(index, 1);
+    },
+    //删除全部搜索历史
+    removeAllSearchData: function removeAllSearchData(state) {
+      state.searchData = [];
+    }
   }
 };
 exports.default = _default;
 
 /***/ }),
 /* 35 */
-/*!************************************************!*\
-  !*** D:/Html/demo/blog-uni/styles/global.scss ***!
-  \************************************************/
+/*!*****************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/styles/global.scss ***!
+  \*****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10852,9 +10870,9 @@ exports.default = _default;
 
 /***/ }),
 /* 36 */
-/*!**********************************************!*\
-  !*** D:/Html/demo/blog-uni/filters/index.js ***!
-  \**********************************************/
+/*!***************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/filters/index.js ***!
+  \***************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11261,9 +11279,9 @@ module.exports = _asyncToGenerator, module.exports.__esModule = true, module.exp
 
 /***/ }),
 /* 46 */
-/*!****************************************!*\
-  !*** D:/Html/demo/blog-uni/api/hot.js ***!
-  \****************************************/
+/*!*********************************************!*\
+  !*** D:/Html/githubPro/blog-uni/api/hot.js ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11296,9 +11314,9 @@ function getHotListFromTabType(params) {
 
 /***/ }),
 /* 47 */
-/*!**********************************************!*\
-  !*** D:/Html/demo/blog-uni/utils/request.js ***!
-  \**********************************************/
+/*!***************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/utils/request.js ***!
+  \***************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11374,9 +11392,9 @@ exports.default = _default;
 /* 66 */,
 /* 67 */,
 /* 68 */
-/*!*******************************************!*\
-  !*** D:/Html/demo/blog-uni/api/search.js ***!
-  \*******************************************/
+/*!************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/api/search.js ***!
+  \************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11430,9 +11448,9 @@ function getSearchHOtList(param) {
 /* 88 */,
 /* 89 */,
 /* 90 */
-/*!**********************************************************************************************!*\
-  !*** D:/Html/demo/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/index.js ***!
-  \**********************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/index.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11456,9 +11474,9 @@ exports.default = _default;
 
 /***/ }),
 /* 91 */
-/*!*********************************************************************************************!*\
-  !*** D:/Html/demo/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/en.json ***!
-  \*********************************************************************************************/
+/*!**************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/en.json ***!
+  \**************************************************************************************************/
 /*! exports provided: uni-load-more.contentdown, uni-load-more.contentrefresh, uni-load-more.contentnomore, default */
 /***/ (function(module) {
 
@@ -11466,9 +11484,9 @@ module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"Pull up to show mo
 
 /***/ }),
 /* 92 */
-/*!**************************************************************************************************!*\
-  !*** D:/Html/demo/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/zh-Hans.json ***!
-  \**************************************************************************************************/
+/*!*******************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/zh-Hans.json ***!
+  \*******************************************************************************************************/
 /*! exports provided: uni-load-more.contentdown, uni-load-more.contentrefresh, uni-load-more.contentnomore, default */
 /***/ (function(module) {
 
@@ -11476,9 +11494,9 @@ module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"上拉显示更多
 
 /***/ }),
 /* 93 */
-/*!**************************************************************************************************!*\
-  !*** D:/Html/demo/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/zh-Hant.json ***!
-  \**************************************************************************************************/
+/*!*******************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/zh-Hant.json ***!
+  \*******************************************************************************************************/
 /*! exports provided: uni-load-more.contentdown, uni-load-more.contentrefresh, uni-load-more.contentnomore, default */
 /***/ (function(module) {
 
@@ -11519,9 +11537,9 @@ module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"上拉顯示更多
 /* 125 */,
 /* 126 */,
 /* 127 */
-/*!************************************************************************************************!*\
-  !*** D:/Html/demo/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/index.js ***!
-  \************************************************************************************************/
+/*!*****************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/index.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11545,9 +11563,9 @@ exports.default = _default;
 
 /***/ }),
 /* 128 */
-/*!***********************************************************************************************!*\
-  !*** D:/Html/demo/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/en.json ***!
-  \***********************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/en.json ***!
+  \****************************************************************************************************/
 /*! exports provided: uni-search-bar.cancel, uni-search-bar.placeholder, default */
 /***/ (function(module) {
 
@@ -11555,9 +11573,9 @@ module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-
 
 /***/ }),
 /* 129 */
-/*!****************************************************************************************************!*\
-  !*** D:/Html/demo/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/zh-Hans.json ***!
-  \****************************************************************************************************/
+/*!*********************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/zh-Hans.json ***!
+  \*********************************************************************************************************/
 /*! exports provided: uni-search-bar.cancel, uni-search-bar.placeholder, default */
 /***/ (function(module) {
 
@@ -11565,9 +11583,9 @@ module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-
 
 /***/ }),
 /* 130 */
-/*!****************************************************************************************************!*\
-  !*** D:/Html/demo/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/zh-Hant.json ***!
-  \****************************************************************************************************/
+/*!*********************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/zh-Hant.json ***!
+  \*********************************************************************************************************/
 /*! exports provided: uni-search-bar.cancel, uni-search-bar.placeholder, default */
 /***/ (function(module) {
 
@@ -11582,9 +11600,9 @@ module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-
 /* 136 */,
 /* 137 */,
 /* 138 */
-/*!*********************************************************************************!*\
-  !*** D:/Html/demo/blog-uni/uni_modules/uni-icons/components/uni-icons/icons.js ***!
-  \*********************************************************************************/
+/*!**************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-icons/components/uni-icons/icons.js ***!
+  \**************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 

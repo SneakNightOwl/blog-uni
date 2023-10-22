@@ -1,9 +1,9 @@
 (global["webpackJsonp"] = global["webpackJsonp"] || []).push([["subpkg/pages/search-blog/search-blog"],{
 
 /***/ 62:
-/*!*******************************************************************************************!*\
-  !*** D:/Html/demo/blog-uni/main.js?{"page":"subpkg%2Fpages%2Fsearch-blog%2Fsearch-blog"} ***!
-  \*******************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/main.js?{"page":"subpkg%2Fpages%2Fsearch-blog%2Fsearch-blog"} ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22,9 +22,9 @@ createPage(_searchBlog.default);
 /***/ }),
 
 /***/ 63:
-/*!**********************************************************************!*\
-  !*** D:/Html/demo/blog-uni/subpkg/pages/search-blog/search-blog.vue ***!
-  \**********************************************************************/
+/*!***************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/subpkg/pages/search-blog/search-blog.vue ***!
+  \***************************************************************************/
 /*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -63,9 +63,9 @@ component.options.__file = "subpkg/pages/search-blog/search-blog.vue"
 /***/ }),
 
 /***/ 64:
-/*!*****************************************************************************************************************!*\
-  !*** D:/Html/demo/blog-uni/subpkg/pages/search-blog/search-blog.vue?vue&type=template&id=7f29fa82&scoped=true& ***!
-  \*****************************************************************************************************************/
+/*!**********************************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/subpkg/pages/search-blog/search-blog.vue?vue&type=template&id=7f29fa82&scoped=true& ***!
+  \**********************************************************************************************************************/
 /*! exports provided: render, staticRenderFns, recyclableRender, components */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -85,9 +85,9 @@ __webpack_require__.r(__webpack_exports__);
 /***/ }),
 
 /***/ 65:
-/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--16-0!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/template.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/page-meta.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!D:/Html/demo/blog-uni/subpkg/pages/search-blog/search-blog.vue?vue&type=template&id=7f29fa82&scoped=true& ***!
-  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--16-0!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/template.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/page-meta.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!D:/Html/githubPro/blog-uni/subpkg/pages/search-blog/search-blog.vue?vue&type=template&id=7f29fa82&scoped=true& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns, recyclableRender, components */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -144,9 +144,9 @@ render._withStripped = true
 /***/ }),
 
 /***/ 66:
-/*!***********************************************************************************************!*\
-  !*** D:/Html/demo/blog-uni/subpkg/pages/search-blog/search-blog.vue?vue&type=script&lang=js& ***!
-  \***********************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/subpkg/pages/search-blog/search-blog.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -160,9 +160,9 @@ __webpack_require__.r(__webpack_exports__);
 /***/ }),
 
 /***/ 67:
-/*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--12-1!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/script.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!D:/Html/demo/blog-uni/subpkg/pages/search-blog/search-blog.vue?vue&type=script&lang=js& ***!
-  \******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--12-1!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/script.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!D:/Html/githubPro/blog-uni/subpkg/pages/search-blog/search-blog.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -215,10 +215,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 //
 //
 //
-//
-//
-//
-//
 
 var HOT_LIST = 0;
 var HISTORY = 1;
@@ -231,23 +227,24 @@ var _default = {
       //默认情况下 || 点击输入框的取消按钮时，显示【热搜列表】
       //当searchBar获取焦点时 || 点击输入框清空按钮时，显示【搜索历史】
       // 用户点击热搜列表item || 用户点击搜索历史 item || 用户按下搜索键，显示【搜索结果】
-      searchShow: 0,
-      searchData: [] //历史搜索数据
+      searchShow: 0
+      // searchData:[], //历史搜索数据
     };
   },
 
-  computed: _objectSpread({}, (0, _vuex.mapState)('search', ['msg'])),
+  computed: {},
   created: function created() {
     this.loadDefaultText();
   },
-  methods: {
+  methods: _objectSpread(_objectSpread({}, (0, _vuex.mapMutations)('search', ['addSearchData'])), {}, {
     //点击搜索
     onSearchConfirm: function onSearchConfirm(val) {
       this.searchShow = RESULT_LIST;
       //没有输入直接点击搜索 查询placeholder的内容
       this.searchVal = val == '' ? this.defaultPlaceHolder : val;
       // this.searchVal == val? val: this.defaultPlaceHolder;
-      this.saveSearchData();
+      // this.saveSearchData();
+      this.addSearchData(this.searchVal);
       console.log(this.searchVal, '搜索的值');
     },
     //取消 
@@ -267,30 +264,27 @@ var _default = {
     onSearchBlur: function onSearchBlur(val) {
       console.log('失去焦点 ' + val);
     },
-    //保存搜索内容到搜索历史
-    saveSearchData: function saveSearchData() {
-      var _this = this;
-      //搜索历史数据的基本业务逻辑：
-      //1.如果当前搜索内容已经存在，则原有搜索内容需要被展示到搜索历史的头部，而不是新增一条搜索内容
-      //2.如果当前搜索内容不存在，则新的搜索内容会被展示到搜索历史的头部
-      var aindex = this.searchData.findIndex(function (item) {
-        return item == _this.searchVal;
-      });
-      if (aindex > -1) {
-        this.searchData.splice(aindex, 1);
-      }
-      this.searchData.unshift(this.searchVal);
-    },
-    //删除全部搜索历史
-    onRemoveAllsearchData: function onRemoveAllsearchData() {
-      this.searchData = [];
-    },
-    //删除单个搜素历史
-    onRemoveSearchItem: function onRemoveSearchItem(index) {
-      this.searchData.splice(index, 1);
-    },
+    // //保存搜索内容到搜索历史
+    // saveSearchData() {
+    // 	//搜索历史数据的基本业务逻辑：
+    // 	//1.如果当前搜索内容已经存在，则原有搜索内容需要被展示到搜索历史的头部，而不是新增一条搜索内容
+    // 	//2.如果当前搜索内容不存在，则新的搜索内容会被展示到搜索历史的头部
+    // 	let aindex = this.searchData.findIndex(item=> item == this.searchVal);
+    // 	if(aindex > -1) {
+    // 		this.searchData.splice(aindex, 1);
+    // 	}
+    // 	this.searchData.unshift(this.searchVal);
+    // },
+    // //删除全部搜索历史
+    // onRemoveAllsearchData() {
+    // 	this.searchData = [];
+    // },
+    // //删除单个搜素历史
+    // onRemoveSearchItem(index) {
+    // 	this.searchData.splice(index,1);
+    // },
     loadDefaultText: function loadDefaultText() {
-      var _this2 = this;
+      var _this = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
         var _yield$getSearchDefau, res;
         return _regenerator.default.wrap(function _callee$(_context) {
@@ -302,7 +296,7 @@ var _default = {
               case 2:
                 _yield$getSearchDefau = _context.sent;
                 res = _yield$getSearchDefau.data;
-                _this2.defaultPlaceHolder = res.defaultText;
+                _this.defaultPlaceHolder = res.defaultText;
               case 5:
               case "end":
                 return _context.stop();
@@ -311,16 +305,16 @@ var _default = {
         }, _callee);
       }))();
     }
-  }
+  })
 };
 exports.default = _default;
 
 /***/ }),
 
 /***/ 69:
-/*!********************************************************************************************************************************!*\
-  !*** D:/Html/demo/blog-uni/subpkg/pages/search-blog/search-blog.vue?vue&type=style&index=0&id=7f29fa82&lang=scss&scoped=true& ***!
-  \********************************************************************************************************************************/
+/*!*************************************************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/subpkg/pages/search-blog/search-blog.vue?vue&type=style&index=0&id=7f29fa82&lang=scss&scoped=true& ***!
+  \*************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -334,9 +328,9 @@ __webpack_require__.r(__webpack_exports__);
 /***/ }),
 
 /***/ 70:
-/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/mini-css-extract-plugin/dist/loader.js??ref--8-oneOf-1-0!./node_modules/css-loader/dist/cjs.js??ref--8-oneOf-1-1!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--8-oneOf-1-2!./node_modules/postcss-loader/src??ref--8-oneOf-1-3!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/sass-loader/dist/cjs.js??ref--8-oneOf-1-4!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--8-oneOf-1-5!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!D:/Html/demo/blog-uni/subpkg/pages/search-blog/search-blog.vue?vue&type=style&index=0&id=7f29fa82&lang=scss&scoped=true& ***!
-  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/mini-css-extract-plugin/dist/loader.js??ref--8-oneOf-1-0!./node_modules/css-loader/dist/cjs.js??ref--8-oneOf-1-1!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--8-oneOf-1-2!./node_modules/postcss-loader/src??ref--8-oneOf-1-3!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/sass-loader/dist/cjs.js??ref--8-oneOf-1-4!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--8-oneOf-1-5!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!D:/Html/githubPro/blog-uni/subpkg/pages/search-blog/search-blog.vue?vue&type=style&index=0&id=7f29fa82&lang=scss&scoped=true& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 

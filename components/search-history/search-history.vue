@@ -28,13 +28,14 @@
 </template>
 
 <script>
+	import { mapState, mapMutations } from 'vuex';
 	export default {
 		name:"search-history",
 		props: {
-			searchData: {
-				type: Array,
-				require: true
-			}
+			// searchData: {
+			// 	type: Array,
+			// 	require: true
+			// }
 		},
 		data() {
 			return {
@@ -42,7 +43,14 @@
 				isClearShow: false
 			};
 		},
+		computed: {
+			//从从vuex映射search模块的数据
+			...mapState('search',['searchData'])
+		},
 		methods: {
+			//从vuex映射search模块的mutations  
+			// ...mapMutations('模块名称',['函数名',.....])
+			...mapMutations('search',['removeSearchItem','removeAllSearchData']),
 			//删除全部
 			removeAllsearchData() {
 				let _self = this;
@@ -51,7 +59,8 @@
 					content:'确认删除所有搜索历史？',
 					success: function({confirm, cancel}) {
 						if(confirm) {
-							_self.$emit('removeAllsearchData');
+							// _self.$emit('removeAllsearchData');
+							_self.removeAllSearchData();
 							_self.isClearShow = false;
 						}
 					}
@@ -61,7 +70,8 @@
 			clickHistorySearchData(item, index) {
 				//1.删除状态下
 				if(this.isClearShow) {
-					this.$emit('removeSearchItem',index)
+					// this.$emit('removeSearchItem',index)
+					this.removeSearchItem(index);
 				}else {
 				  //2.非删除状态下搜索选中项
 					this.$emit('searchHistoryItem', item)

@@ -14,23 +14,19 @@
   },
   "compileType": "miniprogram",
   "libVersion": "",
-  "appid": "touristappid",
+  "appid": "wx68d6c213b325db5b",
   "projectname": "blog-uni",
   "condition": {
     "search": {
-      "current": -1,
       "list": []
     },
     "conversation": {
-      "current": -1,
       "list": []
     },
     "game": {
-      "current": -1,
       "list": []
     },
     "miniprogram": {
-      "current": -1,
       "list": []
     }
   }

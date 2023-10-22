@@ -50,10 +50,10 @@
     /* 快应用特有相关 */
     "mp-weixin" : {
         /* 小程序特有相关 */
-        "appid" : "",
+        "appid" : "wx68d6c213b325db5b",
         "setting" : {
             "urlCheck" : false,
-			"checkSiteMap": false
+            "checkSiteMap" : false
         },
         "usingComponents" : true
     },
