@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "my-search": "/components/my-search/my-search",
+    "moc-tabs": "/components/moc-tabs/moc-tabs",
+    "uni-load-more": "/uni_modules/uni-load-more/components/uni-load-more/uni-load-more",
+    "list-item": "/components/list-item/list-item"
+  }
+}

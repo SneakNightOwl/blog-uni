@@ -1,0 +1,71 @@
+@charset "UTF-8";
+/* 水平间距 */
+/* 水平间距 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* 水平间距 */
+/* 垂直间距 */
+/*自定义颜色*/
+/*图片大小后来统一了*/
+.raking-con.data-v-c49cb6f8 {
+  width: 72rpx;
+  height: 72rpx;
+  position: relative;
+  /*排名高的*/
+  /*排名第三的*/
+  /*低排名 不显示*/
+  /*低排名 字体改小*/
+}
+.raking-con .ranking-bk.data-v-c49cb6f8 {
+  display: block;
+  width: 68rpx;
+  height: 68rpx;
+  margin: 0 auto;
+}
+.raking-con .ranking-low.data-v-c49cb6f8 {
+  display: block;
+  width: 68rpx;
+  height: 68rpx;
+  margin: 0 auto;
+}
+.raking-con .ranking-hide.data-v-c49cb6f8 {
+  visibility: hidden;
+  width: 43rpx;
+  height: 43rpx;
+  margin: 0 auto;
+}
+.raking-con .ranking-num.data-v-c49cb6f8 {
+  width: 68rpx;
+  height: 68rpx;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  text-align: center;
+  padding: 16rpx 0 0 0;
+}
+.raking-con .hot-raking.data-v-c49cb6f8 {
+  color: #ffffff;
+  font-size: 32rpx;
+}
+.raking-con .num-low.data-v-c49cb6f8 {
+  width: 72rpx;
+  height: 72rpx;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  text-align: center;
+  padding: 16rpx 0 0 0;
+  color: #333333;
+}
+

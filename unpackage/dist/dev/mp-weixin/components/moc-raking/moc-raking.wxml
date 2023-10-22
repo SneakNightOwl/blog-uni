@@ -1,0 +1,1 @@
+<view class="raking-con data-v-c49cb6f8"><image class="{{['data-v-c49cb6f8',$root.m0<=3?'ranking-bk':'ranking-low']}}" src="{{getRankingbg}}"></image><view class="{{['data-v-c49cb6f8',$root.m1<=3?'ranking-num hot-raking':'num-low']}}">{{ranking}}</view></view>

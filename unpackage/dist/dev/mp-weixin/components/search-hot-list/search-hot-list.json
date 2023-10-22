@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "moc-raking": "/components/moc-raking/moc-raking"
+  },
+  "component": true
+}

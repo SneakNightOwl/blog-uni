@@ -1,0 +1,31 @@
+/*公共样式*/
+.wrap {
+		width: 100%;
+		height: auto;
+		margin: 0;
+		padding: 0;
+	}
+.line-clamp-2 {
+	/*超出两行显示省略号 要设置width*/
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+}
+
+.line-clamp {
+	/*超出一行显示省略号*/
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/*卡片视图*/
+.card {
+	border:1px solid #f9f9f9;
+	border-radius: 5px;
+	margin: 12px;
+	padding: 12px;
+	box-shadow: 2px 2px 5px 1px rgba( 143, 143, 143, 0.1);
+}

@@ -1,0 +1,66 @@
+@charset "UTF-8";
+/* 水平间距 */
+/* 水平间距 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* 水平间距 */
+/* 垂直间距 */
+/*自定义颜色*/
+/*公共样式*/
+.wrap.data-v-70eea568 {
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+.line-clamp-2.data-v-70eea568 {
+  /*超出两行显示省略号 要设置width*/
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.line-clamp.data-v-70eea568 {
+  /*超出一行显示省略号*/
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/*卡片视图*/
+.card.data-v-70eea568 {
+  border: 1px solid #f9f9f9;
+  border-radius: 5px;
+  margin: 12px;
+  padding: 12px;
+  box-shadow: 2px 2px 5px 1px rgba(143, 143, 143, 0.1);
+}
+.hot-title.data-v-70eea568 {
+  font-weight: bold;
+  font-size: 32rpx;
+  color: #f94d2a;
+  padding: 12px 24rpx;
+  margin: 0 -12px 24rpx -12px;
+  box-shadow: 2px 2px 5px 1px rgba(143, 143, 143, 0.1);
+}
+.hot-list-item.data-v-70eea568 {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 0;
+}
+.hot-list-item .item-label.data-v-70eea568 {
+  color: #333333;
+  font-size: 28rpx;
+  margin: 0 16rpx;
+}
+.hot-icon.data-v-70eea568 {
+  width: 14px;
+  height: 14px;
+  margin-left: 10rpx;
+}
+
