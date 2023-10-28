@@ -1,0 +1,44 @@
+@charset "UTF-8";
+/* 水平间距 */
+/* 水平间距 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* 水平间距 */
+/* 垂直间距 */
+/*自定义颜色*/
+/*透明度*/
+/*文章场景相关*/
+.search-result-item-box.data-v-5b6cf9f8 {
+  width: 100vw;
+  padding: 16rpx 20rpx;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+}
+.search-result-item-box .item-title.data-v-5b6cf9f8 {
+  /* flex布局下 overflow:hidden会失效 */
+  width: 100%;
+  font-size: 20px;
+  color: #2c405a;
+  font-weight: bold;
+}
+.search-result-item-box .item-des.data-v-5b6cf9f8 {
+  width: 100%;
+  font-size: 15px;
+  color: #2c405a;
+  margin-top: 16rpx;
+}
+.search-result-item-box .item-bottom.data-v-5b6cf9f8 {
+  display: flex;
+  font-size: 15px;
+  color: #bababa;
+  margin-top: 16rpx;
+}
+.search-result-item-box .item-bottom .item-author.data-v-5b6cf9f8 {
+  margin-right: 30rpx;
+}
+

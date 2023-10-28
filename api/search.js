@@ -16,3 +16,11 @@ export function getSearchHOtList(param) {
 		data: param
 	})
 }
+//搜索结果列表
+export function getSearchResult(param) {
+	return request({
+		url:'/search',
+		method: 'GET',
+		data: param
+	})
+}

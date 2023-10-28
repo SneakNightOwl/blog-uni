@@ -11,6 +11,8 @@
 /* 水平间距 */
 /* 垂直间距 */
 /*自定义颜色*/
+/*透明度*/
+/*文章场景相关*/
 .search-history-container .history-title-box.data-v-65925b64 {
   display: flex;
   justify-content: space-between;
@@ -27,7 +29,7 @@
 .search-history-container .history-title-box .clear-box .txt.data-v-65925b64 {
   color: #999;
   font-size: 28rpx;
-  padding: 0 10px;
+  padding: 0 10rpx;
 }
 .search-history-container .history-wrap.data-v-65925b64 {
   display: flex;

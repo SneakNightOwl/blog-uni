@@ -75,6 +75,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "recyclableRender", function() { return recyclableRender; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "components", function() { return components; });
 var components
+try {
+  components = {
+    searchResultItemTheme1: function () {
+      return __webpack_require__.e(/*! import() | components/search-result-item-theme-1/search-result-item-theme-1 */ "components/search-result-item-theme-1/search-result-item-theme-1").then(__webpack_require__.bind(null, /*! @/components/search-result-item-theme-1/search-result-item-theme-1.vue */ 161))
+    },
+    searchResultItemTheme2: function () {
+      return __webpack_require__.e(/*! import() | components/search-result-item-theme-2/search-result-item-theme-2 */ "components/search-result-item-theme-2/search-result-item-theme-2").then(__webpack_require__.bind(null, /*! @/components/search-result-item-theme-2/search-result-item-theme-2.vue */ 169))
+    },
+    searchResultItemTheme3: function () {
+      return __webpack_require__.e(/*! import() | components/search-result-item-theme-3/search-result-item-theme-3 */ "components/search-result-item-theme-3/search-result-item-theme-3").then(__webpack_require__.bind(null, /*! @/components/search-result-item-theme-3/search-result-item-theme-3.vue */ 177))
+    },
+  }
+} catch (e) {
+  if (
+    e.message.indexOf("Cannot find module") !== -1 &&
+    e.message.indexOf(".vue") !== -1
+  ) {
+    console.error(e.message)
+    console.error("1. 排查组件名称拼写是否正确")
+    console.error(
+      "2. 排查组件是否符合 easycom 规范，文档：https://uniapp.dcloud.net.cn/collocation/pages?id=easycom"
+    )
+    console.error(
+      "3. 若组件不符合 easycom 规范，需手动引入，并在 components 中注册该组件"
+    )
+  } else {
+    throw e
+  }
+}
 var render = function () {
   var _vm = this
   var _h = _vm.$createElement
@@ -114,10 +143,22 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 
 
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 43));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 45));
+var _search = __webpack_require__(/*! ../../api/search.js */ 68);
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -126,8 +167,49 @@ exports.default = void 0;
 //
 var _default = {
   name: "search-result-list",
+  props: {
+    queryStr: {
+      type: String,
+      required: true
+    }
+  },
   data: function data() {
-    return {};
+    return {
+      resultList: [],
+      page: 1
+    };
+  },
+  created: function created() {
+    this.getResultList();
+  },
+  methods: {
+    getResultList: function getResultList() {
+      var _this = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var _yield$getSearchResul, res;
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return (0, _search.getSearchResult)({
+                  q: _this.queryStr,
+                  //搜索内容
+                  p: _this.page //页码
+                });
+              case 2:
+                _yield$getSearchResul = _context.sent;
+                res = _yield$getSearchResul.data;
+                _this.resultList = res.list;
+                console.log(_this.resultList, '搜索结果');
+              case 6:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    }
   }
 };
 exports.default = _default;

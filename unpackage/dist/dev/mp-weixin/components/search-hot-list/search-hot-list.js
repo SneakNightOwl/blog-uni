@@ -187,8 +187,8 @@ var _default = {
                 _yield$getSearchHOtLi = _context.sent;
                 res = _yield$getSearchHOtLi.data;
                 _this.hotList = res.list;
-                console.log(_this.hotList, '热搜列表数据');
-              case 6:
+                // console.log(this.hotList,'热搜列表数据');
+              case 5:
               case "end":
                 return _context.stop();
             }

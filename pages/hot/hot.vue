@@ -189,7 +189,7 @@
 			},
 			//跳转去热搜页
 			toSearch() {
-				console.log('tz');
+				// console.log('tz');
 				uni.navigateTo({
 					url: '../../subpkg/pages/search-blog/search-blog'
 				});

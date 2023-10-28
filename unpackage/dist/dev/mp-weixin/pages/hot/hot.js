@@ -409,7 +409,7 @@ var _default = {
     },
     //跳转去热搜页
     toSearch: function toSearch() {
-      console.log('tz');
+      // console.log('tz');
       uni.navigateTo({
         url: '../../subpkg/pages/search-blog/search-blog'
       });

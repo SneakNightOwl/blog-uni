@@ -29,7 +29,7 @@
 			async loadSearchHotList() {
 				const {data: res} = await getSearchHOtList();
 				this.hotList = res.list;
-				console.log(this.hotList,'热搜列表数据');
+				// console.log(this.hotList,'热搜列表数据');
 			},
 			onClick(item) {
 				this.$emit('onSearch',item.label);
