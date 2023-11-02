@@ -38,6 +38,11 @@
 					p: this.page   //页码
 				})
 				this.resultList = res.list;
+				this.resultList.forEach(item=> {
+					item.title = item.title.replace(/<em>/g,"<em style='color: #f94d2a; margin: 0 2px'>");
+					item.description = item.description.replace(/<em>/g,"<em style='color: #f94d2a; margin: 0 2px'>");
+					return item;
+				})
 				console.log(this.resultList,'搜索结果');
 			}
 		}

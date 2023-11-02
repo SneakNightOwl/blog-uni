@@ -6,7 +6,7 @@
 		<view class="item-bottom">
 			<view class="item-author">{{data.author}}</view>
 			<uni-icons type="compose" size="20" color="$uni-color-bottom"/>
-			<view class="item-updatetime">{{data.created_at}}</view>
+			<view class="item-updatetime">{{data.created_at | relativeTime}}</view>
 		</view>
 	</view>
 </template>

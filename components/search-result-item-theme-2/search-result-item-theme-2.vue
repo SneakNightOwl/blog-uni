@@ -12,7 +12,7 @@
 		<view class="item-bottom">
 			<view class="item-author">{{data.author}}</view>
 			<uni-icons type="compose" size="20" color="$uni-color-bottom"/>
-			<view class="item-updatetime">{{data.created_at}}</view>
+			<view class="item-updatetime">{{data.created_at | relativeTime}}</view>
 		</view>
 	</view>
 </template>
@@ -50,15 +50,18 @@
 	   .item-des-box {
 		   display: flex;
 		   width: 100%;
+		   margin-top: $uni-spacing-col-base;
 		   .item-des {
-			   width: 50%;
+			   width: 60%;
+			   // height: 70px;
+			   // line-height: 20px;
 			   font-size: $uni-font-size-paragraph;
 			   color: $uni-color-title;
-			   margin-top: $uni-spacing-col-base;
+			   
 		   }
 		   .item-img {
-			   width: 50%;
-			   height:100px;
+			   width: 40%;
+			   height:70px;
 		   }
 	   }
 	   
