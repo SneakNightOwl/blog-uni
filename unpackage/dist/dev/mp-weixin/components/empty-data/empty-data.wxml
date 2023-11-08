@@ -1,0 +1,1 @@
+<view class="empty-data-con"><image class="img" src="../../static/images/empty-data.png" mode="aspectFit"></image><text class="txt">无数据</text></view>

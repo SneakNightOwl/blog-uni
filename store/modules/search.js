@@ -1,5 +1,7 @@
 //数据持久化
 const STORAGE_KEY = 'search-list';
+//搜索历史数组的最大长度
+const HISTORY_LEN = 10;
 export default {
 	//独立命名空间
 	namespaced: true, 
@@ -19,6 +21,10 @@ export default {
 				state.searchData.splice(aindex, 1);
 			}
 			state.searchData.unshift(val);
+			//超过最大长度要把最老的删掉
+			if(state.searchData.length > HISTORY_LEN) {
+				state.searchData.splice(HISTORY_LEN, state.searchData.length - HISTORY_LEN);
+			}
 			//在vuex的模块中，通过 this.commit函数调用mutation
 			//this.commit函数接收一个字符串为当前mutation的路径 this.commit('模块/mutation名')
 			this.commit('search/saveToStorage');

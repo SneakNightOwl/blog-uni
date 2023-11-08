@@ -26,7 +26,8 @@
 			</view>
 			<!-- 搜索结果 -->
 			<view class="search-result-list-box" v-else>
-				<search-result-list :queryStr="searchVal" ></search-result-list>
+				<!--1. 给mescroll-body的组件添加 ref="mescrollItem" (固定的，不能改，与mescroll-comp.js对应) -->
+				<search-result-list ref="mescrollItem" :queryStr="searchVal" ></search-result-list>
 			</view>
 		</view>
 	</view>
@@ -38,7 +39,11 @@
 	const RESULT_LIST = 2;
 	import { getSearchDefaultText } from '../../../api/search.js';
 	import { mapMutations } from 'vuex';
+	//2.引入mescroll-comp.js
+	import MescrollCompMixin from '@/uni_modules/mescroll-uni/components/mescroll-uni/mixins/mescroll-comp.js'
 	export default {
+		//3.注册mixins
+		mixins:[MescrollCompMixin],
 		data() {
 			return {
 				searchVal:'',

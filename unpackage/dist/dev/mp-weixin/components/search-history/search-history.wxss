@@ -27,7 +27,7 @@
   height: 32rpx;
 }
 .search-history-container .history-title-box .clear-box .txt.data-v-65925b64 {
-  color: #999;
+  color: #bababa;
   font-size: 28rpx;
   padding: 0 10rpx;
 }
@@ -54,7 +54,7 @@
   content: ' ';
   width: 1px;
   height: 14px;
-  border-left: 1px solid #999;
+  border-left: 1px solid #bababa;
   position: absolute;
   top: 50%;
   right: 0;
