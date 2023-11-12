@@ -61,8 +61,16 @@
 	},
 	"subPackages": [{
 		"root":"subpkg",
-		"pages": [{
-			"path": "pages/search-blog/search-blog"
-		}]
+		"pages": [
+			     {
+			       "path": "pages/search-blog/search-blog",
+				   "navigationBarTitleText": "搜索结果"
+		         },
+				 {
+                    "path" : "pages/blog-detail/blog-detail",
+					"navigationBarTitleText": "文章详情",
+					"enablePullDownRefresh": false
+                }
+            ]
 	}]
 }

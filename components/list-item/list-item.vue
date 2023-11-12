@@ -1,6 +1,6 @@
 <template>
 	<!-- <view class="list-container"> -->
-		<view class="list-item">
+		<view class="list-item" @click="$emit('click')">
 			<view class="list-item-left">
 				<moc-raking :ranking="listItem.ranking"></moc-raking>
 			</view>

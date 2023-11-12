@@ -232,6 +232,11 @@ var _hot = __webpack_require__(/*! ../../api/hot.js */ 49);
 //
 //
 //
+//
+//
+//
+//
+//
 var _default = {
   data: function data() {
     return {
@@ -412,6 +417,13 @@ var _default = {
       // console.log('tz');
       uni.navigateTo({
         url: '../../subpkg/pages/search-blog/search-blog'
+      });
+    },
+    //点击item跳转到文章详情
+    onItemClick: function onItemClick(item) {
+      // console.log(item,'clickitem');
+      uni.navigateTo({
+        url: "/subpkg/pages/blog-detail/blog-detail?author=".concat(item.user_name, "&articleId=").concat(item.id)
       });
     }
   }

@@ -40,8 +40,13 @@
 				<view class="swiper-item">
 					<view class="list-container">
 						<uni-load-more status="loading" v-if="isLoading"></uni-load-more>
-						<list-item :class="'list-item-'+tabIndex" v-else v-for="(item, ind) in listData[tabIndex]"
-							:key="ind" :itemData="listData[tabIndex][ind]"></list-item>
+						<list-item 
+						     :class="'list-item-'+tabIndex" 
+							 v-else 
+							 v-for="(item, ind) in listData[tabIndex]"
+							:key="ind" 
+							:itemData="listData[tabIndex][ind]"
+							@click="onItemClick(item)"></list-item>
 					</view>
 				</view>
 			</swiper-item>
@@ -193,6 +198,13 @@
 				uni.navigateTo({
 					url: '../../subpkg/pages/search-blog/search-blog'
 				});
+			},
+			//点击item跳转到文章详情
+			onItemClick(item) {
+			  // console.log(item,'clickitem');
+			  uni.navigateTo({
+			  	url:`/subpkg/pages/blog-detail/blog-detail?author=${item.user_name}&articleId=${item.id}`
+			  })
 			}
 		}
 		

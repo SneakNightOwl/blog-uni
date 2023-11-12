@@ -78,19 +78,19 @@ var components
 try {
   components = {
     emptyData: function () {
-      return __webpack_require__.e(/*! import() | components/empty-data/empty-data */ "components/empty-data/empty-data").then(__webpack_require__.bind(null, /*! @/components/empty-data/empty-data.vue */ 220))
+      return __webpack_require__.e(/*! import() | components/empty-data/empty-data */ "components/empty-data/empty-data").then(__webpack_require__.bind(null, /*! @/components/empty-data/empty-data.vue */ 153))
     },
     mescrollBody: function () {
-      return Promise.all(/*! import() | uni_modules/mescroll-uni/components/mescroll-body/mescroll-body */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/mescroll-uni/components/mescroll-body/mescroll-body")]).then(__webpack_require__.bind(null, /*! @/uni_modules/mescroll-uni/components/mescroll-body/mescroll-body.vue */ 153))
+      return Promise.all(/*! import() | uni_modules/mescroll-uni/components/mescroll-body/mescroll-body */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/mescroll-uni/components/mescroll-body/mescroll-body")]).then(__webpack_require__.bind(null, /*! @/uni_modules/mescroll-uni/components/mescroll-body/mescroll-body.vue */ 160))
     },
     searchResultItemTheme1: function () {
-      return __webpack_require__.e(/*! import() | components/search-result-item-theme-1/search-result-item-theme-1 */ "components/search-result-item-theme-1/search-result-item-theme-1").then(__webpack_require__.bind(null, /*! @/components/search-result-item-theme-1/search-result-item-theme-1.vue */ 166))
+      return __webpack_require__.e(/*! import() | components/search-result-item-theme-1/search-result-item-theme-1 */ "components/search-result-item-theme-1/search-result-item-theme-1").then(__webpack_require__.bind(null, /*! @/components/search-result-item-theme-1/search-result-item-theme-1.vue */ 173))
     },
     searchResultItemTheme2: function () {
-      return __webpack_require__.e(/*! import() | components/search-result-item-theme-2/search-result-item-theme-2 */ "components/search-result-item-theme-2/search-result-item-theme-2").then(__webpack_require__.bind(null, /*! @/components/search-result-item-theme-2/search-result-item-theme-2.vue */ 173))
+      return __webpack_require__.e(/*! import() | components/search-result-item-theme-2/search-result-item-theme-2 */ "components/search-result-item-theme-2/search-result-item-theme-2").then(__webpack_require__.bind(null, /*! @/components/search-result-item-theme-2/search-result-item-theme-2.vue */ 180))
     },
     searchResultItemTheme3: function () {
-      return __webpack_require__.e(/*! import() | components/search-result-item-theme-3/search-result-item-theme-3 */ "components/search-result-item-theme-3/search-result-item-theme-3").then(__webpack_require__.bind(null, /*! @/components/search-result-item-theme-3/search-result-item-theme-3.vue */ 180))
+      return __webpack_require__.e(/*! import() | components/search-result-item-theme-3/search-result-item-theme-3 */ "components/search-result-item-theme-3/search-result-item-theme-3").then(__webpack_require__.bind(null, /*! @/components/search-result-item-theme-3/search-result-item-theme-3.vue */ 187))
     },
   }
 } catch (e) {
@@ -147,7 +147,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(uni) {
 
 var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
 Object.defineProperty(exports, "__esModule", {
@@ -339,10 +339,18 @@ var _default = {
           }
         }, _callee4);
       }))();
+    },
+    //点击item跳转到文章详情
+    onItemClick: function onItemClick(item) {
+      // console.log(item,'clickitem');
+      uni.navigateTo({
+        url: "/subpkg/pages/blog-detail/blog-detail?author=".concat(item.author, "&articleId=").concat(item.id)
+      });
     }
   }
 };
 exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ })
 

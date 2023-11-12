@@ -10,7 +10,7 @@ function request({url, data, method}) {
 		    method,
 			header: {
 				'content-type': "application/x-www-form-urlencoded",
-				'icode':"B61066880C975C0C"
+				'icode':"ACC05A058B1BB439"
 			},
 		    success: ({data, statusCode, header}) => {
 				if(data.success) {
@@ -27,6 +27,11 @@ function request({url, data, method}) {
 		    },
 			fail: (error) => {
 				reject(error)
+			},
+			//请求结束之后的回调
+			complete() {
+				//关闭加载
+				uni.hideLoading()
 			}
 		});
 	})

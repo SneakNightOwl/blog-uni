@@ -12,11 +12,11 @@
 			@down="downCallback" 
 			@up="upCallback"
 			v-else>
-			<block v-for="(item, index) in resultList" :key="index">
+			<view v-for="(item, index) in resultList" :key="index" @click="onItemClick(item)">
 			  <search-result-item-theme-1 :data="item" v-if="item.pic.length==0 && item.pic_list.length == undefined"></search-result-item-theme-1>	
 			  <search-result-item-theme-2 :data="item" v-else-if="item.pic.length!=0 || item.pic_list.length == 1"></search-result-item-theme-2>	
 			  <search-result-item-theme-3 :data="item" v-else></search-result-item-theme-3>	
-			</block>
+			</view>
 		</mescroll-body>
 	</view>
 </template>
@@ -106,6 +106,13 @@
 				await this.getResultList();
 				//关闭加载的动画
 				this.mescroll.endSuccess();
+			},
+			//点击item跳转到文章详情
+			onItemClick(item) {
+			  // console.log(item,'clickitem');
+			  uni.navigateTo({
+			  	url:`/subpkg/pages/blog-detail/blog-detail?author=${item.author}&articleId=${item.id}`
+			  })
 			}
 		}
 	}
