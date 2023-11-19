@@ -42,6 +42,13 @@
   padding: 12px;
   box-shadow: 2px 2px 5px 1px rgba(143, 143, 143, 0.1);
 }
+/*人物头像*/
+.avatar.data-v-41251cbc {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
 .logo.data-v-41251cbc {
   width: 100%;
   height: 180rpx;

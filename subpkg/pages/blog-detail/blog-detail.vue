@@ -1,12 +1,43 @@
 <template>
-	<view>
-		
-	</view>
+	<page-meta root-font-size="52px">
+	  <view class="article-container">
+	  	<block v-if="articleData">
+	  		<view class="title">{{articleData.articleTitle}}</view>
+	  		<view class="detail">
+	  			<view class="detail-left">
+	  				<view class="author-box">
+	  					<image class="avatar" :src="articleData.avatar" mode=""></image>
+	  				</view>
+	  				<view class="author-box">
+	  					<view class="author">{{articleData.nickName}}</view>
+	  					<view class="release-time">{{articleData.date}}</view>
+	  				</view>
+	  			</view>
+	  			<view class="detail-right">
+	  				<button type="default" size="mini">关注</button>
+	  			</view>
+	  		</view>
+	  		<!-- <rich-text :nodes="articleData.content"></rich-text> -->
+	  		<!-- 3.使用mp-html  scroll-table 给每个表格添加一个滚动层使其能单独横向滚动-->
+	  		<mp-html 
+	  		class="markdown_views"
+	  		:content="addClassFromHtml(articleData.content)"
+	  		scroll-table>
+	  		</mp-html>
+	  	</block>
+	  </view>
+	</page-meta>
 </template>
 
 <script>
+	//1.引入mp-html
+	import mpHtml from '@/uni_modules/mp-html/components/mp-html/mp-html'
 	import { getArticleDetail } from '../../../api/article.js';
 	export default {
+		//2.注册mp-html
+		components: {
+			mpHtml
+		},
 		data() {
 			return {
 				author:'',
@@ -34,11 +65,74 @@
 				});
 				this.articleData = res.data;
 				console.log(res.data,'文章详情')
+			},
+			//正则替换
+			addClassFromHtml(info) {
+				return info.replace(/<p>/gi, '<p class="p-cls">')
+				.replace(/<a>/gi, '<a class="a-cls">')
+				.replace(/<h1>/gi, '<h1 class="h1-cls">')
+				.replace(/<h2>/gi, '<h2 class="h2-cls">')
+				.replace(/<h3>/gi, '<h3 class="h3-cls">')
+				.replace(/<h4>/gi, '<h4 class="h4-cls">')
+				.replace(/<h5>/gi, '<h5 class="h5-cls">')
+				.replace(/<h6>/gi, '<h6 class="h6-cls">')
+				.replace(/<ul>/gi, '<ul class="ul-cls">')
+				.replace(/<li>/gi, '<li class="li-cls">')
+				.replace(/<ol>/gi, '<ol class="ol-cls">')
+				.replace(/<td>/gi, '<td class="td-cls">')
+				.replace(/<th>/gi, '<th class="th-cls">')
+				.replace(/<tr>/gi, '<tr class="tr-cls">')
+				.replace(/<dl>/gi, '<dl class="dl-cls">')
+				.replace(/<dd>/gi, '<dd class="dd-cls">')
+				.replace(/<hr>/gi, '<hr class="hr-cls">')
+				.replace(/<pre>/gi, '<pre class="pre-cls">')
+				.replace(/<strong>/gi, '<strong class="strong-cls">')
+				.replace(/<input>/gi, '<input class="input-cls">')
+				.replace(/<table>/gi, '<table class="table-cls">')
+				.replace(/<details>/gi, '<details class="details-cls">')
+				.replace(/<code>/gi, '<code class="code-cls">')
+				.replace(/<kbd>/gi, '<kbd class="kbd-cls">')
+				.replace(/<summary>/gi, '<summary class="summary-cls">')
+				.replace(/<blockquote>/gi, '<blockquote class="blockquote-cls">')
+				.replace(/<img/gi, '<img class="img-cls"');
 			}
 		}
 	}
 </script>
 
 <style lang="scss">
-
+	
+ @import '../../../styles/global.scss';	
+ @import '~@/styles/article-detail.css';
+	
+.article-container {
+	padding:$uni-spacing-col-base $uni-spacing-row-base;
+	.title {
+		font-size: $uni-font-size-title;
+		color: $uni-text-color;
+		font-weight: bold;
+	}
+	.detail {
+		display: flex;
+		justify-content: space-between;
+		padding: $uni-spacing-col-base 0;
+		.detail-left {
+			display: flex;
+			align-items: center;
+		}
+		.author-box {
+			display: flex;
+			flex-direction: column;
+			.author {
+				font-size: $uni-font-size-base;
+				color: $uni-text-color;
+				font-weight: bold;
+			}
+			.release-time {
+				font-size: $uni-font-size-sm;
+				color: $uni-text-color-grey;
+			}
+		}
+	}
+}
 </style>
