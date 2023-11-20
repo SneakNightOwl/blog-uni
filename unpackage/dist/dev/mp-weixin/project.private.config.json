@@ -4,6 +4,20 @@
     "miniprogram": {
       "list": [
         {
+          "name": "评论数较多的文章详情",
+          "pathName": "subpkg/pages/blog-detail/blog-detail",
+          "query": "author=m0_54218263&articleId=116001249",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/hot/hot",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "article-detail",
           "pathName": "subpkg/pages/blog-detail/blog-detail",
           "query": "author=hebtu666&articleId=115721080",

@@ -1,4 +1,5 @@
 <template>
+	<!-- 使用page-meta时必须要作为第一个节点 -->
 	<page-meta root-font-size="52px">
 	  <view class="article-container">
 	  	<block v-if="articleData">
@@ -24,6 +25,12 @@
 	  		:content="addClassFromHtml(articleData.content)"
 	  		scroll-table>
 	  		</mp-html>
+			<!-- 评论区 -->
+			<view class="comment-list-box">
+				   <!-- 评论列表 组件 -->
+				   <!--1. 给mescroll-body的组件添加 ref="mescrollItem" (固定的，不能改，与mescroll-comp.js对应) -->
+				  <article-comment-list :articleId="articleId" ref="mescrollItem"></article-comment-list>
+			</view>
 	  	</block>
 	  </view>
 	</page-meta>
@@ -31,18 +38,26 @@
 
 <script>
 	//1.引入mp-html
-	import mpHtml from '@/uni_modules/mp-html/components/mp-html/mp-html'
-	import { getArticleDetail } from '../../../api/article.js';
+	import mpHtml from '@/uni_modules/mp-html/components/mp-html/mp-html';
+	//引入mescroll-comp.js
+	import MescrollCompMixin from '@/uni_modules/mescroll-uni/components/mescroll-uni/mixins/mescroll-comp.js'
+	import { getArticleDetail, getArticleCommentList } from '../../../api/article.js';
 	export default {
 		//2.注册mp-html
 		components: {
 			mpHtml
 		},
+		//注册mixins
+		mixins:[MescrollCompMixin],
 		data() {
 			return {
 				author:'',
 				articleId:'',
 				articleData: null,
+				page: 1,  //评论列表的页码
+				size: 5,  //每次请求的数据量
+				commentList: null  ,//评论列表数据
+				commentAllCount: 0   //评论总数
 			};
 		},
 		//uniapp的生命周期
@@ -51,6 +66,7 @@
 			this.author = options.author;
 			this.articleId = options.articleId;
 			this.loadArticleDetail();
+			// this.loadArticleComment();
 		},
 		methods: {
 			async loadArticleDetail() {
@@ -96,6 +112,7 @@
 				.replace(/<blockquote>/gi, '<blockquote class="blockquote-cls">')
 				.replace(/<img/gi, '<img class="img-cls"');
 			}
+			
 		}
 	}
 </script>

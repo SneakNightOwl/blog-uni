@@ -1,0 +1,39 @@
+@charset "UTF-8";
+/* 水平间距 */
+/* 水平间距 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* 水平间距 */
+/* 垂直间距 */
+/*透明度*/
+/*文章场景相关*/
+.comment-item-container.data-v-41138784 {
+  display: flex;
+  padding: 24rpx 0;
+}
+.comment-item-container .right-box.data-v-41138784 {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10rpx;
+}
+.comment-item-container .right-box .nickname.data-v-41138784 {
+  color: #333;
+  font-size: 24rpx;
+  font-weight: bold;
+}
+.comment-item-container .right-box .content.data-v-41138784 {
+  color: #333;
+  font-size: 28rpx;
+  margin-top: 8rpx;
+}
+.comment-item-container .right-box .release-time.data-v-41138784 {
+  color: #bababa;
+  font-size: 24rpx;
+  margin-top: 8rpx;
+}
+

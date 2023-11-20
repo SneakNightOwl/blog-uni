@@ -1,5 +1,6 @@
 {
   "usingComponents": {
-    "mp-html": "/uni_modules/mp-html/components/mp-html/mp-html"
+    "mp-html": "/uni_modules/mp-html/components/mp-html/mp-html",
+    "article-comment-list": "/components/article-comment-list/article-comment-list"
   }
 }
