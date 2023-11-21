@@ -12,6 +12,7 @@
 /* 垂直间距 */
 /*透明度*/
 /*文章场景相关*/
+/*圆角*/
 .search-result-item-box.data-v-3a739c78 {
   width: 100vw;
   padding: 16rpx 20rpx;

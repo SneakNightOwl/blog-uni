@@ -12,6 +12,7 @@
 /* 垂直间距 */
 /*透明度*/
 /*文章场景相关*/
+/*圆角*/
 .search-history-container .history-title-box.data-v-65925b64 {
   display: flex;
   justify-content: space-between;

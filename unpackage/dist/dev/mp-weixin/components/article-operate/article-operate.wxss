@@ -1,0 +1,35 @@
+@charset "UTF-8";
+/* 水平间距 */
+/* 水平间距 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* 水平间距 */
+/* 垂直间距 */
+/*透明度*/
+/*文章场景相关*/
+/*圆角*/
+.operate-container.data-v-275d9540 {
+  width: 100%;
+  height: 120rpx;
+  padding: 8rpx 20rpx;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  border: 1px solid #bababa;
+  background-color: #ffffff;
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+}
+.operate-container .comment-box.data-v-275d9540 {
+  width: 70%;
+}
+.operate-container .options-box.data-v-275d9540 {
+  width: 15%;
+}
+

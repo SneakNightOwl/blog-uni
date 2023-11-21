@@ -12,25 +12,33 @@
 /* 垂直间距 */
 /*透明度*/
 /*文章场景相关*/
-.my-input-wp {
+/*圆角*/
+.my-search-container {
   display: flex;
+  width: 100%;
+}
+.my-search-container .my-input-wp {
+  display: flex;
+  align-items: center;
   flex-direction: row;
   justify-content: flex-start;
-  height: 40rpx;
+  width: 95%;
+  height: 96rpx;
   padding: 15px;
-  margin: 0 15px;
+  margin: 0 auto;
   border: 1px solid #cbcbcb;
-  border-radius: 5px;
+  border-radius: 15px;
+  box-sizing: border-box;
 }
-.my-search-icon {
+.my-search-container .my-search-icon {
   width: 40rpx;
   height: 40rpx;
 }
-.place-holder {
+.my-search-container .place-holder {
   font: normal 32rpx/40rpx 'Microsoft YaHei';
   color: #cbcbcb;
 }
-.my-search-bar {
+.my-search-container .my-search-bar {
   width: 100%;
 }
 

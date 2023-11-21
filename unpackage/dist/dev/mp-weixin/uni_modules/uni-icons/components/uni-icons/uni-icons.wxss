@@ -12,6 +12,7 @@
 /* 垂直间距 */
 /*透明度*/
 /*文章场景相关*/
+/*圆角*/
 .uniui-color:before {
   content: "\e6cf";
 }

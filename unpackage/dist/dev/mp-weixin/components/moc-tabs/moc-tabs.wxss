@@ -12,6 +12,7 @@
 /* 垂直间距 */
 /*透明度*/
 /*文章场景相关*/
+/*圆角*/
 .tab-container.data-v-4e812d44 {
   width: 100%;
   height: 80rpx;

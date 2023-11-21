@@ -12,6 +12,7 @@
 /* 垂直间距 */
 /*透明度*/
 /*文章场景相关*/
+/*圆角*/
 .list-item.data-v-2d486a8a {
   width: 96%;
   height: auto;

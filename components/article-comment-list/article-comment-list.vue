@@ -116,7 +116,7 @@
 
 <style lang="scss" scoped>
 .comment-list-container {
-	padding: $uni-spacing-col-lg $uni-spacing-row-base 100rpx;
+	padding: $uni-spacing-col-lg $uni-spacing-row-base 120rpx;
 	.comment-title {
 		color: $uni-text-color;
 		font-size: $uni-font-size-title;

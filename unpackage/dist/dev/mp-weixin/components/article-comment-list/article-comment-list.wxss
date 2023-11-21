@@ -12,8 +12,9 @@
 /* 垂直间距 */
 /*透明度*/
 /*文章场景相关*/
+/*圆角*/
 .comment-list-container.data-v-c524e738 {
-  padding: 24rpx 20rpx 100rpx;
+  padding: 24rpx 20rpx 120rpx;
 }
 .comment-list-container .comment-title.data-v-c524e738 {
   color: #333;

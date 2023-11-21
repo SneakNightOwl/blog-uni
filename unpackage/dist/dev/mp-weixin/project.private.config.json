@@ -4,6 +4,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "",
+          "pathName": "subpkg/pages/blog-detail/blog-detail",
+          "query": "author=m0_54218263&articleId=116001249",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "评论数较多的文章详情",
           "pathName": "subpkg/pages/blog-detail/blog-detail",
           "query": "author=m0_54218263&articleId=116001249",

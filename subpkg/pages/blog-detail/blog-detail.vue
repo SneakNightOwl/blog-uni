@@ -33,6 +33,8 @@
 			</view>
 	  	</block>
 	  </view>
+	  <!-- 组件 -->
+	  <article-operate></article-operate>
 	</page-meta>
 </template>
 
