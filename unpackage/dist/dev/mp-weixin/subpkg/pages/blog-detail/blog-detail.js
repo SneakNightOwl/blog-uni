@@ -107,7 +107,7 @@ try {
       return Promise.all(/*! import() | components/article-comment-list/article-comment-list */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/article-comment-list/article-comment-list")]).then(__webpack_require__.bind(null, /*! @/components/article-comment-list/article-comment-list.vue */ 144))
     },
     articleOperate: function () {
-      return __webpack_require__.e(/*! import() | components/article-operate/article-operate */ "components/article-operate/article-operate").then(__webpack_require__.bind(null, /*! @/components/article-operate/article-operate.vue */ 261))
+      return __webpack_require__.e(/*! import() | components/article-operate/article-operate */ "components/article-operate/article-operate").then(__webpack_require__.bind(null, /*! @/components/article-operate/article-operate.vue */ 151))
     },
   }
 } catch (e) {

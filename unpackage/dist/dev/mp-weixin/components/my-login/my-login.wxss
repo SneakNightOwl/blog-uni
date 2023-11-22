@@ -1,0 +1,35 @@
+@charset "UTF-8";
+/* 水平间距 */
+/* 水平间距 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* 水平间距 */
+/* 垂直间距 */
+/*透明度*/
+/*文章场景相关*/
+/*圆角*/
+.my-login-container.data-v-2281d304 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.my-login-container .avatar-img.data-v-2281d304 {
+  width: 100px;
+  height: 100px;
+  margin: 100rpx auto 0;
+}
+.my-login-container .desc.data-v-2281d304 {
+  font-size: 28rpx;
+  color: #bababa;
+  margin-top: 40rpx;
+}
+.my-login-container .login-btn.data-v-2281d304 {
+  width: 80vw;
+  margin-top: 40rpx;
+}
+

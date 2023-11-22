@@ -1,0 +1,1 @@
+<view class="my-login-container data-v-2281d304"><image class="avatar-img data-v-2281d304" src="../../static/images/default-avatar.png"></image><text class="desc data-v-2281d304">登录后可同步数据</text><button class="login-btn data-v-2281d304" type="primary" data-event-opts="{{[['tap',[['tologin',['$event']]]]]}}" bindtap="__e">微信用户一键登录</button></view>
