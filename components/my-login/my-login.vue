@@ -1,13 +1,21 @@
 <template>
 	<view class="my-login-container">
-		<image class="avatar-img" src="../../static/images/default-avatar.png"></image>
-		<text class="desc">登录后可同步数据</text>
-		<button class="login-btn" type="primary" @click="tologin">微信用户一键登录</button>
+		<view class="noLogin" v-if="!token">
+			<image class="avatar-img" src="../../static/images/default-avatar.png"></image>
+			<text class="desc">登录后可同步数据</text>
+			<button class="login-btn" type="primary" @click="tologin">微信用户一键登录</button>
+		</view>
+		<view class="hasLogin" v-else>
+			<image class="avatar-img" :src="userInfo.avatarUrl"></image>
+			<text class="desc">{{userInfo.nickName || userInfo.userName}}</text>
+			<button class="login-btn" type="default" @click="tologout">退出登录</button>
+		</view>
 	</view>
 </template>
 
 <script>
-	import { mapActions } from 'vuex';
+	//引入mapActions
+	import { mapActions, mapState } from 'vuex';
 	export default {
 		name:"my-login",
 		data() {
@@ -15,30 +23,48 @@
 				
 			};
 		},
+		computed: {
+			//映射user的state
+			...mapState('user',['token', 'userInfo'])
+		},
 		methods: {
-			...mapActions('user',['login']),
+			//映射模块内定义的action
+			...mapActions('user',['login','logout']),
 			tologin() {
 				let _self = this;
 				uni.showLoading({
 					title:'加载中'
 				});
-				// console.log(context,'context');
 				uni.getUserProfile({
 					desc:'申请用户信息用于平台登录',
-					success(data) {
-						// console.log(data,'微信接口的登录信息');
-						_self.login(data);
+					success(obj) {
+                        //调用action并且传递数据
+						_self.login(obj);
 					},
 					fail(err){
 						uni.showToast({
-							title:'获取微信用户信息失败!',
-							icon:'fail',
+							title:'授权已取消!',
+							icon:'error',
+							mask: true
 							// duration: 1500
 						})
 					},
 					complete() {
 						uni.hideLoading();
 					} 
+				})
+			},
+			//退出登录
+			tologout() {
+				let _self = this;
+				uni.showModal({
+					title:'确定要退出登录?',
+					content:'退出后将无法同步数据!',
+					success:(res)=> {
+						if(res.confirm) {
+							_self.logout();
+						}
+					}
 				})
 			}
 		}
@@ -47,9 +73,11 @@
 
 <style lang="scss" scoped>
 .my-login-container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+	.noLogin,.hasLogin {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
 	.avatar-img {
 		width: $uni-img-size-big;
 		height: $uni-img-size-big;

@@ -1,31 +1,39 @@
-const TOKENKEY = 'BLOG_TOKEN';
+const TOKEN_KEY = 'blog_token';
+const USER_INFO_KEY = 'user_info'
 
 import { getUserInfo } from '../../api/user.js';
 
 export default {
 	namespaced: true,
 	state: ()=>({
-		token:uni.getStorage(TOKENKEY) || ''
+		token:uni.getStorageSync(TOKEN_KEY) || '',
+		userInfo: uni.getStorageSync(USER_INFO_KEY) || {}
 	}),
 	//存放同步操作
 	mutations: {
-		saveLogin(state, token) {
+		saveToken(state, token) {
 			state.token = token;
 			uni.setStorage({
-				key: TOKENKEY,
+				key: TOKEN_KEY,
 				data: token
 			});
-			uni.showToast({
-				title:'登录成功！'
+		},
+		saveUserInfo(state, userInfo) {
+			state.userInfo = userInfo;
+			uni.setStorage({
+				key: USER_INFO_KEY,
+				data: userInfo
 			})
 		},
-		removeLogin(state) {
+		removeToken(state) {
 			//删除登录状态
 			state.token = '';
-			uni.removeStorage({key: TOKENKEY});
-			uni.showToast({
-				title:'已退出登录'
-			})
+			uni.removeStorage({key: TOKEN_KEY});
+		},
+		removeUserInfo(state) {
+			//删除用户信息
+			state.userInfo = {};
+			uni.removeStorage({key: USER_INFO_KEY});
 		}
 	},
 	//存放异步操作
@@ -44,9 +52,14 @@ export default {
 				province: userInfo.province,
 				avatarUrl: userInfo.avatarUrl  //头像路径
 			})
-			console.log(res,'登录接口');
-			context.commit('saveLogin', res.token);
-				// console.log(userprofile, '微信用户信息');
+			console.log(res,'token');
+			//这里的this指向$store
+			this.commit('user/saveToken',res.token);
+			this.commit('user/saveUserInfo',userprofile.userInfo)
+		},
+		logout(context) {
+			this.commit('user/removeToken');
+			this.commit('user/removeUserInfo');
 		}
 	}
 }

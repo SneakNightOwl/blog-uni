@@ -13,7 +13,7 @@
 /*透明度*/
 /*文章场景相关*/
 /*圆角*/
-.my-login-container.data-v-2281d304 {
+.my-login-container .noLogin.data-v-2281d304, .my-login-container .hasLogin.data-v-2281d304 {
   display: flex;
   flex-direction: column;
   align-items: center;
