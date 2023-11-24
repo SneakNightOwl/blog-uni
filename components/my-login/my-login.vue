@@ -37,9 +37,11 @@
 				});
 				uni.getUserProfile({
 					desc:'申请用户信息用于平台登录',
-					success(obj) {
+					success: async(obj)=> {
                         //调用action并且传递数据
-						_self.login(obj);
+						await _self.login(obj);
+						//登录成功之后发送一个事件
+						_self.$emit('onLoginSuccess');
 					},
 					fail(err){
 						uni.showToast({

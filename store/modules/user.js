@@ -60,6 +60,24 @@ export default {
 		logout(context) {
 			this.commit('user/removeToken');
 			this.commit('user/removeUserInfo');
+		},
+		//判断是否登录
+	    async isLogin(context) {
+			// console.log(context,'点击关注 context');
+			if(context.state.token ) return true;
+			//使用await可以获取 操作后的modal的返回值
+			//如果不使用await, 获得的将是一个pending 的 promise
+			const [err, { confirm }] = await uni.showModal({
+				title:'登录后才可以关注!',
+				content:'是否前往登录？'
+			})
+			console.log(confirm,'modal');
+			if(confirm) {
+				uni.navigateTo({
+					url:'/subpkg/pages/login-page/login-page'
+				})
+			}
+			return false;
 		}
 	}
 }

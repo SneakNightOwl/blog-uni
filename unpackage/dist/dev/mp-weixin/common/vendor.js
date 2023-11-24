@@ -10898,6 +10898,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 36));
+var _slicedToArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ 4));
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 38));
 var _user = __webpack_require__(/*! ../../api/user.js */ 39);
 var TOKEN_KEY = 'blog_token';
@@ -10987,6 +10988,45 @@ var _default = {
     logout: function logout(context) {
       this.commit('user/removeToken');
       this.commit('user/removeUserInfo');
+    },
+    //判断是否登录
+    isLogin: function isLogin(context) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var _yield$uni$showModal, _yield$uni$showModal2, err, confirm;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                if (!context.state.token) {
+                  _context2.next = 2;
+                  break;
+                }
+                return _context2.abrupt("return", true);
+              case 2:
+                _context2.next = 4;
+                return uni.showModal({
+                  title: '登录后才可以关注!',
+                  content: '是否前往登录？'
+                });
+              case 4:
+                _yield$uni$showModal = _context2.sent;
+                _yield$uni$showModal2 = (0, _slicedToArray2.default)(_yield$uni$showModal, 2);
+                err = _yield$uni$showModal2[0];
+                confirm = _yield$uni$showModal2[1].confirm;
+                console.log(confirm, 'modal');
+                if (confirm) {
+                  uni.navigateTo({
+                    url: '/subpkg/pages/login-page/login-page'
+                  });
+                }
+                return _context2.abrupt("return", false);
+              case 11:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
     }
   }
 };

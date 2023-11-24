@@ -4,7 +4,7 @@
             "path" : "pages/hot/hot",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "热搜",
                 "enablePullDownRefresh": false
             }
             
@@ -13,7 +13,7 @@
             "path" : "pages/hot-video/hot-video",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "热播",
                 "enablePullDownRefresh": false
             }
             
@@ -22,7 +22,7 @@
             "path" : "pages/my/my",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "我的",
                 "enablePullDownRefresh": false
             }
             
@@ -64,12 +64,23 @@
 		"pages": [
 			     {
 			       "path": "pages/search-blog/search-blog",
-				   "navigationBarTitleText": "搜索结果"
+				   "styles": {
+				        "navigationBarTitleText": "搜索结果"  
+				   }
 		         },
 				 {
                     "path" : "pages/blog-detail/blog-detail",
-					"navigationBarTitleText": "文章详情",
-					"enablePullDownRefresh": false
+					"enablePullDownRefresh": false,
+					"styles": {
+						"navigationBarTitleText": "文章详情"
+					}
+                },
+				{
+                    "path" : "pages/login-page/login-page",
+                    "style" :{
+						"navigationBarTitleText": "登录页",
+						"enablePullDownRefresh": false
+					 }	
                 }
             ]
 	}]

@@ -184,8 +184,12 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 36));
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 38));
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 10));
 var _mescrollComp = _interopRequireDefault(__webpack_require__(/*! @/uni_modules/mescroll-uni/components/mescroll-uni/mixins/mescroll-comp.js */ 74));
 var _article = __webpack_require__(/*! ../../../api/article.js */ 83);
+var _vuex = __webpack_require__(/*! vuex */ 33);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var mpHtml = function mpHtml() {
   Promise.all(/*! require.ensure | uni_modules/mp-html/components/mp-html/mp-html */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/mp-html/components/mp-html/mp-html")]).then((function () {
     return resolve(__webpack_require__(/*! @/uni_modules/mp-html/components/mp-html/mp-html */ 145));
@@ -221,7 +225,7 @@ var _default = {
     // this.loadArticleComment();
   },
 
-  methods: {
+  methods: _objectSpread(_objectSpread({}, (0, _vuex.mapActions)('user', ['isLogin'])), {}, {
     loadArticleDetail: function loadArticleDetail() {
       var _this = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
@@ -256,8 +260,34 @@ var _default = {
     //正则替换
     addClassFromHtml: function addClassFromHtml(info) {
       return info.replace(/<p>/gi, '<p class="p-cls">').replace(/<a>/gi, '<a class="a-cls">').replace(/<h1>/gi, '<h1 class="h1-cls">').replace(/<h2>/gi, '<h2 class="h2-cls">').replace(/<h3>/gi, '<h3 class="h3-cls">').replace(/<h4>/gi, '<h4 class="h4-cls">').replace(/<h5>/gi, '<h5 class="h5-cls">').replace(/<h6>/gi, '<h6 class="h6-cls">').replace(/<ul>/gi, '<ul class="ul-cls">').replace(/<li>/gi, '<li class="li-cls">').replace(/<ol>/gi, '<ol class="ol-cls">').replace(/<td>/gi, '<td class="td-cls">').replace(/<th>/gi, '<th class="th-cls">').replace(/<tr>/gi, '<tr class="tr-cls">').replace(/<dl>/gi, '<dl class="dl-cls">').replace(/<dd>/gi, '<dd class="dd-cls">').replace(/<hr>/gi, '<hr class="hr-cls">').replace(/<pre>/gi, '<pre class="pre-cls">').replace(/<strong>/gi, '<strong class="strong-cls">').replace(/<input>/gi, '<input class="input-cls">').replace(/<table>/gi, '<table class="table-cls">').replace(/<details>/gi, '<details class="details-cls">').replace(/<code>/gi, '<code class="code-cls">').replace(/<kbd>/gi, '<kbd class="kbd-cls">').replace(/<summary>/gi, '<summary class="summary-cls">').replace(/<blockquote>/gi, '<blockquote class="blockquote-cls">').replace(/<img/gi, '<img class="img-cls"');
+    },
+    //点击关注
+    clickCollect: function clickCollect() {
+      var _this2 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var isLogin;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return _this2.isLogin();
+              case 2:
+                isLogin = _context2.sent;
+                // console.log(isLogin,'isLogin');
+                //如果没有使用await,这里打印出来的会是一个pending的promise
+                if (isLogin) {
+                  console.log('已登录，执行后续操作需要补充逻辑');
+                }
+              case 4:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
     }
-  }
+  })
 };
 exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))

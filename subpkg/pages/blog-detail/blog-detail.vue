@@ -15,7 +15,8 @@
 	  				</view>
 	  			</view>
 	  			<view class="detail-right">
-	  				<button type="default" size="mini">关注</button>
+	  				<button type="default" size="mini" @click="clickCollect">关注</button>
+					<!-- <button type="primary" size="mini" @click="cancleCollect">已关注</button> -->
 	  			</view>
 	  		</view>
 	  		<!-- <rich-text :nodes="articleData.content"></rich-text> -->
@@ -44,6 +45,7 @@
 	//引入mescroll-comp.js
 	import MescrollCompMixin from '@/uni_modules/mescroll-uni/components/mescroll-uni/mixins/mescroll-comp.js'
 	import { getArticleDetail, getArticleCommentList } from '../../../api/article.js';
+	import { mapActions } from 'vuex';
 	export default {
 		//2.注册mp-html
 		components: {
@@ -71,6 +73,7 @@
 			// this.loadArticleComment();
 		},
 		methods: {
+			...mapActions('user', ['isLogin'] ),
 			async loadArticleDetail() {
 				//加载中动画 (交互反馈)
 				uni.showLoading({
@@ -113,8 +116,16 @@
 				.replace(/<summary>/gi, '<summary class="summary-cls">')
 				.replace(/<blockquote>/gi, '<blockquote class="blockquote-cls">')
 				.replace(/<img/gi, '<img class="img-cls"');
+			},
+			//点击关注
+			async clickCollect() {
+				const isLogin = await this.isLogin();
+				// console.log(isLogin,'isLogin');
+				//如果没有使用await,这里打印出来的会是一个pending的promise
+				if(isLogin) {
+					console.log('已登录，执行后续操作需要补充逻辑')
+				}
 			}
-			
 		}
 	}
 </script>
