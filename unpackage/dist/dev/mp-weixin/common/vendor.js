@@ -11443,11 +11443,14 @@ function getUserInfo(data) {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni) {
 
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+var _store = _interopRequireDefault(__webpack_require__(/*! ../store */ 32));
 var BASE_URL = 'https://api.imooc-blog.lgdsunday.club/api';
+//引入store
 /*
 params  {url, data, method}
 */
@@ -11462,7 +11465,8 @@ function request(_ref) {
       method: method,
       header: {
         'content-type': "application/x-www-form-urlencoded",
-        'icode': "ACC05A058B1BB439"
+        'icode': "ACC05A058B1BB439",
+        Authorization: _store.default.state.user.token
       },
       success: function success(_ref2) {
         var data = _ref2.data,
@@ -12244,6 +12248,7 @@ var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/inte
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.fllowUser = fllowUser;
 exports.getArticleCommentList = getArticleCommentList;
 exports.getArticleDetail = getArticleDetail;
 var _request = _interopRequireDefault(__webpack_require__(/*! ../utils/request.js */ 40));
@@ -12259,6 +12264,15 @@ function getArticleDetail(data) {
 function getArticleCommentList(data) {
   return (0, _request.default)({
     url: '/article/comment/list',
+    method: 'GET',
+    data: data
+  });
+}
+
+//点击关注
+function fllowUser(data) {
+  return (0, _request.default)({
+    url: '/user/follow',
     method: 'GET',
     data: data
   });
@@ -12286,7 +12300,13 @@ function getArticleCommentList(data) {
 /* 102 */,
 /* 103 */,
 /* 104 */,
-/* 105 */
+/* 105 */,
+/* 106 */,
+/* 107 */,
+/* 108 */,
+/* 109 */,
+/* 110 */,
+/* 111 */
 /*!***************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/index.js ***!
   \***************************************************************************************************/
@@ -12301,9 +12321,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 106));
-var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 107));
-var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 108));
+var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 112));
+var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 113));
+var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 114));
 var _default = {
   en: _en.default,
   'zh-Hans': _zhHans.default,
@@ -12312,7 +12332,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 106 */
+/* 112 */
 /*!**************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/en.json ***!
   \**************************************************************************************************/
@@ -12322,7 +12342,7 @@ exports.default = _default;
 module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"Pull up to show more\",\"uni-load-more.contentrefresh\":\"loading...\",\"uni-load-more.contentnomore\":\"No more data\"}");
 
 /***/ }),
-/* 107 */
+/* 113 */
 /*!*******************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/zh-Hans.json ***!
   \*******************************************************************************************************/
@@ -12332,7 +12352,7 @@ module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"Pull up to show mo
 module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"上拉显示更多\",\"uni-load-more.contentrefresh\":\"正在加载...\",\"uni-load-more.contentnomore\":\"没有更多数据了\"}");
 
 /***/ }),
-/* 108 */
+/* 114 */
 /*!*******************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/zh-Hant.json ***!
   \*******************************************************************************************************/
@@ -12342,12 +12362,6 @@ module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"上拉显示更多
 module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"上拉顯示更多\",\"uni-load-more.contentrefresh\":\"正在加載...\",\"uni-load-more.contentnomore\":\"沒有更多數據了\"}");
 
 /***/ }),
-/* 109 */,
-/* 110 */,
-/* 111 */,
-/* 112 */,
-/* 113 */,
-/* 114 */,
 /* 115 */,
 /* 116 */,
 /* 117 */,
@@ -12377,7 +12391,13 @@ module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"上拉顯示更多
 /* 141 */,
 /* 142 */,
 /* 143 */,
-/* 144 */
+/* 144 */,
+/* 145 */,
+/* 146 */,
+/* 147 */,
+/* 148 */,
+/* 149 */,
+/* 150 */
 /*!******************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-mixins.js ***!
   \******************************************************************************************************/
@@ -12440,12 +12460,12 @@ var _default = MescrollMixin;
 exports.default = _default;
 
 /***/ }),
-/* 145 */,
-/* 146 */,
-/* 147 */,
-/* 148 */,
-/* 149 */,
-/* 150 */
+/* 151 */,
+/* 152 */,
+/* 153 */,
+/* 154 */,
+/* 155 */,
+/* 156 */
 /*!***********************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/mp-html/components/mp-html/parser.js ***!
   \***********************************************************************************/
@@ -13659,12 +13679,6 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 151 */,
-/* 152 */,
-/* 153 */,
-/* 154 */,
-/* 155 */,
-/* 156 */,
 /* 157 */,
 /* 158 */,
 /* 159 */,
@@ -13680,7 +13694,13 @@ exports.default = _default;
 /* 169 */,
 /* 170 */,
 /* 171 */,
-/* 172 */
+/* 172 */,
+/* 173 */,
+/* 174 */,
+/* 175 */,
+/* 176 */,
+/* 177 */,
+/* 178 */
 /*!*****************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/index.js ***!
   \*****************************************************************************************************/
@@ -13695,9 +13715,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 173));
-var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 174));
-var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 175));
+var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 179));
+var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 180));
+var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 181));
 var _default = {
   en: _en.default,
   'zh-Hans': _zhHans.default,
@@ -13706,7 +13726,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 173 */
+/* 179 */
 /*!****************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/en.json ***!
   \****************************************************************************************************/
@@ -13716,7 +13736,7 @@ exports.default = _default;
 module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-bar.placeholder\":\"Search enter content\"}");
 
 /***/ }),
-/* 174 */
+/* 180 */
 /*!*********************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/zh-Hans.json ***!
   \*********************************************************************************************************/
@@ -13726,7 +13746,7 @@ module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-
 module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-bar.placeholder\":\"请输入搜索内容\"}");
 
 /***/ }),
-/* 175 */
+/* 181 */
 /*!*********************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/zh-Hant.json ***!
   \*********************************************************************************************************/
@@ -13736,14 +13756,14 @@ module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-
 module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-bar.placeholder\":\"請輸入搜索內容\"}");
 
 /***/ }),
-/* 176 */,
-/* 177 */,
-/* 178 */,
-/* 179 */,
-/* 180 */,
-/* 181 */,
 /* 182 */,
-/* 183 */
+/* 183 */,
+/* 184 */,
+/* 185 */,
+/* 186 */,
+/* 187 */,
+/* 188 */,
+/* 189 */
 /*!**************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-icons/components/uni-icons/icons.js ***!
   \**************************************************************************************/
@@ -14764,12 +14784,6 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 184 */,
-/* 185 */,
-/* 186 */,
-/* 187 */,
-/* 188 */,
-/* 189 */,
 /* 190 */,
 /* 191 */,
 /* 192 */,
@@ -14785,7 +14799,13 @@ exports.default = _default;
 /* 202 */,
 /* 203 */,
 /* 204 */,
-/* 205 */
+/* 205 */,
+/* 206 */,
+/* 207 */,
+/* 208 */,
+/* 209 */,
+/* 210 */,
+/* 211 */
 /*!***************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-uni.js ***!
   \***************************************************************************************************/
@@ -15686,7 +15706,7 @@ MeScroll.prototype.preventDefault = function (e) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 206 */
+/* 212 */
 /*!**********************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-uni-option.js ***!
   \**********************************************************************************************************/
@@ -15784,7 +15804,7 @@ var _default = GlobalOption;
 exports.default = _default;
 
 /***/ }),
-/* 207 */
+/* 213 */
 /*!****************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-i18n.js ***!
   \****************************************************************************************************/
@@ -15816,7 +15836,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 208 */
+/* 214 */
 /*!*************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/wxs/mixins.js ***!
   \*************************************************************************************************/

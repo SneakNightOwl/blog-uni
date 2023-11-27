@@ -1,4 +1,6 @@
 const BASE_URL = 'https://api.imooc-blog.lgdsunday.club/api';
+
+import store from '../store';   //引入store
 /*
 params  {url, data, method}
 */
@@ -10,7 +12,8 @@ function request({url, data, method}) {
 		    method,
 			header: {
 				'content-type': "application/x-www-form-urlencoded",
-				'icode':"ACC05A058B1BB439"
+				'icode':"ACC05A058B1BB439",
+				Authorization: store.state.user.token
 			},
 		    success: ({data, statusCode, header}) => {
 				if(data.success) {

@@ -35,6 +35,9 @@
 				uni.showLoading({
 					title:'加载中'
 				});
+				//注意 getUserProfile 是个异步的方法
+				//可能会导致loading不显示
+				//所以hideloading要写在complete里面
 				uni.getUserProfile({
 					desc:'申请用户信息用于平台登录',
 					success: async(obj)=> {

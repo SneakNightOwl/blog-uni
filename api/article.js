@@ -16,3 +16,12 @@ export function getArticleCommentList(data) {
 		data
 	})
 }
+
+//点击关注
+export function fllowUser(data) {
+	return request({
+		url:'/user/follow',
+		method: 'GET',
+		data
+	})
+}

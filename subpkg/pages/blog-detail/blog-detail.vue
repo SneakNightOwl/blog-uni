@@ -15,7 +15,10 @@
 	  				</view>
 	  			</view>
 	  			<view class="detail-right">
-	  				<button type="default" size="mini" @click="clickCollect">关注</button>
+	  				<button :type="articleData.isFollow ? 'primary':'default' " 
+					         size="mini" 
+							 :loading="isfollowLoading"
+							 @click="onClickFollow">{{ articleData.isFollow ? '已关注':'关注' }}</button>
 					<!-- <button type="primary" size="mini" @click="cancleCollect">已关注</button> -->
 	  			</view>
 	  		</view>
@@ -44,7 +47,7 @@
 	import mpHtml from '@/uni_modules/mp-html/components/mp-html/mp-html';
 	//引入mescroll-comp.js
 	import MescrollCompMixin from '@/uni_modules/mescroll-uni/components/mescroll-uni/mixins/mescroll-comp.js'
-	import { getArticleDetail, getArticleCommentList } from '../../../api/article.js';
+	import { getArticleDetail, getArticleCommentList, fllowUser } from '../../../api/article.js';
 	import { mapActions } from 'vuex';
 	export default {
 		//2.注册mp-html
@@ -61,7 +64,8 @@
 				page: 1,  //评论列表的页码
 				size: 5,  //每次请求的数据量
 				commentList: null  ,//评论列表数据
-				commentAllCount: 0   //评论总数
+				commentAllCount: 0,   //评论总数
+				isfollowLoading: false
 			};
 		},
 		//uniapp的生命周期
@@ -118,13 +122,20 @@
 				.replace(/<img/gi, '<img class="img-cls"');
 			},
 			//点击关注
-			async clickCollect() {
+			async onClickFollow() {
 				const isLogin = await this.isLogin();
 				// console.log(isLogin,'isLogin');
 				//如果没有使用await,这里打印出来的会是一个pending的promise
-				if(isLogin) {
-					console.log('已登录，执行后续操作需要补充逻辑')
+				if(!isLogin) {
+					return;  //用户未登录
 				}
+				this.isfollowLoading = true;
+				const { data: res } = await fllowUser({
+					author: this.articleData.username,
+					isFollow: !this.articleData.isFollow
+				});
+				this.articleData.isFollow = !this.articleData.isFollow;
+				this.isfollowLoading = false;
 			}
 		}
 	}

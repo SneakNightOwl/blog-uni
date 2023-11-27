@@ -101,13 +101,13 @@ var components
 try {
   components = {
     mpHtml: function () {
-      return Promise.all(/*! import() | uni_modules/mp-html/components/mp-html/mp-html */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/mp-html/components/mp-html/mp-html")]).then(__webpack_require__.bind(null, /*! @/uni_modules/mp-html/components/mp-html/mp-html.vue */ 145))
+      return Promise.all(/*! import() | uni_modules/mp-html/components/mp-html/mp-html */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/mp-html/components/mp-html/mp-html")]).then(__webpack_require__.bind(null, /*! @/uni_modules/mp-html/components/mp-html/mp-html.vue */ 151))
     },
     articleCommentList: function () {
-      return Promise.all(/*! import() | components/article-comment-list/article-comment-list */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/article-comment-list/article-comment-list")]).then(__webpack_require__.bind(null, /*! @/components/article-comment-list/article-comment-list.vue */ 153))
+      return Promise.all(/*! import() | components/article-comment-list/article-comment-list */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/article-comment-list/article-comment-list")]).then(__webpack_require__.bind(null, /*! @/components/article-comment-list/article-comment-list.vue */ 159))
     },
     articleOperate: function () {
-      return __webpack_require__.e(/*! import() | components/article-operate/article-operate */ "components/article-operate/article-operate").then(__webpack_require__.bind(null, /*! @/components/article-operate/article-operate.vue */ 160))
+      return __webpack_require__.e(/*! import() | components/article-operate/article-operate */ "components/article-operate/article-operate").then(__webpack_require__.bind(null, /*! @/components/article-operate/article-operate.vue */ 166))
     },
   }
 } catch (e) {
@@ -192,7 +192,7 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var mpHtml = function mpHtml() {
   Promise.all(/*! require.ensure | uni_modules/mp-html/components/mp-html/mp-html */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/mp-html/components/mp-html/mp-html")]).then((function () {
-    return resolve(__webpack_require__(/*! @/uni_modules/mp-html/components/mp-html/mp-html */ 145));
+    return resolve(__webpack_require__(/*! @/uni_modules/mp-html/components/mp-html/mp-html */ 151));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var _default = {
@@ -213,7 +213,9 @@ var _default = {
       //每次请求的数据量
       commentList: null,
       //评论列表数据
-      commentAllCount: 0 //评论总数
+      commentAllCount: 0,
+      //评论总数
+      isfollowLoading: false
     };
   },
   //uniapp的生命周期
@@ -262,10 +264,10 @@ var _default = {
       return info.replace(/<p>/gi, '<p class="p-cls">').replace(/<a>/gi, '<a class="a-cls">').replace(/<h1>/gi, '<h1 class="h1-cls">').replace(/<h2>/gi, '<h2 class="h2-cls">').replace(/<h3>/gi, '<h3 class="h3-cls">').replace(/<h4>/gi, '<h4 class="h4-cls">').replace(/<h5>/gi, '<h5 class="h5-cls">').replace(/<h6>/gi, '<h6 class="h6-cls">').replace(/<ul>/gi, '<ul class="ul-cls">').replace(/<li>/gi, '<li class="li-cls">').replace(/<ol>/gi, '<ol class="ol-cls">').replace(/<td>/gi, '<td class="td-cls">').replace(/<th>/gi, '<th class="th-cls">').replace(/<tr>/gi, '<tr class="tr-cls">').replace(/<dl>/gi, '<dl class="dl-cls">').replace(/<dd>/gi, '<dd class="dd-cls">').replace(/<hr>/gi, '<hr class="hr-cls">').replace(/<pre>/gi, '<pre class="pre-cls">').replace(/<strong>/gi, '<strong class="strong-cls">').replace(/<input>/gi, '<input class="input-cls">').replace(/<table>/gi, '<table class="table-cls">').replace(/<details>/gi, '<details class="details-cls">').replace(/<code>/gi, '<code class="code-cls">').replace(/<kbd>/gi, '<kbd class="kbd-cls">').replace(/<summary>/gi, '<summary class="summary-cls">').replace(/<blockquote>/gi, '<blockquote class="blockquote-cls">').replace(/<img/gi, '<img class="img-cls"');
     },
     //点击关注
-    clickCollect: function clickCollect() {
+    onClickFollow: function onClickFollow() {
       var _this2 = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
-        var isLogin;
+        var isLogin, _yield$fllowUser, res;
         return _regenerator.default.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -274,12 +276,24 @@ var _default = {
                 return _this2.isLogin();
               case 2:
                 isLogin = _context2.sent;
-                // console.log(isLogin,'isLogin');
-                //如果没有使用await,这里打印出来的会是一个pending的promise
                 if (isLogin) {
-                  console.log('已登录，执行后续操作需要补充逻辑');
+                  _context2.next = 5;
+                  break;
                 }
-              case 4:
+                return _context2.abrupt("return");
+              case 5:
+                _this2.isfollowLoading = true;
+                _context2.next = 8;
+                return (0, _article.fllowUser)({
+                  author: _this2.articleData.username,
+                  isFollow: !_this2.articleData.isFollow
+                });
+              case 8:
+                _yield$fllowUser = _context2.sent;
+                res = _yield$fllowUser.data;
+                _this2.articleData.isFollow = !_this2.articleData.isFollow;
+                _this2.isfollowLoading = false;
+              case 12:
               case "end":
                 return _context2.stop();
             }
