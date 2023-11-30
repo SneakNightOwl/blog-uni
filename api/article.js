@@ -25,3 +25,12 @@ export function fllowUser(data) {
 		data
 	})
 }
+
+//发送评论
+export function sendComment(data) {
+	return request({
+		url:'/user/article/comment',
+		method: 'POST',
+		data
+	})
+}

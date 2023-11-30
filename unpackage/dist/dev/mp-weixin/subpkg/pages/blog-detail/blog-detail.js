@@ -109,6 +109,12 @@ try {
     articleOperate: function () {
       return __webpack_require__.e(/*! import() | components/article-operate/article-operate */ "components/article-operate/article-operate").then(__webpack_require__.bind(null, /*! @/components/article-operate/article-operate.vue */ 166))
     },
+    uniPopup: function () {
+      return __webpack_require__.e(/*! import() | uni_modules/uni-popup/components/uni-popup/uni-popup */ "uni_modules/uni-popup/components/uni-popup/uni-popup").then(__webpack_require__.bind(null, /*! @/uni_modules/uni-popup/components/uni-popup/uni-popup.vue */ 318))
+    },
+    articleCommentCommit: function () {
+      return __webpack_require__.e(/*! import() | components/article-comment-commit/article-comment-commit */ "components/article-comment-commit/article-comment-commit").then(__webpack_require__.bind(null, /*! @/components/article-comment-commit/article-comment-commit.vue */ 313))
+    },
   }
 } catch (e) {
   if (
@@ -215,7 +221,8 @@ var _default = {
       //评论列表数据
       commentAllCount: 0,
       //评论总数
-      isfollowLoading: false
+      isfollowLoading: false,
+      isCommitShow: true // 是否显示评论区的文本域
     };
   },
   //uniapp的生命周期
@@ -299,6 +306,61 @@ var _default = {
             }
           }
         }, _callee2);
+      }))();
+    },
+    //唤醒输入框
+    onCommitClick: function onCommitClick() {
+      this.$refs.popup.open();
+    },
+    //点击蒙层时 利用v-if 清空输入框
+    popupChange: function popupChange(e) {
+      var _this3 = this;
+      // console.log(e,'点');
+      if (e.show) {
+        this.isCommitShow = e.show;
+      } else {
+        //解决文本域向下隐藏时动画消失的bug
+        setTimeout(function () {
+          _this3.isCommitShow = e.show;
+        }, 200);
+      }
+    },
+    //发送评论
+    onSendCommit: function onSendCommit(val) {
+      var _this4 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        var _yield$sendComment, res;
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return (0, _article.sendComment)({
+                  articleId: _this4.articleId,
+                  content: val
+                });
+              case 2:
+                _yield$sendComment = _context3.sent;
+                res = _yield$sendComment.data;
+                // console.log(res,'res');
+                if (res.info.commentId) {
+                  _this4.$refs.popup.close();
+                  uni.showToast({
+                    title: '发送成功',
+                    icon: 'success'
+                  });
+                } else {
+                  uni.showToast({
+                    title: '发送失败',
+                    icon: 'fail'
+                  });
+                }
+              case 5:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
       }))();
     }
   })

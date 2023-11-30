@@ -1,0 +1,28 @@
+@charset "UTF-8";
+/* 水平间距 */
+/* 水平间距 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* 水平间距 */
+/* 垂直间距 */
+/*透明度*/
+/*文章场景相关*/
+/*圆角*/
+.comment-container.data-v-5575fec4 {
+  height: 200rpx;
+  background-color: #ffffff;
+  padding: 16rpx 20rpx;
+  text-align: right;
+  position: relative;
+}
+.comment-container .btnButton.data-v-5575fec4 {
+  position: absolute;
+  bottom: 10rpx;
+  right: 8rpx;
+}
+

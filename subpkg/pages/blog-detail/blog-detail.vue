@@ -37,8 +37,12 @@
 			</view>
 	  	</block>
 	  </view>
-	  <!-- 组件 -->
-	  <article-operate></article-operate>
+	  <!-- 组件 底部功能区-->
+	  <article-operate @onCommitClick="onCommitClick"></article-operate>
+	  <!-- 组件 评论文本域 -->
+	  <uni-popup ref="popup" type="bottom" @change="popupChange">
+		  <article-comment-commit  v-if="isCommitShow" @onSendCommit="onSendCommit"></article-comment-commit>
+	  </uni-popup>
 	</page-meta>
 </template>
 
@@ -47,7 +51,7 @@
 	import mpHtml from '@/uni_modules/mp-html/components/mp-html/mp-html';
 	//引入mescroll-comp.js
 	import MescrollCompMixin from '@/uni_modules/mescroll-uni/components/mescroll-uni/mixins/mescroll-comp.js'
-	import { getArticleDetail, getArticleCommentList, fllowUser } from '../../../api/article.js';
+	import { getArticleDetail, getArticleCommentList, fllowUser, sendComment } from '../../../api/article.js';
 	import { mapActions } from 'vuex';
 	export default {
 		//2.注册mp-html
@@ -65,7 +69,8 @@
 				size: 5,  //每次请求的数据量
 				commentList: null  ,//评论列表数据
 				commentAllCount: 0,   //评论总数
-				isfollowLoading: false
+				isfollowLoading: false,
+				isCommitShow: true, // 是否显示评论区的文本域
 			};
 		},
 		//uniapp的生命周期
@@ -136,6 +141,42 @@
 				});
 				this.articleData.isFollow = !this.articleData.isFollow;
 				this.isfollowLoading = false;
+			},
+			//唤醒输入框
+			onCommitClick() {
+				this.$refs.popup.open();
+			},
+			//点击蒙层时 利用v-if 清空输入框
+			popupChange(e) {
+			  // console.log(e,'点');
+			  if(e.show) {
+				  this.isCommitShow = e.show;  
+			  }else {
+				  //解决文本域向下隐藏时动画消失的bug
+				  setTimeout(()=> {
+				    this.isCommitShow = e.show;  
+				  },200)
+			  }
+			},
+			//发送评论
+			async onSendCommit(val) {
+				const { data: res } = await sendComment({
+					articleId: this.articleId,
+					content: val
+				})
+				// console.log(res,'res');
+				if(res.info.commentId) {
+					this.$refs.popup.close();
+					uni.showToast({
+						title:'发送成功',
+						icon:'success'
+					})
+				}else {
+					uni.showToast({
+						title:'发送失败',
+						icon: 'fail'
+					})
+				}
 			}
 		}
 	}

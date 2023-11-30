@@ -1,6 +1,6 @@
 <template>
 	<view class="operate-container">
-		<view class="comment-box">
+		<view class="comment-box" @click="onComment">
 			<!-- 组件 my-search -->
 			<my-search 
 			   :isShowInput="false" 
@@ -28,13 +28,26 @@
 </template>
 
 <script>
+	import { mapActions } from 'vuex';
 	export default {
+		//底部功能区
 		name:"article-operate",
 		data() {
 			return {
 				
 			};
+		},
+		methods: {
+			...mapActions('user',['isLogin']),
+			async onComment() {
+				const islogin = await this.isLogin();
+				//登录后才可以评论
+				if(islogin) {
+					this.$emit('onCommitClick')
+				}
+			}
 		}
+		
 	}
 </script>
 

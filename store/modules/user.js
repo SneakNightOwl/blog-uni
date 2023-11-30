@@ -68,7 +68,7 @@ export default {
 			//使用await可以获取 操作后的modal的返回值
 			//如果不使用await, 获得的将是一个pending 的 promise
 			const [err, { confirm }] = await uni.showModal({
-				title:'登录后才可以关注!',
+				title:'登录后才可以操作!',
 				content:'是否前往登录？'
 			})
 			console.log(confirm,'modal');
