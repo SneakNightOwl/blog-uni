@@ -1,13 +1,26 @@
 <template>
-	<view class="collect-container">
-		<image class="img" src="../../static/images/un-collect.png"></image>
-		<text class="txt">收藏</text>
+	<view class="collect-container" @click="$emit('onCollect')">
+		<image class="img" src="../../static/images/un-collect.png" v-if="!articleData.isCollect"></image>
+		<image class="img" src="../../static/images/collect.png" v-else></image>
+		<text class="txt" :style="{ color: articleData.isCollect? '#f94d2a':'#333' }">{{articleData.isCollect? '取消收藏':'收藏' }}</text>
+		<!-- <text class="txt">{{articleData.isCollect? '取消收藏':'收藏' }}</text> -->
 	</view>
 </template>
 
 <script>
 	export default {
 		name:"article-collect",
+		props: {
+			articleData: {
+				type: Object,
+				required: true,
+				default:()=>({})
+			}
+			// isCollect:{
+			// 	type: Boolean,
+			// 	required: true
+			// }
+		},
 		data() {
 			return {
 				

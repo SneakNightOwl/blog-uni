@@ -353,6 +353,7 @@ var _default = {
                 })), 0);
                 // }
                 //有数据时(自动渲染了，啥都不用做)
+                // console.log(this.listData,'hotList')
               case 12:
               case "end":
                 return _context3.stop();

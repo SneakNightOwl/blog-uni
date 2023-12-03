@@ -110,10 +110,10 @@ try {
       return __webpack_require__.e(/*! import() | components/article-operate/article-operate */ "components/article-operate/article-operate").then(__webpack_require__.bind(null, /*! @/components/article-operate/article-operate.vue */ 166))
     },
     uniPopup: function () {
-      return __webpack_require__.e(/*! import() | uni_modules/uni-popup/components/uni-popup/uni-popup */ "uni_modules/uni-popup/components/uni-popup/uni-popup").then(__webpack_require__.bind(null, /*! @/uni_modules/uni-popup/components/uni-popup/uni-popup.vue */ 318))
+      return __webpack_require__.e(/*! import() | uni_modules/uni-popup/components/uni-popup/uni-popup */ "uni_modules/uni-popup/components/uni-popup/uni-popup").then(__webpack_require__.bind(null, /*! @/uni_modules/uni-popup/components/uni-popup/uni-popup.vue */ 173))
     },
     articleCommentCommit: function () {
-      return __webpack_require__.e(/*! import() | components/article-comment-commit/article-comment-commit */ "components/article-comment-commit/article-comment-commit").then(__webpack_require__.bind(null, /*! @/components/article-comment-commit/article-comment-commit.vue */ 313))
+      return __webpack_require__.e(/*! import() | components/article-comment-commit/article-comment-commit */ "components/article-comment-commit/article-comment-commit").then(__webpack_require__.bind(null, /*! @/components/article-comment-commit/article-comment-commit.vue */ 180))
     },
   }
 } catch (e) {
@@ -137,9 +137,10 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var m0 = _vm.articleData
-    ? _vm.addClassFromHtml(_vm.articleData.content)
-    : null
+  var m0 =
+    _vm.articleData && _vm.articleData.content
+      ? _vm.addClassFromHtml(_vm.articleData.content)
+      : null
   _vm.$mp.data = Object.assign(
     {},
     {
@@ -212,7 +213,7 @@ var _default = {
     return {
       author: '',
       articleId: '',
-      articleData: null,
+      articleData: {},
       page: 1,
       //评论列表的页码
       size: 5,
@@ -349,6 +350,8 @@ var _default = {
                     title: '发送成功',
                     icon: 'success'
                   });
+                  //传递评论数据对象给commentList 回显评论
+                  _this4.$refs.mescrollItem.addCommentItem(res);
                 } else {
                   uni.showToast({
                     title: '发送失败',
@@ -361,6 +364,88 @@ var _default = {
             }
           }
         }, _callee3);
+      }))();
+    },
+    //点赞
+    onPraiseClick: function onPraiseClick() {
+      var _this5 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        var islogin, _yield$userPraise, res;
+        return _regenerator.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return _this5.isLogin();
+              case 2:
+                islogin = _context4.sent;
+                if (islogin) {
+                  _context4.next = 7;
+                  break;
+                }
+                return _context4.abrupt("return");
+              case 7:
+                uni.showLoading({
+                  title: '加载中'
+                });
+                _context4.next = 10;
+                return (0, _article.userPraise)({
+                  articleId: _this5.articleId,
+                  isPraise: !_this5.articleData.isPraise
+                });
+              case 10:
+                _yield$userPraise = _context4.sent;
+                res = _yield$userPraise.data;
+                // console.log(res,'点赞');
+                _this5.articleData.isPraise = res.isPraise;
+                uni.hideLoading(); //强制关闭loading
+              case 14:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
+    //收藏
+    onCollectClick: function onCollectClick() {
+      var _this6 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
+        var islogin, _yield$userCollect, res;
+        return _regenerator.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return _this6.isLogin();
+              case 2:
+                islogin = _context5.sent;
+                if (islogin) {
+                  _context5.next = 7;
+                  break;
+                }
+                return _context5.abrupt("return");
+              case 7:
+                uni.showLoading({
+                  title: '加载中'
+                });
+                _context5.next = 10;
+                return (0, _article.userCollect)({
+                  articleId: _this6.articleId,
+                  isCollect: !_this6.articleData.isCollect
+                });
+              case 10:
+                _yield$userCollect = _context5.sent;
+                res = _yield$userCollect.data;
+                // console.log(res,'收藏');
+                _this6.articleData.isCollect = res.isCollect;
+                uni.hideLoading(); //强制关闭loading
+              case 14:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
       }))();
     }
   })

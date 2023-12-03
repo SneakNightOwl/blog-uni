@@ -80,10 +80,10 @@ var components
 try {
   components = {
     articleCommentItem: function () {
-      return __webpack_require__.e(/*! import() | components/article-comment-item/article-comment-item */ "components/article-comment-item/article-comment-item").then(__webpack_require__.bind(null, /*! @/components/article-comment-item/article-comment-item.vue */ 249))
+      return __webpack_require__.e(/*! import() | components/article-comment-item/article-comment-item */ "components/article-comment-item/article-comment-item").then(__webpack_require__.bind(null, /*! @/components/article-comment-item/article-comment-item.vue */ 263))
     },
     mescrollBody: function () {
-      return Promise.all(/*! import() | uni_modules/mescroll-uni/components/mescroll-body/mescroll-body */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/mescroll-uni/components/mescroll-body/mescroll-body")]).then(__webpack_require__.bind(null, /*! @/uni_modules/mescroll-uni/components/mescroll-body/mescroll-body.vue */ 206))
+      return Promise.all(/*! import() | uni_modules/mescroll-uni/components/mescroll-body/mescroll-body */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/mescroll-uni/components/mescroll-body/mescroll-body")]).then(__webpack_require__.bind(null, /*! @/uni_modules/mescroll-uni/components/mescroll-body/mescroll-body.vue */ 220))
     },
   }
 } catch (e) {
@@ -228,6 +228,7 @@ var _default = {
     };
   },
   created: function created() {
+    // console.log(this.articleId,'articleID');
     this.loadArticleComment();
   },
   methods: {
@@ -328,6 +329,10 @@ var _default = {
         this.mescroll = this.$refs.mescrollRef.mescroll;
       }
       return this.mescroll;
+    },
+    //添加commentList数据 (外部通过ref调用)
+    addCommentItem: function addCommentItem(data) {
+      this.commentList.unshift(data);
     }
   }
 };

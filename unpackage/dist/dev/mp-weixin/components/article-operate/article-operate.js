@@ -83,10 +83,10 @@ try {
       return __webpack_require__.e(/*! import() | components/my-search/my-search */ "components/my-search/my-search").then(__webpack_require__.bind(null, /*! @/components/my-search/my-search.vue */ 92))
     },
     articlePraise: function () {
-      return __webpack_require__.e(/*! import() | components/article-praise/article-praise */ "components/article-praise/article-praise").then(__webpack_require__.bind(null, /*! @/components/article-praise/article-praise.vue */ 256))
+      return __webpack_require__.e(/*! import() | components/article-praise/article-praise */ "components/article-praise/article-praise").then(__webpack_require__.bind(null, /*! @/components/article-praise/article-praise.vue */ 270))
     },
     articleCollect: function () {
-      return __webpack_require__.e(/*! import() | components/article-collect/article-collect */ "components/article-collect/article-collect").then(__webpack_require__.bind(null, /*! @/components/article-collect/article-collect.vue */ 263))
+      return __webpack_require__.e(/*! import() | components/article-collect/article-collect */ "components/article-collect/article-collect").then(__webpack_require__.bind(null, /*! @/components/article-collect/article-collect.vue */ 277))
     },
   }
 } catch (e) {
@@ -175,6 +175,20 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 var _default = {
   //底部功能区
   name: "article-operate",
+  props: {
+    articleData: {
+      type: Object,
+      required: true
+    }
+    // isCollect:{
+    // 	type: Boolean,
+    // 	required: true
+    // },
+    // isPraise: {
+    // 	type: Boolean,
+    // 	required: true
+    // }
+  },
   data: function data() {
     return {};
   },

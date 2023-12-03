@@ -1,1 +1,1 @@
-<view class="collect-container"><image class="img" src="../../static/images/un-collect.png"></image><text class="txt">收藏</text></view>
+<view data-event-opts="{{[['tap',[['$emit',['onCollect']]]]]}}" class="collect-container" bindtap="__e"><block wx:if="{{!articleData.isCollect}}"><image class="img" src="../../static/images/un-collect.png"></image></block><block wx:else><image class="img" src="../../static/images/collect.png"></image></block><text class="txt" style="{{'color:'+(articleData.isCollect?'#f94d2a':'#333')+';'}}">{{articleData.isCollect?'取消收藏':'收藏'}}</text></view>

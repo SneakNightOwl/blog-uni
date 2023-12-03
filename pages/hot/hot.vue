@@ -141,6 +141,7 @@
 				}, 0)
 				// }
 				//有数据时(自动渲染了，啥都不用做)
+				// console.log(this.listData,'hotList')
 			},
 			//根据阅读数量由大到小进行排序
 			orderViews(arr) {

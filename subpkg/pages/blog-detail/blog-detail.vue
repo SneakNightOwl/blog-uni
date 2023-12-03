@@ -25,6 +25,7 @@
 	  		<!-- <rich-text :nodes="articleData.content"></rich-text> -->
 	  		<!-- 3.使用mp-html  scroll-table 给每个表格添加一个滚动层使其能单独横向滚动-->
 	  		<mp-html 
+			v-if="articleData.content"
 	  		class="markdown_views"
 	  		:content="addClassFromHtml(articleData.content)"
 	  		scroll-table>
@@ -33,12 +34,17 @@
 			<view class="comment-list-box">
 				   <!-- 评论列表 组件 -->
 				   <!--1. 给mescroll-body的组件添加 ref="mescrollItem" (固定的，不能改，与mescroll-comp.js对应) -->
-				  <article-comment-list :articleId="articleId" ref="mescrollItem"></article-comment-list>
+				  <article-comment-list v-if="articleData.content" :articleId="articleId" ref="mescrollItem"></article-comment-list>
 			</view>
 	  	</block>
 	  </view>
 	  <!-- 组件 底部功能区-->
-	  <article-operate @onCommitClick="onCommitClick"></article-operate>
+	  <article-operate 
+	         @onCommitClick="onCommitClick"
+			 @onPraiseClick="onPraiseClick"
+			 @onCollectClick="onCollectClick"
+			 :articleData = "articleData"
+			 ></article-operate>
 	  <!-- 组件 评论文本域 -->
 	  <uni-popup ref="popup" type="bottom" @change="popupChange">
 		  <article-comment-commit  v-if="isCommitShow" @onSendCommit="onSendCommit"></article-comment-commit>
@@ -51,7 +57,7 @@
 	import mpHtml from '@/uni_modules/mp-html/components/mp-html/mp-html';
 	//引入mescroll-comp.js
 	import MescrollCompMixin from '@/uni_modules/mescroll-uni/components/mescroll-uni/mixins/mescroll-comp.js'
-	import { getArticleDetail, getArticleCommentList, fllowUser, sendComment } from '../../../api/article.js';
+	import { getArticleDetail, getArticleCommentList, fllowUser, sendComment, userPraise, userCollect } from '../../../api/article.js';
 	import { mapActions } from 'vuex';
 	export default {
 		//2.注册mp-html
@@ -64,7 +70,7 @@
 			return {
 				author:'',
 				articleId:'',
-				articleData: null,
+				articleData: {},
 				page: 1,  //评论列表的页码
 				size: 5,  //每次请求的数据量
 				commentList: null  ,//评论列表数据
@@ -171,11 +177,52 @@
 						title:'发送成功',
 						icon:'success'
 					})
+					//传递评论数据对象给commentList 回显评论
+					this.$refs.mescrollItem.addCommentItem(res);
 				}else {
 					uni.showToast({
 						title:'发送失败',
 						icon: 'fail'
 					})
+				}
+			},
+			//点赞
+			 async onPraiseClick() {
+				// console.log('点击  点赞');
+				const islogin = await this.isLogin();
+				//登录后才可以点赞
+				if(!islogin) {
+					return;
+				}else {
+					uni.showLoading({
+						title:'加载中'
+					})
+					const { data: res } = await userPraise({
+						articleId: this.articleId,
+						isPraise: !this.articleData.isPraise
+					})
+					// console.log(res,'点赞');
+					this.articleData.isPraise = res.isPraise;
+					uni.hideLoading();//强制关闭loading
+				}
+			},
+			//收藏
+			async onCollectClick() {
+				const islogin = await this.isLogin();
+				//登录后才可以收藏
+				if(!islogin) {
+					return;
+				}else {
+					uni.showLoading({
+						title:'加载中'
+					})
+					const { data: res } = await userCollect({
+						articleId: this.articleId,
+						isCollect: !this.articleData.isCollect
+					})
+					// console.log(res,'收藏');
+					this.articleData.isCollect = res.isCollect;
+					uni.hideLoading();//强制关闭loading
 				}
 			}
 		}

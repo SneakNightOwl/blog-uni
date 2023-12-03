@@ -62,6 +62,7 @@
 			}
 		},
 		created() {
+			// console.log(this.articleId,'articleID');
 			this.loadArticleComment();
 		},
 		methods: {
@@ -109,6 +110,10 @@
 					this.mescroll = this.$refs.mescrollRef.mescroll;
 				}
 				return this.mescroll;
+			},
+			//添加commentList数据 (外部通过ref调用)
+			addCommentItem(data) {
+				this.commentList.unshift(data);
 			}
 		}
 	}

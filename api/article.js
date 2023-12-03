@@ -34,3 +34,21 @@ export function sendComment(data) {
 		data
 	})
 }
+
+//点赞
+export function userPraise(data) {
+	return({
+		url:'/user/praise',
+		method: 'GET',
+		data
+	})
+}
+
+//收藏
+export function userCollect(data) {
+	return({
+		url:'/user/collect',
+		method: 'GET',
+		data
+	})
+}

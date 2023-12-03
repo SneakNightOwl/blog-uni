@@ -18,11 +18,15 @@
 		</view>
 		<view class="options-box">
 			<!-- 点赞 -->
-			<article-praise></article-praise>
+			<article-praise 
+			     :articleData = "articleData"
+			     @onPraise = "$emit('onPraiseClick')"></article-praise>
 		</view>
 		<view class="options-box">
 			<!-- 收藏 -->
-			<article-collect></article-collect>
+			<article-collect
+			  :articleData = "articleData"
+			  @onCollect = "$emit('onCollectClick')"></article-collect>
 		</view>
 	</view>
 </template>
@@ -32,6 +36,20 @@
 	export default {
 		//底部功能区
 		name:"article-operate",
+		props: {
+			articleData: {
+				type: Object,
+				required: true
+			}
+			// isCollect:{
+			// 	type: Boolean,
+			// 	required: true
+			// },
+			// isPraise: {
+			// 	type: Boolean,
+			// 	required: true
+			// }
+		},
 		data() {
 			return {
 				
