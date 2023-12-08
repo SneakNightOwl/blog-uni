@@ -1,1 +1,1 @@
-<view></view>
+<view class="hot-video-container"><mescroll-body class="vue-ref" bind:init="__e" bind:down="__e" bind:up="__e" vue-id="dbd43370-1" data-ref="mescrollRef" data-event-opts="{{[['^init',[['mescrollInit']]],['^down',[['downCallback']]],['^up',[['upCallback']]]]}}" bind:__l="__l" vue-slots="{{['default']}}"><block wx:for="{{hotVideoList}}" wx:for-item="item" wx:for-index="index" wx:key="index"><block><hot-video-item vue-id="{{('dbd43370-2-'+index)+','+('dbd43370-1')}}" data="{{item}}" bind:__l="__l"></hot-video-item></block></block></mescroll-body></view>

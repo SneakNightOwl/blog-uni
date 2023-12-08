@@ -13130,6 +13130,33 @@ function normalizeComponent (
 
 /***/ }),
 
+/***/ 314:
+/*!**************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/api/hotVideo.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getHotVideoList = getHotVideoList;
+var _request = _interopRequireDefault(__webpack_require__(/*! ../utils/request.js */ 40));
+//热播列表
+function getHotVideoList(data) {
+  return (0, _request.default)({
+    url: '/video/list',
+    method: 'GET',
+    data: data
+  });
+}
+
+/***/ }),
+
 /***/ 32:
 /*!*************************************************!*\
   !*** D:/Html/githubPro/blog-uni/store/index.js ***!

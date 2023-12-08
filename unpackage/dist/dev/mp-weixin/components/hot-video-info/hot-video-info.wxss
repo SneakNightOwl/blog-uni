@@ -1,0 +1,40 @@
+@charset "UTF-8";
+/* 水平间距 */
+/* 水平间距 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* 水平间距 */
+/* 垂直间距 */
+/*透明度*/
+/*文章场景相关*/
+/*圆角*/
+.video-info-container .title.data-v-1404cf44 {
+  font-size: 20px;
+  color: #fff;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.video-info-container .info-box.data-v-1404cf44 {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20rpx;
+}
+.video-info-container .info-box .author-box.data-v-1404cf44, .video-info-container .info-box .barrage-box.data-v-1404cf44 {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #333;
+}
+.video-info-container .info-box .author-box text.data-v-1404cf44, .video-info-container .info-box .barrage-box text.data-v-1404cf44 {
+  margin-left: 8rpx;
+}
+

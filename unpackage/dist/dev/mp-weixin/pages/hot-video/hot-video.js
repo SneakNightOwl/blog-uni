@@ -96,6 +96,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "recyclableRender", function() { return recyclableRender; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "components", function() { return components; });
 var components
+try {
+  components = {
+    mescrollBody: function () {
+      return Promise.all(/*! import() | uni_modules/mescroll-uni/components/mescroll-body/mescroll-body */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/mescroll-uni/components/mescroll-body/mescroll-body")]).then(__webpack_require__.bind(null, /*! @/uni_modules/mescroll-uni/components/mescroll-body/mescroll-body.vue */ 220))
+    },
+    hotVideoItem: function () {
+      return __webpack_require__.e(/*! import() | components/hot-video-item/hot-video-item */ "components/hot-video-item/hot-video-item").then(__webpack_require__.bind(null, /*! @/components/hot-video-item/hot-video-item.vue */ 344))
+    },
+  }
+} catch (e) {
+  if (
+    e.message.indexOf("Cannot find module") !== -1 &&
+    e.message.indexOf(".vue") !== -1
+  ) {
+    console.error(e.message)
+    console.error("1. 排查组件名称拼写是否正确")
+    console.error(
+      "2. 排查组件是否符合 easycom 规范，文档：https://uniapp.dcloud.net.cn/collocation/pages?id=easycom"
+    )
+    console.error(
+      "3. 若组件不符合 easycom 规范，需手动引入，并在 components 中注册该组件"
+    )
+  } else {
+    throw e
+  }
+}
 var render = function () {
   var _vm = this
   var _h = _vm.$createElement
@@ -135,19 +161,160 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 
 
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 36));
+var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/toConsumableArray */ 17));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 38));
+var _mescrollMixins = _interopRequireDefault(__webpack_require__(/*! @/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-mixins */ 150));
+var _hotVideo = __webpack_require__(/*! ../../api/hotVideo.js */ 314);
 //
 //
 //
 //
 //
 //
+//
+//
+//
+//
+//
+// 引入MescrollMixin
 var _default = {
+  //注册mixin
+  mixins: [_mescrollMixins.default],
   data: function data() {
-    return {};
+    return {
+      page: 1,
+      size: 10,
+      isInit: true,
+      //是否为初次加载mescroll
+      hotVideoList: [],
+      mescroll: null //mescroll实例
+    };
+  },
+  created: function created() {
+    // this.loadHotVideoList();
+  },
+  mounted: function mounted() {
+    this.mescroll = this.$refs.mescrollRef.mescroll;
+  },
+  methods: {
+    loadHotVideoList: function loadHotVideoList() {
+      var _this = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var _yield$getHotVideoLis, res;
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return (0, _hotVideo.getHotVideoList)({
+                  page: _this.page,
+                  size: _this.size
+                });
+              case 2:
+                _yield$getHotVideoLis = _context.sent;
+                res = _yield$getHotVideoLis.data;
+                if (_this.page === 1) {
+                  _this.hotVideoList = res.list;
+                } else {
+                  _this.hotVideoList = [].concat((0, _toConsumableArray2.default)(_this.hotVideoList), (0, _toConsumableArray2.default)(res.list));
+                }
+                console.log(res, '热播列表');
+              case 6:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    //初始化
+    mescrollInit: function mescrollInit() {
+      var _this2 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _this2.page = 1;
+                _context2.next = 3;
+                return _this2.loadHotVideoList();
+              case 3:
+                _this2.isInit = false;
+                //关闭加载动画
+                _this2.mescroll.endSuccess();
+              case 5:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    //下拉刷新
+    downCallback: function downCallback() {
+      var _this3 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                if (!_this3.isInit) {
+                  _context3.next = 2;
+                  break;
+                }
+                return _context3.abrupt("return");
+              case 2:
+                console.log('下拉刷新');
+                _this3.page = 1;
+                _context3.next = 6;
+                return _this3.loadHotVideoList();
+              case 6:
+                //关闭加载动画
+                _this3.mescroll.endSuccess();
+              case 7:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    //上拉加载更多（这里有个小bug 初始化的时候仍然执行了这个方法）
+    //反复测试后发现没有bug 是编辑器对这一段代码没有重新编译造成的
+    upCallback: function upCallback() {
+      var _this4 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        return _regenerator.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                if (!_this4.isInit) {
+                  _context4.next = 2;
+                  break;
+                }
+                return _context4.abrupt("return");
+              case 2:
+                console.log('上拉加载更多', _this4.isInit);
+                _this4.page += 1;
+                _context4.next = 6;
+                return _this4.loadHotVideoList();
+              case 6:
+                //关闭加载动画
+                _this4.mescroll.endSuccess();
+              case 7:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    }
   }
 };
 exports.default = _default;
