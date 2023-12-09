@@ -8,3 +8,12 @@ export function getHotVideoList(data) {
 		data
 	})
 }
+
+//弹幕列表
+export function getVideoDanmuList(data) {
+	return request({
+		url:'/video/danmu',
+		method: 'GET',
+		data
+	})
+}

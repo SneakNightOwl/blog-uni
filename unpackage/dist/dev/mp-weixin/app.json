@@ -10,7 +10,8 @@
       "pages": [
         "pages/search-blog/search-blog",
         "pages/blog-detail/blog-detail",
-        "pages/login-page/login-page"
+        "pages/login-page/login-page",
+        "pages/video-detail/video-detail"
       ]
     }
   ],

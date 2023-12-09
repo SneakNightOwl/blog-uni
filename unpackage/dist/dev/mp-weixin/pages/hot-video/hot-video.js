@@ -99,10 +99,10 @@ var components
 try {
   components = {
     mescrollBody: function () {
-      return Promise.all(/*! import() | uni_modules/mescroll-uni/components/mescroll-body/mescroll-body */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/mescroll-uni/components/mescroll-body/mescroll-body")]).then(__webpack_require__.bind(null, /*! @/uni_modules/mescroll-uni/components/mescroll-body/mescroll-body.vue */ 220))
+      return Promise.all(/*! import() | uni_modules/mescroll-uni/components/mescroll-body/mescroll-body */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/mescroll-uni/components/mescroll-body/mescroll-body")]).then(__webpack_require__.bind(null, /*! @/uni_modules/mescroll-uni/components/mescroll-body/mescroll-body.vue */ 126))
     },
     hotVideoItem: function () {
-      return __webpack_require__.e(/*! import() | components/hot-video-item/hot-video-item */ "components/hot-video-item/hot-video-item").then(__webpack_require__.bind(null, /*! @/components/hot-video-item/hot-video-item.vue */ 344))
+      return __webpack_require__.e(/*! import() | components/hot-video-item/hot-video-item */ "components/hot-video-item/hot-video-item").then(__webpack_require__.bind(null, /*! @/components/hot-video-item/hot-video-item.vue */ 139))
     },
   }
 } catch (e) {
@@ -159,7 +159,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(uni) {
 
 var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
 Object.defineProperty(exports, "__esModule", {
@@ -169,20 +169,12 @@ exports.default = void 0;
 var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 36));
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/toConsumableArray */ 17));
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 38));
-var _mescrollMixins = _interopRequireDefault(__webpack_require__(/*! @/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-mixins */ 150));
-var _hotVideo = __webpack_require__(/*! ../../api/hotVideo.js */ 314);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-// 引入MescrollMixin
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 10));
+var _mescrollMixins = _interopRequireDefault(__webpack_require__(/*! @/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-mixins */ 61));
+var _hotVideo = __webpack_require__(/*! ../../api/hotVideo.js */ 62);
+var _vuex = __webpack_require__(/*! vuex */ 33);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var _default = {
   //注册mixin
   mixins: [_mescrollMixins.default],
@@ -202,7 +194,7 @@ var _default = {
   mounted: function mounted() {
     this.mescroll = this.$refs.mescrollRef.mescroll;
   },
-  methods: {
+  methods: _objectSpread(_objectSpread({}, (0, _vuex.mapMutations)('video', ['setVideoData'])), {}, {
     loadHotVideoList: function loadHotVideoList() {
       var _this = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
@@ -314,10 +306,19 @@ var _default = {
           }
         }, _callee4);
       }))();
+    },
+    //点击调转详情
+    onInfoClick: function onInfoClick(data) {
+      //使用vuex作组件通信
+      this.setVideoData(data);
+      uni.navigateTo({
+        url: '/subpkg/pages/video-detail/video-detail'
+      });
     }
-  }
+  })
 };
 exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ })
 

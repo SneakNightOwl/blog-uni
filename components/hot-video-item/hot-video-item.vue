@@ -3,7 +3,9 @@
 		<view class="video-box">
 		  <video :src="data.play_url"  danmu-btn  enable-danmu controls></video>	
 		</view>
-		<hot-video-info :data="data"></hot-video-info>
+		<view @click="$emit('click', data)">
+			<hot-video-info :data="data"></hot-video-info>
+		</view>
 	</view>
 </template>
 

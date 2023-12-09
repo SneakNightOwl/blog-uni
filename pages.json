@@ -1,33 +1,26 @@
 {
-	"pages": [
-		{
-            "path" : "pages/hot/hot",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "热搜",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/hot-video/hot-video",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "热播",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/my/my",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "我的",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	"pages": [{
+		"path": "pages/hot/hot",
+		"style": {
+			"navigationBarTitleText": "热搜",
+			"enablePullDownRefresh": false
+		}
+
+	}, {
+		"path": "pages/hot-video/hot-video",
+		"style": {
+			"navigationBarTitleText": "热播",
+			"enablePullDownRefresh": false
+		}
+
+	}, {
+		"path": "pages/my/my",
+		"style": {
+			"navigationBarTitleText": "我的",
+			"enablePullDownRefresh": false
+		}
+
+	}],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
@@ -38,50 +31,55 @@
 		}
 	},
 	"tabBar": {
-	  "list":[
-	  	{
-	  		"pagePath": "pages/hot/hot",
-	  		"iconPath": "static/tabIcon/hot.png",
-	  		"selectedIconPath": "static/tabIcon/hot-active.png",
-	  		"text": "热搜"
-	  	},
-	  	{
-	  		"pagePath": "pages/hot-video/hot-video",
-	  		"iconPath": "static/tabIcon/hot-video.png",
-	  		"selectedIconPath": "static/tabIcon/hot-video-active.png",
-	  		"text": "热播"
-	  	},
-	  	{
-	  		"pagePath": "pages/my/my",
-	  		"iconPath": "static/tabIcon/my.png",
-	  		"selectedIconPath": "static/tabIcon/my-active.png",
-	  		"text": "我的"
-	  	}
-	  ]	
+		"list": [{
+				"pagePath": "pages/hot/hot",
+				"iconPath": "static/tabIcon/hot.png",
+				"selectedIconPath": "static/tabIcon/hot-active.png",
+				"text": "热搜"
+			},
+			{
+				"pagePath": "pages/hot-video/hot-video",
+				"iconPath": "static/tabIcon/hot-video.png",
+				"selectedIconPath": "static/tabIcon/hot-video-active.png",
+				"text": "热播"
+			},
+			{
+				"pagePath": "pages/my/my",
+				"iconPath": "static/tabIcon/my.png",
+				"selectedIconPath": "static/tabIcon/my-active.png",
+				"text": "我的"
+			}
+		]
 	},
 	"subPackages": [{
-		"root":"subpkg",
-		"pages": [
-			     {
-			       "path": "pages/search-blog/search-blog",
-				   "styles": {
-				        "navigationBarTitleText": "搜索结果"  
-				   }
-		         },
-				 {
-                    "path" : "pages/blog-detail/blog-detail",
-					"enablePullDownRefresh": false,
-					"styles": {
-						"navigationBarTitleText": "文章详情"
-					}
-                },
-				{
-                    "path" : "pages/login-page/login-page",
-                    "style" :{
-						"navigationBarTitleText": "登录页",
-						"enablePullDownRefresh": false
-					 }	
-                }
-            ]
+		"root": "subpkg",
+		"pages": [{
+				"path": "pages/search-blog/search-blog",
+				"styles": {
+					"navigationBarTitleText": "搜索结果"
+				}
+			},
+			{
+				"path": "pages/blog-detail/blog-detail",
+				"enablePullDownRefresh": false,
+				"styles": {
+					"navigationBarTitleText": "文章详情"
+				}
+			},
+			{
+				"path": "pages/login-page/login-page",
+				"style": {
+					"navigationBarTitleText": "登录页",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "pages/video-detail/video-detail",
+				"style": {
+					"navigationBarTitleText": "视频详情",
+					"enablePullDownRefresh": false
+				}
+
+			}
+		]
 	}]
 }

@@ -3,7 +3,7 @@
 		<!-- 使用mescroll-body 包裹列表 -->
 		<mescroll-body ref="mescrollRef" @init="mescrollInit" @down="downCallback" @up="upCallback">
 			<block v-for="(item , index) in hotVideoList" :key="index">
-				<hot-video-item :data="item"></hot-video-item>
+				<hot-video-item :data="item" @click="onInfoClick"></hot-video-item>
 			</block>
 		</mescroll-body>
 	</view>
@@ -12,7 +12,8 @@
 <script>
 	// 引入MescrollMixin
 	import MescrollMixin from "@/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-mixins";
-	import { getHotVideoList } from '../../api/hotVideo.js'
+	import { getHotVideoList } from '../../api/hotVideo.js';
+	import { mapMutations } from 'vuex';
 	export default {
 		//注册mixin
 		mixins:[ MescrollMixin ],
@@ -32,6 +33,8 @@
 		  this.mescroll = this.$refs.mescrollRef.mescroll;	
 		},
 		methods: {
+			//映射video模块的mutations
+			...mapMutations('video', ['setVideoData']),
 			 async loadHotVideoList() {
 				const { data: res } = await getHotVideoList({
 					page: this.page,
@@ -70,6 +73,14 @@
 				await this.loadHotVideoList();
 				//关闭加载动画
 				this.mescroll.endSuccess();
+			},
+			//点击调转详情
+			onInfoClick(data) {
+				//使用vuex作组件通信
+				this.setVideoData(data);
+				uni.navigateTo({
+					url:'/subpkg/pages/video-detail/video-detail'
+				})
 			}
 		}
 	}

@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import search from './modules/search';
 import user from './modules/user';
+import video from './modules/video'
 
 //2.安装vuex插件
 Vue.use(Vuex);
@@ -11,7 +12,8 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
 	modules: {
 		search,  //模块名称
-		user
+		user,
+		video
 	}
 })
 

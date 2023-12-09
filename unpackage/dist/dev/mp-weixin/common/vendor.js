@@ -1477,7 +1477,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"blog-uni","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"blog-uni","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -2401,7 +2401,7 @@ module.exports = _toPropertyKey, module.exports.__esModule = true, module.export
 
 /***/ }),
 
-/***/ 111:
+/***/ 113:
 /*!***************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/index.js ***!
   \***************************************************************************************************/
@@ -2416,9 +2416,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 112));
-var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 113));
-var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 114));
+var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 114));
+var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 115));
+var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 116));
 var _default = {
   en: _en.default,
   'zh-Hans': _zhHans.default,
@@ -2428,7 +2428,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 112:
+/***/ 114:
 /*!**************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/en.json ***!
   \**************************************************************************************************/
@@ -2439,7 +2439,7 @@ module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"Pull up to show mo
 
 /***/ }),
 
-/***/ 113:
+/***/ 115:
 /*!*******************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/zh-Hans.json ***!
   \*******************************************************************************************************/
@@ -2450,7 +2450,7 @@ module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"上拉显示更多
 
 /***/ }),
 
-/***/ 114:
+/***/ 116:
 /*!*******************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-load-more/components/uni-load-more/i18n/zh-Hant.json ***!
   \*******************************************************************************************************/
@@ -2503,6 +2503,1165 @@ module.exports = _toPrimitive, module.exports.__esModule = true, module.exports[
 
 /***/ }),
 
+/***/ 131:
+/*!***************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-uni.js ***!
+  \***************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = MeScroll;
+var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 12));
+/* mescroll
+ * version 1.3.7
+ * 2021-04-12 wenju
+ * https://www.mescroll.com
+ */
+
+function MeScroll(options, isScrollBody) {
+  var me = this;
+  me.version = '1.3.7'; // mescroll版本号
+  me.options = options || {}; // 配置
+  me.isScrollBody = isScrollBody || false; // 滚动区域是否为原生页面滚动; 默认为scroll-view
+
+  me.isDownScrolling = false; // 是否在执行下拉刷新的回调
+  me.isUpScrolling = false; // 是否在执行上拉加载的回调
+  var hasDownCallback = me.options.down && me.options.down.callback; // 是否配置了down的callback
+
+  // 初始化下拉刷新
+  me.initDownScroll();
+  // 初始化上拉加载,则初始化
+  me.initUpScroll();
+
+  // 自动加载
+  setTimeout(function () {
+    // 待主线程执行完毕再执行,避免new MeScroll未初始化,在回调获取不到mescroll的实例
+    // 自动触发下拉刷新 (只有配置了down的callback才自动触发下拉刷新)
+    if ((me.optDown.use || me.optDown.native) && me.optDown.auto && hasDownCallback) {
+      if (me.optDown.autoShowLoading) {
+        me.triggerDownScroll(); // 显示下拉进度,执行下拉回调
+      } else {
+        me.optDown.callback && me.optDown.callback(me); // 不显示下拉进度,直接执行下拉回调
+      }
+    }
+    // 自动触发上拉加载
+    if (!me.isUpAutoLoad) {
+      // 部分小程序(头条小程序)emit是异步, 会导致isUpAutoLoad判断有误, 先延时确保先执行down的callback,再执行up的callback
+      setTimeout(function () {
+        me.optUp.use && me.optUp.auto && !me.isUpAutoLoad && me.triggerUpScroll();
+      }, 100);
+    }
+  }, 30); // 需让me.optDown.inited和me.optUp.inited先执行
+}
+
+/* 配置参数:下拉刷新 */
+MeScroll.prototype.extendDownScroll = function (optDown) {
+  // 下拉刷新的配置
+  MeScroll.extend(optDown, {
+    use: true,
+    // 是否启用下拉刷新; 默认true
+    auto: true,
+    // 是否在初始化完毕之后自动执行下拉刷新的回调; 默认true
+    native: false,
+    // 是否使用系统自带的下拉刷新; 默认false; 仅mescroll-body生效 (值为true时,还需在pages配置enablePullDownRefresh:true;详请参考mescroll-native的案例)
+    autoShowLoading: false,
+    // 如果设置auto=true(在初始化完毕之后自动执行下拉刷新的回调),那么是否显示下拉刷新的进度; 默认false
+    isLock: false,
+    // 是否锁定下拉刷新,默认false;
+    offset: 80,
+    // 在列表顶部,下拉大于80px,松手即可触发下拉刷新的回调
+    startTop: 100,
+    // scroll-view快速滚动到顶部时,此时的scroll-top可能大于0, 此值用于控制最大的误差
+    inOffsetRate: 1,
+    // 在列表顶部,下拉的距离小于offset时,改变下拉区域高度比例;值小于1且越接近0,高度变化越小,表现为越往下越难拉
+    outOffsetRate: 0.2,
+    // 在列表顶部,下拉的距离大于offset时,改变下拉区域高度比例;值小于1且越接近0,高度变化越小,表现为越往下越难拉
+    bottomOffset: 20,
+    // 当手指touchmove位置在距离body底部20px范围内的时候结束上拉刷新,避免Webview嵌套导致touchend事件不执行
+    minAngle: 45,
+    // 向下滑动最少偏移的角度,取值区间  [0,90];默认45度,即向下滑动的角度大于45度则触发下拉;而小于45度,将不触发下拉,避免与左右滑动的轮播等组件冲突;
+    textInOffset: '下拉刷新',
+    // 下拉的距离在offset范围内的提示文本
+    textOutOffset: '释放更新',
+    // 下拉的距离大于offset范围的提示文本
+    textLoading: '加载中 ...',
+    // 加载中的提示文本
+    textSuccess: '加载成功',
+    // 加载成功的文本
+    textErr: '加载失败',
+    // 加载失败的文本
+    beforeEndDelay: 0,
+    // 延时结束的时长 (显示加载成功/失败的时长, android小程序设置此项结束下拉会卡顿, 配置后请注意测试)
+    bgColor: "transparent",
+    // 背景颜色 (建议在pages.json中再设置一下backgroundColorTop)
+    textColor: "gray",
+    // 文本颜色 (当bgColor配置了颜色,而textColor未配置时,则textColor会默认为白色)
+    inited: null,
+    // 下拉刷新初始化完毕的回调
+    inOffset: null,
+    // 下拉的距离进入offset范围内那一刻的回调
+    outOffset: null,
+    // 下拉的距离大于offset那一刻的回调
+    onMoving: null,
+    // 下拉过程中的回调,滑动过程一直在执行; rate下拉区域当前高度与指定距离的比值(inOffset: rate<1; outOffset: rate>=1); downHight当前下拉区域的高度
+    beforeLoading: null,
+    // 准备触发下拉刷新的回调: 如果return true,将不触发showLoading和callback回调; 常用来完全自定义下拉刷新, 参考案例【淘宝 v6.8.0】
+    showLoading: null,
+    // 显示下拉刷新进度的回调
+    afterLoading: null,
+    // 显示下拉刷新进度的回调之后,马上要执行的代码 (如: 在wxs中使用)
+    beforeEndDownScroll: null,
+    // 准备结束下拉的回调. 返回结束下拉的延时执行时间,默认0ms; 常用于结束下拉之前再显示另外一小段动画,才去隐藏下拉刷新的场景, 参考案例【dotJump】
+    endDownScroll: null,
+    // 结束下拉刷新的回调
+    afterEndDownScroll: null,
+    // 结束下拉刷新的回调,马上要执行的代码 (如: 在wxs中使用)
+    callback: function callback(mescroll) {
+      // 下拉刷新的回调;默认重置上拉加载列表为第一页
+      mescroll.resetUpScroll();
+    }
+  });
+};
+
+/* 配置参数:上拉加载 */
+MeScroll.prototype.extendUpScroll = function (optUp) {
+  // 上拉加载的配置
+  MeScroll.extend(optUp, {
+    use: true,
+    // 是否启用上拉加载; 默认true
+    auto: true,
+    // 是否在初始化完毕之后自动执行上拉加载的回调; 默认true
+    isLock: false,
+    // 是否锁定上拉加载,默认false;
+    isBoth: true,
+    // 上拉加载时,如果滑动到列表顶部是否可以同时触发下拉刷新;默认true,两者可同时触发;
+    callback: null,
+    // 上拉加载的回调;function(page,mescroll){ }
+    page: {
+      num: 0,
+      // 当前页码,默认0,回调之前会加1,即callback(page)会从1开始
+      size: 10,
+      // 每页数据的数量
+      time: null // 加载第一页数据服务器返回的时间; 防止用户翻页时,后台新增了数据从而导致下一页数据重复;
+    },
+
+    noMoreSize: 5,
+    // 如果列表已无数据,可设置列表的总数量要大于等于5条才显示无更多数据;避免列表数据过少(比如只有一条数据),显示无更多数据会不好看
+    offset: 150,
+    // 距底部多远时,触发upCallback,仅mescroll-uni生效 ( mescroll-body配置的是pages.json的 onReachBottomDistance )
+    textLoading: '加载中 ...',
+    // 加载中的提示文本
+    textNoMore: '-- END --',
+    // 没有更多数据的提示文本
+    bgColor: "transparent",
+    // 背景颜色 (建议在pages.json中再设置一下backgroundColorBottom)
+    textColor: "gray",
+    // 文本颜色 (当bgColor配置了颜色,而textColor未配置时,则textColor会默认为白色)
+    inited: null,
+    // 初始化完毕的回调
+    showLoading: null,
+    // 显示加载中的回调
+    showNoMore: null,
+    // 显示无更多数据的回调
+    hideUpScroll: null,
+    // 隐藏上拉加载的回调
+    errDistance: 60,
+    // endErr的时候需往上滑动一段距离,使其往下滑动时再次触发onReachBottom,仅mescroll-body生效
+    toTop: {
+      // 回到顶部按钮,需配置src才显示
+      src: null,
+      // 图片路径,默认null (绝对路径或网络图)
+      offset: 1000,
+      // 列表滚动多少距离才显示回到顶部按钮,默认1000
+      duration: 300,
+      // 回到顶部的动画时长,默认300ms (当值为0或300则使用系统自带回到顶部,更流畅; 其他值则通过step模拟,部分机型可能不够流畅,所以非特殊情况不建议修改此项)
+      btnClick: null,
+      // 点击按钮的回调
+      onShow: null,
+      // 是否显示的回调
+      zIndex: 9990,
+      // fixed定位z-index值
+      left: null,
+      // 到左边的距离, 默认null. 此项有值时,right不生效. (支持20, "20rpx", "20px", "20%"格式的值, 其中纯数字则默认单位rpx)
+      right: 20,
+      // 到右边的距离, 默认20 (支持20, "20rpx", "20px", "20%"格式的值, 其中纯数字则默认单位rpx)
+      bottom: 120,
+      // 到底部的距离, 默认120 (支持20, "20rpx", "20px", "20%"格式的值, 其中纯数字则默认单位rpx)
+      safearea: false,
+      // bottom的偏移量是否加上底部安全区的距离, 默认false, 需要适配iPhoneX时使用 (具体的界面如果不配置此项,则取本vue的safearea值)
+      width: 72,
+      // 回到顶部图标的宽度, 默认72 (支持20, "20rpx", "20px", "20%"格式的值, 其中纯数字则默认单位rpx)
+      radius: "50%" // 圆角, 默认"50%" (支持20, "20rpx", "20px", "20%"格式的值, 其中纯数字则默认单位rpx)
+    },
+
+    empty: {
+      use: true,
+      // 是否显示空布局
+      icon: null,
+      // 图标路径
+      tip: '~ 暂无相关数据 ~',
+      // 提示
+      btnText: '',
+      // 按钮
+      btnClick: null,
+      // 点击按钮的回调
+      onShow: null,
+      // 是否显示的回调
+      fixed: false,
+      // 是否使用fixed定位,默认false; 配置fixed为true,以下的top和zIndex才生效 (transform会使fixed失效,最终会降级为absolute)
+      top: "100rpx",
+      // fixed定位的top值 (完整的单位值,如 "10%"; "100rpx")
+      zIndex: 99 // fixed定位z-index值
+    },
+
+    onScroll: false // 是否监听滚动事件
+  });
+};
+
+/* 配置参数 */
+MeScroll.extend = function (userOption, defaultOption) {
+  if (!userOption) return defaultOption;
+  for (var key in defaultOption) {
+    if (userOption[key] == null) {
+      var def = defaultOption[key];
+      if (def != null && (0, _typeof2.default)(def) === 'object') {
+        userOption[key] = MeScroll.extend({}, def); // 深度匹配
+      } else {
+        userOption[key] = def;
+      }
+    } else if ((0, _typeof2.default)(userOption[key]) === 'object') {
+      MeScroll.extend(userOption[key], defaultOption[key]); // 深度匹配
+    }
+  }
+
+  return userOption;
+};
+
+/* 简单判断是否配置了颜色 (非透明,非白色) */
+MeScroll.prototype.hasColor = function (color) {
+  if (!color) return false;
+  var c = color.toLowerCase();
+  return c != "#fff" && c != "#ffffff" && c != "transparent" && c != "white";
+};
+
+/* -------初始化下拉刷新------- */
+MeScroll.prototype.initDownScroll = function () {
+  var me = this;
+  // 配置参数
+  me.optDown = me.options.down || {};
+  if (!me.optDown.textColor && me.hasColor(me.optDown.bgColor)) me.optDown.textColor = "#fff"; // 当bgColor有值且textColor未设置,则textColor默认白色
+  me.extendDownScroll(me.optDown);
+
+  // 如果是mescroll-body且配置了native,则禁止自定义的下拉刷新
+  if (me.isScrollBody && me.optDown.native) {
+    me.optDown.use = false;
+  } else {
+    me.optDown.native = false; // 仅mescroll-body支持,mescroll-uni不支持
+  }
+
+  me.downHight = 0; // 下拉区域的高度
+
+  // 在页面中加入下拉布局
+  if (me.optDown.use && me.optDown.inited) {
+    // 初始化完毕的回调
+    setTimeout(function () {
+      // 待主线程执行完毕再执行,避免new MeScroll未初始化,在回调获取不到mescroll的实例
+      me.optDown.inited(me);
+    }, 0);
+  }
+};
+
+/* 列表touchstart事件 */
+MeScroll.prototype.touchstartEvent = function (e) {
+  if (!this.optDown.use) return;
+  this.startPoint = this.getPoint(e); // 记录起点
+  this.startTop = this.getScrollTop(); // 记录此时的滚动条位置
+  this.startAngle = 0; // 初始角度
+  this.lastPoint = this.startPoint; // 重置上次move的点
+  this.maxTouchmoveY = this.getBodyHeight() - this.optDown.bottomOffset; // 手指触摸的最大范围(写在touchstart避免body获取高度为0的情况)
+  this.inTouchend = false; // 标记不是touchend
+};
+
+/* 列表touchmove事件 */
+MeScroll.prototype.touchmoveEvent = function (e) {
+  if (!this.optDown.use) return;
+  var me = this;
+  var scrollTop = me.getScrollTop(); // 当前滚动条的距离
+  var curPoint = me.getPoint(e); // 当前点
+
+  var moveY = curPoint.y - me.startPoint.y; // 和起点比,移动的距离,大于0向下拉,小于0向上拉
+
+  // 向下拉 && 在顶部
+  // mescroll-body,直接判定在顶部即可
+  // scroll-view在滚动时不会触发touchmove,当触顶/底/左/右时,才会触发touchmove
+  // scroll-view滚动到顶部时,scrollTop不一定为0,也有可能大于0; 在iOS的APP中scrollTop可能为负数,不一定和startTop相等
+  if (moveY > 0 && (me.isScrollBody && scrollTop <= 0 || !me.isScrollBody && (scrollTop <= 0 || scrollTop <= me.optDown.startTop && scrollTop === me.startTop))) {
+    // 可下拉的条件
+    if (!me.inTouchend && !me.isDownScrolling && !me.optDown.isLock && (!me.isUpScrolling || me.isUpScrolling && me.optUp.isBoth)) {
+      // 下拉的初始角度是否在配置的范围内
+      if (!me.startAngle) me.startAngle = me.getAngle(me.lastPoint, curPoint); // 两点之间的角度,区间 [0,90]
+      if (me.startAngle < me.optDown.minAngle) return; // 如果小于配置的角度,则不往下执行下拉刷新
+
+      // 如果手指的位置超过配置的距离,则提前结束下拉,避免Webview嵌套导致touchend无法触发
+      if (me.maxTouchmoveY > 0 && curPoint.y >= me.maxTouchmoveY) {
+        me.inTouchend = true; // 标记执行touchend
+        me.touchendEvent(); // 提前触发touchend
+        return;
+      }
+      me.preventDefault(e); // 阻止默认事件
+
+      var diff = curPoint.y - me.lastPoint.y; // 和上次比,移动的距离 (大于0向下,小于0向上)
+
+      // 下拉距离  < 指定距离
+      if (me.downHight < me.optDown.offset) {
+        if (me.movetype !== 1) {
+          me.movetype = 1; // 加入标记,保证只执行一次
+          me.isDownEndSuccess = null; // 重置是否加载成功的状态 (wxs执行的是wxs.wxs)
+          me.optDown.inOffset && me.optDown.inOffset(me); // 进入指定距离范围内那一刻的回调,只执行一次
+          me.isMoveDown = true; // 标记下拉区域高度改变,在touchend重置回来
+        }
+
+        me.downHight += diff * me.optDown.inOffsetRate; // 越往下,高度变化越小
+
+        // 指定距离  <= 下拉距离
+      } else {
+        if (me.movetype !== 2) {
+          me.movetype = 2; // 加入标记,保证只执行一次
+          me.optDown.outOffset && me.optDown.outOffset(me); // 下拉超过指定距离那一刻的回调,只执行一次
+          me.isMoveDown = true; // 标记下拉区域高度改变,在touchend重置回来
+        }
+
+        if (diff > 0) {
+          // 向下拉
+          me.downHight += diff * me.optDown.outOffsetRate; // 越往下,高度变化越小
+        } else {
+          // 向上收
+          me.downHight += diff; // 向上收回高度,则向上滑多少收多少高度
+        }
+      }
+
+      me.downHight = Math.round(me.downHight); // 取整
+      var rate = me.downHight / me.optDown.offset; // 下拉区域当前高度与指定距离的比值
+      me.optDown.onMoving && me.optDown.onMoving(me, rate, me.downHight); // 下拉过程中的回调,一直在执行
+    }
+  }
+
+  me.lastPoint = curPoint; // 记录本次移动的点
+};
+
+/* 列表touchend事件 */
+MeScroll.prototype.touchendEvent = function (e) {
+  if (!this.optDown.use) return;
+  // 如果下拉区域高度已改变,则需重置回来
+  if (this.isMoveDown) {
+    if (this.downHight >= this.optDown.offset) {
+      // 符合触发刷新的条件
+      this.triggerDownScroll();
+    } else {
+      // 不符合的话 则重置
+      this.downHight = 0;
+      this.endDownScrollCall(this);
+    }
+    this.movetype = 0;
+    this.isMoveDown = false;
+  } else if (!this.isScrollBody && this.getScrollTop() === this.startTop) {
+    // scroll-view到顶/左/右/底的滑动事件
+    var isScrollUp = this.getPoint(e).y - this.startPoint.y < 0; // 和起点比,移动的距离,大于0向下拉,小于0向上拉
+    // 上滑
+    if (isScrollUp) {
+      // 需检查滑动的角度
+      var angle = this.getAngle(this.getPoint(e), this.startPoint); // 两点之间的角度,区间 [0,90]
+      if (angle > 80) {
+        // 检查并触发上拉
+        this.triggerUpScroll(true);
+      }
+    }
+  }
+};
+
+/* 根据点击滑动事件获取第一个手指的坐标 */
+MeScroll.prototype.getPoint = function (e) {
+  if (!e) {
+    return {
+      x: 0,
+      y: 0
+    };
+  }
+  if (e.touches && e.touches[0]) {
+    return {
+      x: e.touches[0].pageX,
+      y: e.touches[0].pageY
+    };
+  } else if (e.changedTouches && e.changedTouches[0]) {
+    return {
+      x: e.changedTouches[0].pageX,
+      y: e.changedTouches[0].pageY
+    };
+  } else {
+    return {
+      x: e.clientX,
+      y: e.clientY
+    };
+  }
+};
+
+/* 计算两点之间的角度: 区间 [0,90]*/
+MeScroll.prototype.getAngle = function (p1, p2) {
+  var x = Math.abs(p1.x - p2.x);
+  var y = Math.abs(p1.y - p2.y);
+  var z = Math.sqrt(x * x + y * y);
+  var angle = 0;
+  if (z !== 0) {
+    angle = Math.asin(y / z) / Math.PI * 180;
+  }
+  return angle;
+};
+
+/* 触发下拉刷新 */
+MeScroll.prototype.triggerDownScroll = function () {
+  if (this.optDown.beforeLoading && this.optDown.beforeLoading(this)) {
+    //return true则处于完全自定义状态
+  } else {
+    this.showDownScroll(); // 下拉刷新中...
+    !this.optDown.native && this.optDown.callback && this.optDown.callback(this); // 执行回调,联网加载数据
+  }
+};
+
+/* 显示下拉进度布局 */
+MeScroll.prototype.showDownScroll = function () {
+  this.isDownScrolling = true; // 标记下拉中
+  if (this.optDown.native) {
+    uni.startPullDownRefresh(); // 系统自带的下拉刷新
+    this.showDownLoadingCall(0); // 仍触发showLoading,因为上拉加载用到
+  } else {
+    this.downHight = this.optDown.offset; // 更新下拉区域高度
+    this.showDownLoadingCall(this.downHight); // 下拉刷新中...
+  }
+};
+
+MeScroll.prototype.showDownLoadingCall = function (downHight) {
+  this.optDown.showLoading && this.optDown.showLoading(this, downHight); // 下拉刷新中...
+  this.optDown.afterLoading && this.optDown.afterLoading(this, downHight); // 下拉刷新中...触发之后马上要执行的代码
+};
+
+/* 显示系统自带的下拉刷新时需要处理的业务 */
+MeScroll.prototype.onPullDownRefresh = function () {
+  this.isDownScrolling = true; // 标记下拉中
+  this.showDownLoadingCall(0); // 仍触发showLoading,因为上拉加载用到
+  this.optDown.callback && this.optDown.callback(this); // 执行回调,联网加载数据
+};
+
+/* 结束下拉刷新 */
+MeScroll.prototype.endDownScroll = function () {
+  if (this.optDown.native) {
+    // 结束原生下拉刷新
+    this.isDownScrolling = false;
+    this.endDownScrollCall(this);
+    uni.stopPullDownRefresh();
+    return;
+  }
+  var me = this;
+  // 结束下拉刷新的方法
+  var endScroll = function endScroll() {
+    me.downHight = 0;
+    me.isDownScrolling = false;
+    me.endDownScrollCall(me);
+    if (!me.isScrollBody) {
+      me.setScrollHeight(0); // scroll-view重置滚动区域,使数据不满屏时仍可检查触发翻页
+      me.scrollTo(0, 0); // scroll-view需重置滚动条到顶部,避免startTop大于0时,对下拉刷新的影响
+    }
+  };
+  // 结束下拉刷新时的回调
+  var delay = 0;
+  if (me.optDown.beforeEndDownScroll) {
+    delay = me.optDown.beforeEndDownScroll(me); // 结束下拉刷新的延时,单位ms
+    if (me.isDownEndSuccess == null) delay = 0; // 没有执行加载中,则不延时
+  }
+
+  if (typeof delay === 'number' && delay > 0) {
+    setTimeout(endScroll, delay);
+  } else {
+    endScroll();
+  }
+};
+MeScroll.prototype.endDownScrollCall = function () {
+  this.optDown.endDownScroll && this.optDown.endDownScroll(this);
+  this.optDown.afterEndDownScroll && this.optDown.afterEndDownScroll(this);
+};
+
+/* 锁定下拉刷新:isLock=ture,null锁定;isLock=false解锁 */
+MeScroll.prototype.lockDownScroll = function (isLock) {
+  if (isLock == null) isLock = true;
+  this.optDown.isLock = isLock;
+};
+
+/* 锁定上拉加载:isLock=ture,null锁定;isLock=false解锁 */
+MeScroll.prototype.lockUpScroll = function (isLock) {
+  if (isLock == null) isLock = true;
+  this.optUp.isLock = isLock;
+};
+
+/* -------初始化上拉加载------- */
+MeScroll.prototype.initUpScroll = function () {
+  var me = this;
+  // 配置参数
+  me.optUp = me.options.up || {
+    use: false
+  };
+  if (!me.optUp.textColor && me.hasColor(me.optUp.bgColor)) me.optUp.textColor = "#fff"; // 当bgColor有值且textColor未设置,则textColor默认白色
+  me.extendUpScroll(me.optUp);
+  if (me.optUp.use === false) return; // 配置不使用上拉加载时,则不初始化上拉布局
+  me.optUp.hasNext = true; // 如果使用上拉,则默认有下一页
+  me.startNum = me.optUp.page.num + 1; // 记录page开始的页码
+
+  // 初始化完毕的回调
+  if (me.optUp.inited) {
+    setTimeout(function () {
+      // 待主线程执行完毕再执行,避免new MeScroll未初始化,在回调获取不到mescroll的实例
+      me.optUp.inited(me);
+    }, 0);
+  }
+};
+
+/*滚动到底部的事件 (仅mescroll-body生效)*/
+MeScroll.prototype.onReachBottom = function () {
+  if (this.isScrollBody && !this.isUpScrolling) {
+    // 只能支持下拉刷新的时候同时可以触发上拉加载,否则滚动到底部就需要上滑一点才能触发onReachBottom
+    if (!this.optUp.isLock && this.optUp.hasNext) {
+      this.triggerUpScroll();
+    }
+  }
+};
+
+/*列表滚动事件 (仅mescroll-body生效)*/
+MeScroll.prototype.onPageScroll = function (e) {
+  if (!this.isScrollBody) return;
+
+  // 更新滚动条的位置 (主要用于判断下拉刷新时,滚动条是否在顶部)
+  this.setScrollTop(e.scrollTop);
+
+  // 顶部按钮的显示隐藏
+  if (e.scrollTop >= this.optUp.toTop.offset) {
+    this.showTopBtn();
+  } else {
+    this.hideTopBtn();
+  }
+};
+
+/*列表滚动事件*/
+MeScroll.prototype.scroll = function (e, onScroll) {
+  // 更新滚动条的位置
+  this.setScrollTop(e.scrollTop);
+  // 更新滚动内容高度
+  this.setScrollHeight(e.scrollHeight);
+
+  // 向上滑还是向下滑动
+  if (this.preScrollY == null) this.preScrollY = 0;
+  this.isScrollUp = e.scrollTop - this.preScrollY > 0;
+  this.preScrollY = e.scrollTop;
+
+  // 上滑 && 检查并触发上拉
+  this.isScrollUp && this.triggerUpScroll(true);
+
+  // 顶部按钮的显示隐藏
+  if (e.scrollTop >= this.optUp.toTop.offset) {
+    this.showTopBtn();
+  } else {
+    this.hideTopBtn();
+  }
+
+  // 滑动监听
+  this.optUp.onScroll && onScroll && onScroll();
+};
+
+/* 触发上拉加载 */
+MeScroll.prototype.triggerUpScroll = function (isCheck) {
+  if (!this.isUpScrolling && this.optUp.use && this.optUp.callback) {
+    // 是否校验在底部; 默认不校验
+    if (isCheck === true) {
+      var canUp = false;
+      // 还有下一页 && 没有锁定 && 不在下拉中
+      if (this.optUp.hasNext && !this.optUp.isLock && !this.isDownScrolling) {
+        if (this.getScrollBottom() <= this.optUp.offset) {
+          // 到底部
+          canUp = true; // 标记可上拉
+        }
+      }
+
+      if (canUp === false) return;
+    }
+    this.showUpScroll(); // 上拉加载中...
+    this.optUp.page.num++; // 预先加一页,如果失败则减回
+    this.isUpAutoLoad = true; // 标记上拉已经自动执行过,避免初始化时多次触发上拉回调
+    this.num = this.optUp.page.num; // 把最新的页数赋值在mescroll上,避免对page的影响
+    this.size = this.optUp.page.size; // 把最新的页码赋值在mescroll上,避免对page的影响
+    this.time = this.optUp.page.time; // 把最新的页码赋值在mescroll上,避免对page的影响
+    this.optUp.callback(this); // 执行回调,联网加载数据
+  }
+};
+
+/* 显示上拉加载中 */
+MeScroll.prototype.showUpScroll = function () {
+  this.isUpScrolling = true; // 标记上拉加载中
+  this.optUp.showLoading && this.optUp.showLoading(this); // 回调
+};
+
+/* 显示上拉无更多数据 */
+MeScroll.prototype.showNoMore = function () {
+  this.optUp.hasNext = false; // 标记无更多数据
+  this.optUp.showNoMore && this.optUp.showNoMore(this); // 回调
+};
+
+/* 隐藏上拉区域**/
+MeScroll.prototype.hideUpScroll = function () {
+  this.optUp.hideUpScroll && this.optUp.hideUpScroll(this); // 回调
+};
+
+/* 结束上拉加载 */
+MeScroll.prototype.endUpScroll = function (isShowNoMore) {
+  if (isShowNoMore != null) {
+    // isShowNoMore=null,不处理下拉状态,下拉刷新的时候调用
+    if (isShowNoMore) {
+      this.showNoMore(); // isShowNoMore=true,显示无更多数据
+    } else {
+      this.hideUpScroll(); // isShowNoMore=false,隐藏上拉加载
+    }
+  }
+
+  this.isUpScrolling = false; // 标记结束上拉加载
+};
+
+/* 重置上拉加载列表为第一页
+ *isShowLoading 是否显示进度布局;
+ * 1.默认null,不传参,则显示上拉加载的进度布局
+ * 2.传参true, 则显示下拉刷新的进度布局
+ * 3.传参false,则不显示上拉和下拉的进度 (常用于静默更新列表数据)
+ */
+MeScroll.prototype.resetUpScroll = function (isShowLoading) {
+  if (this.optUp && this.optUp.use) {
+    var page = this.optUp.page;
+    this.prePageNum = page.num; // 缓存重置前的页码,加载失败可退回
+    this.prePageTime = page.time; // 缓存重置前的时间,加载失败可退回
+    page.num = this.startNum; // 重置为第一页
+    page.time = null; // 重置时间为空
+    if (!this.isDownScrolling && isShowLoading !== false) {
+      // 如果不是下拉刷新触发的resetUpScroll并且不配置列表静默更新,则显示进度;
+      if (isShowLoading == null) {
+        this.removeEmpty(); // 移除空布局
+        this.showUpScroll(); // 不传参,默认显示上拉加载的进度布局
+      } else {
+        this.showDownScroll(); // 传true,显示下拉刷新的进度布局,不清空列表
+      }
+    }
+
+    this.isUpAutoLoad = true; // 标记上拉已经自动执行过,避免初始化时多次触发上拉回调
+    this.num = page.num; // 把最新的页数赋值在mescroll上,避免对page的影响
+    this.size = page.size; // 把最新的页码赋值在mescroll上,避免对page的影响
+    this.time = page.time; // 把最新的页码赋值在mescroll上,避免对page的影响
+    this.optUp.callback && this.optUp.callback(this); // 执行上拉回调
+  }
+};
+
+/* 设置page.num的值 */
+MeScroll.prototype.setPageNum = function (num) {
+  this.optUp.page.num = num - 1;
+};
+
+/* 设置page.size的值 */
+MeScroll.prototype.setPageSize = function (size) {
+  this.optUp.page.size = size;
+};
+
+/* 联网回调成功,结束下拉刷新和上拉加载
+ * dataSize: 当前页的数据量(必传)
+ * totalPage: 总页数(必传)
+ * systime: 服务器时间 (可空)
+ */
+MeScroll.prototype.endByPage = function (dataSize, totalPage, systime) {
+  var hasNext;
+  if (this.optUp.use && totalPage != null) hasNext = this.optUp.page.num < totalPage; // 是否还有下一页
+  this.endSuccess(dataSize, hasNext, systime);
+};
+
+/* 联网回调成功,结束下拉刷新和上拉加载
+ * dataSize: 当前页的数据量(必传)
+ * totalSize: 列表所有数据总数量(必传)
+ * systime: 服务器时间 (可空)
+ */
+MeScroll.prototype.endBySize = function (dataSize, totalSize, systime) {
+  var hasNext;
+  if (this.optUp.use && totalSize != null) {
+    var loadSize = (this.optUp.page.num - 1) * this.optUp.page.size + dataSize; // 已加载的数据总数
+    hasNext = loadSize < totalSize; // 是否还有下一页
+  }
+
+  this.endSuccess(dataSize, hasNext, systime);
+};
+
+/* 联网回调成功,结束下拉刷新和上拉加载
+ * dataSize: 当前页的数据个数(不是所有页的数据总和),用于上拉加载判断是否还有下一页.如果不传,则会判断还有下一页
+ * hasNext: 是否还有下一页,布尔类型;用来解决这个小问题:比如列表共有20条数据,每页加载10条,共2页.如果只根据dataSize判断,则需翻到第三页才会知道无更多数据,如果传了hasNext,则翻到第二页即可显示无更多数据.
+ * systime: 服务器时间(可空);用来解决这个小问题:当准备翻下一页时,数据库新增了几条记录,此时翻下一页,前面的几条数据会和上一页的重复;这里传入了systime,那么upCallback的page.time就会有值,把page.time传给服务器,让后台过滤新加入的那几条记录
+ */
+MeScroll.prototype.endSuccess = function (dataSize, hasNext, systime) {
+  var me = this;
+  // 结束下拉刷新
+  if (me.isDownScrolling) {
+    me.isDownEndSuccess = true;
+    me.endDownScroll();
+  }
+
+  // 结束上拉加载
+  if (me.optUp.use) {
+    var isShowNoMore; // 是否已无更多数据
+    if (dataSize != null) {
+      var pageNum = me.optUp.page.num; // 当前页码
+      var pageSize = me.optUp.page.size; // 每页长度
+      // 如果是第一页
+      if (pageNum === 1) {
+        if (systime) me.optUp.page.time = systime; // 设置加载列表数据第一页的时间
+      }
+
+      if (dataSize < pageSize || hasNext === false) {
+        // 返回的数据不满一页时,则说明已无更多数据
+        me.optUp.hasNext = false;
+        if (dataSize === 0 && pageNum === 1) {
+          // 如果第一页无任何数据且配置了空布局
+          isShowNoMore = false;
+          me.showEmpty();
+        } else {
+          // 总列表数少于配置的数量,则不显示无更多数据
+          var allDataSize = (pageNum - 1) * pageSize + dataSize;
+          if (allDataSize < me.optUp.noMoreSize) {
+            isShowNoMore = false;
+          } else {
+            isShowNoMore = true;
+          }
+          me.removeEmpty(); // 移除空布局
+        }
+      } else {
+        // 还有下一页
+        isShowNoMore = false;
+        me.optUp.hasNext = true;
+        me.removeEmpty(); // 移除空布局
+      }
+    }
+
+    // 隐藏上拉
+    me.endUpScroll(isShowNoMore);
+  }
+};
+
+/* 回调失败,结束下拉刷新和上拉加载 */
+MeScroll.prototype.endErr = function (errDistance) {
+  // 结束下拉,回调失败重置回原来的页码和时间
+  if (this.isDownScrolling) {
+    this.isDownEndSuccess = false;
+    var page = this.optUp.page;
+    if (page && this.prePageNum) {
+      page.num = this.prePageNum;
+      page.time = this.prePageTime;
+    }
+    this.endDownScroll();
+  }
+  // 结束上拉,回调失败重置回原来的页码
+  if (this.isUpScrolling) {
+    this.optUp.page.num--;
+    this.endUpScroll(false);
+    // 如果是mescroll-body,则需往回滚一定距离
+    if (this.isScrollBody && errDistance !== 0) {
+      // 不处理0
+      if (!errDistance) errDistance = this.optUp.errDistance; // 不传,则取默认
+      this.scrollTo(this.getScrollTop() - errDistance, 0); // 往上回滚的距离
+    }
+  }
+};
+
+/* 显示空布局 */
+MeScroll.prototype.showEmpty = function () {
+  this.optUp.empty.use && this.optUp.empty.onShow && this.optUp.empty.onShow(true);
+};
+
+/* 移除空布局 */
+MeScroll.prototype.removeEmpty = function () {
+  this.optUp.empty.use && this.optUp.empty.onShow && this.optUp.empty.onShow(false);
+};
+
+/* 显示回到顶部的按钮 */
+MeScroll.prototype.showTopBtn = function () {
+  if (!this.topBtnShow) {
+    this.topBtnShow = true;
+    this.optUp.toTop.onShow && this.optUp.toTop.onShow(true);
+  }
+};
+
+/* 隐藏回到顶部的按钮 */
+MeScroll.prototype.hideTopBtn = function () {
+  if (this.topBtnShow) {
+    this.topBtnShow = false;
+    this.optUp.toTop.onShow && this.optUp.toTop.onShow(false);
+  }
+};
+
+/* 获取滚动条的位置 */
+MeScroll.prototype.getScrollTop = function () {
+  return this.scrollTop || 0;
+};
+
+/* 记录滚动条的位置 */
+MeScroll.prototype.setScrollTop = function (y) {
+  this.scrollTop = y;
+};
+
+/* 滚动到指定位置 */
+MeScroll.prototype.scrollTo = function (y, t) {
+  this.myScrollTo && this.myScrollTo(y, t); // scrollview需自定义回到顶部方法
+};
+
+/* 自定义scrollTo */
+MeScroll.prototype.resetScrollTo = function (myScrollTo) {
+  this.myScrollTo = myScrollTo;
+};
+
+/* 滚动条到底部的距离 */
+MeScroll.prototype.getScrollBottom = function () {
+  return this.getScrollHeight() - this.getClientHeight() - this.getScrollTop();
+};
+
+/* 计步器
+ star: 开始值
+ end: 结束值
+ callback(step,timer): 回调step值,计步器timer,可自行通过window.clearInterval(timer)结束计步器;
+ t: 计步时长,传0则直接回调end值;不传则默认300ms
+ rate: 周期;不传则默认30ms计步一次
+ * */
+MeScroll.prototype.getStep = function (star, end, callback, t, rate) {
+  var diff = end - star; // 差值
+  if (t === 0 || diff === 0) {
+    callback && callback(end);
+    return;
+  }
+  t = t || 300; // 时长 300ms
+  rate = rate || 30; // 周期 30ms
+  var count = t / rate; // 次数
+  var step = diff / count; // 步长
+  var i = 0; // 计数
+  var timer = setInterval(function () {
+    if (i < count - 1) {
+      star += step;
+      callback && callback(star, timer);
+      i++;
+    } else {
+      callback && callback(end, timer); // 最后一次直接设置end,避免计算误差
+      clearInterval(timer);
+    }
+  }, rate);
+};
+
+/* 滚动容器的高度 */
+MeScroll.prototype.getClientHeight = function (isReal) {
+  var h = this.clientHeight || 0;
+  if (h === 0 && isReal !== true) {
+    // 未获取到容器的高度,可临时取body的高度 (可能会有误差)
+    h = this.getBodyHeight();
+  }
+  return h;
+};
+MeScroll.prototype.setClientHeight = function (h) {
+  this.clientHeight = h;
+};
+
+/* 滚动内容的高度 */
+MeScroll.prototype.getScrollHeight = function () {
+  return this.scrollHeight || 0;
+};
+MeScroll.prototype.setScrollHeight = function (h) {
+  this.scrollHeight = h;
+};
+
+/* body的高度 */
+MeScroll.prototype.getBodyHeight = function () {
+  return this.bodyHeight || 0;
+};
+MeScroll.prototype.setBodyHeight = function (h) {
+  this.bodyHeight = h;
+};
+
+/* 阻止浏览器默认滚动事件 */
+MeScroll.prototype.preventDefault = function (e) {
+  // 小程序不支持e.preventDefault, 已在wxs中禁止
+  // app的bounce只能通过配置pages.json的style.app-plus.bounce为"none"来禁止, 或使用renderjs禁止
+  // cancelable:是否可以被禁用; defaultPrevented:是否已经被禁用
+  if (e && e.cancelable && !e.defaultPrevented) e.preventDefault();
+};
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 132:
+/*!**********************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-uni-option.js ***!
+  \**********************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// 全局配置
+// mescroll-body 和 mescroll-uni 通用
+var GlobalOption = {
+  down: {
+    // 其他down的配置参数也可以写,这里只展示了常用的配置:
+    offset: 80,
+    // 在列表顶部,下拉大于80px,松手即可触发下拉刷新的回调
+    native: false // 是否使用系统自带的下拉刷新; 默认false; 仅在mescroll-body生效 (值为true时,还需在pages配置enablePullDownRefresh:true;详请参考mescroll-native的案例)
+  },
+
+  up: {
+    // 其他up的配置参数也可以写,这里只展示了常用的配置:
+    offset: 150,
+    // 距底部多远时,触发upCallback,仅mescroll-uni生效 ( mescroll-body配置的是pages.json的 onReachBottomDistance )
+    toTop: {
+      // 回到顶部按钮,需配置src才显示
+      src: "https://www.mescroll.com/img/mescroll-totop.png",
+      // 图片路径 (建议放入static目录, 如 /static/img/mescroll-totop.png )
+      offset: 1000,
+      // 列表滚动多少距离才显示回到顶部按钮,默认1000px
+      right: 20,
+      // 到右边的距离, 默认20 (支持"20rpx", "20px", "20%"格式的值, 纯数字则默认单位rpx)
+      bottom: 120,
+      // 到底部的距离, 默认120 (支持"20rpx", "20px", "20%"格式的值, 纯数字则默认单位rpx)
+      width: 72 // 回到顶部图标的宽度, 默认72 (支持"20rpx", "20px", "20%"格式的值, 纯数字则默认单位rpx)
+    },
+
+    empty: {
+      use: true,
+      // 是否显示空布局
+      icon: "https://www.mescroll.com/img/mescroll-empty.png" // 图标路径 (建议放入static目录, 如 /static/img/mescroll-empty.png )
+    }
+  },
+
+  // 国际化配置
+  i18n: {
+    // 中文
+    zh: {
+      down: {
+        textInOffset: '下拉刷新',
+        // 下拉的距离在offset范围内的提示文本
+        textOutOffset: '释放更新',
+        // 下拉的距离大于offset范围的提示文本
+        textLoading: '加载中 ...',
+        // 加载中的提示文本
+        textSuccess: '加载成功',
+        // 加载成功的文本
+        textErr: '加载失败' // 加载失败的文本
+      },
+
+      up: {
+        textLoading: '加载中 ...',
+        // 加载中的提示文本
+        textNoMore: '-- END --',
+        // 没有更多数据的提示文本
+        empty: {
+          tip: '~ 空空如也 ~' // 空提示
+        }
+      }
+    },
+
+    // 英文
+    en: {
+      down: {
+        textInOffset: 'drop down refresh',
+        textOutOffset: 'release updates',
+        textLoading: 'loading ...',
+        textSuccess: 'loaded successfully',
+        textErr: 'loading failed'
+      },
+      up: {
+        textLoading: 'loading ...',
+        textNoMore: '-- END --',
+        empty: {
+          tip: '~ absolutely empty ~'
+        }
+      }
+    }
+  }
+};
+var _default = GlobalOption;
+exports.default = _default;
+
+/***/ }),
+
+/***/ 133:
+/*!****************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-i18n.js ***!
+  \****************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// 国际化工具类
+var mescrollI18n = {
+  // 默认语言
+  def: "zh",
+  // 获取当前语言类型
+  getType: function getType() {
+    return uni.getStorageSync("mescroll-i18n") || this.def;
+  },
+  // 设置当前语言类型
+  setType: function setType(type) {
+    uni.setStorageSync("mescroll-i18n", type);
+  }
+};
+var _default = mescrollI18n;
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 134:
+/*!*************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/wxs/mixins.js ***!
+  \*************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// 定义在wxs (含renderjs) 逻辑层的数据和方法, 与视图层相互通信
+var WxsMixin = {
+  data: function data() {
+    return {
+      // 传入wxs视图层的数据 (响应式)
+      wxsProp: {
+        optDown: {},
+        // 下拉刷新的配置
+        scrollTop: 0,
+        // 滚动条的距离
+        bodyHeight: 0,
+        // body的高度
+        isDownScrolling: false,
+        // 是否正在下拉刷新中
+        isUpScrolling: false,
+        // 是否正在上拉加载中
+        isScrollBody: true,
+        // 是否为mescroll-body滚动
+        isUpBoth: true,
+        // 上拉加载时,是否同时可以下拉刷新
+        t: 0 // 数据更新的标记 (只有数据更新了,才会触发wxs的Observer)
+      },
+
+      // 标记调用wxs视图层的方法
+      callProp: {
+        callType: '',
+        // 方法名
+        t: 0 // 数据更新的标记 (只有数据更新了,才会触发wxs的Observer)
+      },
+
+      // 不用wxs的平台使用此处的wxsBiz对象,抹平wxs的写法 (微信小程序和APP使用的wxsBiz对象是./wxs/wxs.wxs)
+
+      // 不用renderjs的平台使用此处的renderBiz对象,抹平renderjs的写法 (app 和 h5 使用的renderBiz对象是./wxs/renderjs.js)
+
+      renderBiz: {
+        propObserver: function propObserver() {} // 抹平renderjs的写法
+      }
+    };
+  },
+  methods: {
+    // wxs视图层调用逻辑层的回调
+    wxsCall: function wxsCall(msg) {
+      if (msg.type === 'setWxsProp') {
+        // 更新wxsProp数据 (值改变才触发更新)
+        this.wxsProp = {
+          optDown: this.mescroll.optDown,
+          scrollTop: this.mescroll.getScrollTop(),
+          bodyHeight: this.mescroll.getBodyHeight(),
+          isDownScrolling: this.mescroll.isDownScrolling,
+          isUpScrolling: this.mescroll.isUpScrolling,
+          isUpBoth: this.mescroll.optUp.isBoth,
+          isScrollBody: this.mescroll.isScrollBody,
+          t: Date.now()
+        };
+      } else if (msg.type === 'setLoadType') {
+        // 设置inOffset,outOffset的状态
+        this.downLoadType = msg.downLoadType;
+        // 状态挂载到mescroll对象, 以便在其他组件中使用, 比如<me-video>中
+        this.$set(this.mescroll, 'downLoadType', this.downLoadType);
+        // 重置是否加载成功的状态
+        this.$set(this.mescroll, 'isDownEndSuccess', null);
+      } else if (msg.type === 'triggerDownScroll') {
+        // 主动触发下拉刷新
+        this.mescroll.triggerDownScroll();
+      } else if (msg.type === 'endDownScroll') {
+        // 结束下拉刷新
+        this.mescroll.endDownScroll();
+      } else if (msg.type === 'triggerUpScroll') {
+        // 主动触发上拉加载
+        this.mescroll.triggerUpScroll(true);
+      }
+    }
+  },
+  mounted: function mounted() {
+    var _this = this;
+    // 配置主动触发wxs显示加载进度的回调
+    this.mescroll.optDown.afterLoading = function () {
+      _this.callProp = {
+        callType: "showLoading",
+        t: Date.now()
+      }; // 触发wxs的方法 (值改变才触发更新)
+    };
+    // 配置主动触发wxs隐藏加载进度的回调
+    this.mescroll.optDown.afterEndDownScroll = function () {
+      _this.callProp = {
+        callType: "endDownScroll",
+        t: Date.now()
+      }; // 触发wxs的方法 (值改变才触发更新)
+      var delay = 300 + (_this.mescroll.optDown.beforeEndDelay || 0);
+      setTimeout(function () {
+        if (_this.downLoadType === 4 || _this.downLoadType === 0) {
+          _this.callProp = {
+            callType: "clearTransform",
+            t: Date.now()
+          }; // 触发wxs的方法 (值改变才触发更新)
+        }
+        // 状态挂载到mescroll对象, 以便在其他组件中使用, 比如<me-video>中
+        _this.$set(_this.mescroll, 'downLoadType', _this.downLoadType);
+      }, delay);
+    };
+    // 初始化wxs的数据
+    this.wxsCall({
+      type: 'setWxsProp'
+    });
+  }
+};
+var _default = WxsMixin;
+exports.default = _default;
+
+/***/ }),
+
 /***/ 14:
 /*!**********************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/construct.js ***!
@@ -2549,71 +3708,47 @@ module.exports = _setPrototypeOf, module.exports.__esModule = true, module.expor
 
 /***/ }),
 
-/***/ 150:
-/*!******************************************************************************************************!*\
-  !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-mixins.js ***!
-  \******************************************************************************************************/
+/***/ 16:
+/*!*************************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/isNativeReflectConstruct.js ***!
+  \*************************************************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// mescroll-body 和 mescroll-uni 通用
-var MescrollMixin = {
-  data: function data() {
-    return {
-      mescroll: null //mescroll实例对象
-    };
-  },
-  // 注册系统自带的下拉刷新 (配置down.native为true时生效, 还需在pages配置enablePullDownRefresh:true;详请参考mescroll-native的案例)
-  onPullDownRefresh: function onPullDownRefresh() {
-    this.mescroll && this.mescroll.onPullDownRefresh();
-  },
-  // 注册列表滚动事件,用于判定在顶部可下拉刷新,在指定位置可显示隐藏回到顶部按钮 (此方法为页面生命周期,无法在子组件中触发, 仅在mescroll-body生效)
-  onPageScroll: function onPageScroll(e) {
-    this.mescroll && this.mescroll.onPageScroll(e);
-  },
-  // 注册滚动到底部的事件,用于上拉加载 (此方法为页面生命周期,无法在子组件中触发, 仅在mescroll-body生效)
-  onReachBottom: function onReachBottom() {
-    this.mescroll && this.mescroll.onReachBottom();
-  },
-  methods: {
-    // mescroll组件初始化的回调,可获取到mescroll对象
-    mescrollInit: function mescrollInit(mescroll) {
-      this.mescroll = mescroll;
-    },
-    // 下拉刷新的回调 (mixin默认resetUpScroll)
-    downCallback: function downCallback() {
-      var _this = this;
-      if (this.mescroll.optUp.use) {
-        this.mescroll.resetUpScroll();
-      } else {
-        setTimeout(function () {
-          _this.mescroll.endSuccess();
-        }, 500);
-      }
-    },
-    // 上拉加载的回调
-    upCallback: function upCallback() {
-      var _this2 = this;
-      // mixin默认延时500自动结束加载
-      setTimeout(function () {
-        _this2.mescroll.endErr();
-      }, 500);
-    }
+function _isNativeReflectConstruct() {
+  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+  if (Reflect.construct.sham) return false;
+  if (typeof Proxy === "function") return true;
+  try {
+    Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+    return true;
+  } catch (e) {
+    return false;
   }
-};
-var _default = MescrollMixin;
-exports.default = _default;
+}
+module.exports = _isNativeReflectConstruct, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
 
-/***/ 156:
+/***/ 17:
+/*!******************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/toConsumableArray.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var arrayWithoutHoles = __webpack_require__(/*! ./arrayWithoutHoles.js */ 18);
+var iterableToArray = __webpack_require__(/*! ./iterableToArray.js */ 19);
+var unsupportedIterableToArray = __webpack_require__(/*! ./unsupportedIterableToArray.js */ 7);
+var nonIterableSpread = __webpack_require__(/*! ./nonIterableSpread.js */ 20);
+function _toConsumableArray(arr) {
+  return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
+}
+module.exports = _toConsumableArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
+
+/***/ }),
+
+/***/ 177:
 /*!***********************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/mp-html/components/mp-html/parser.js ***!
   \***********************************************************************************/
@@ -3828,46 +4963,6 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 16:
-/*!*************************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/isNativeReflectConstruct.js ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-function _isNativeReflectConstruct() {
-  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
-  if (Reflect.construct.sham) return false;
-  if (typeof Proxy === "function") return true;
-  try {
-    Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-module.exports = _isNativeReflectConstruct, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ }),
-
-/***/ 17:
-/*!******************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/toConsumableArray.js ***!
-  \******************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var arrayWithoutHoles = __webpack_require__(/*! ./arrayWithoutHoles.js */ 18);
-var iterableToArray = __webpack_require__(/*! ./iterableToArray.js */ 19);
-var unsupportedIterableToArray = __webpack_require__(/*! ./unsupportedIterableToArray.js */ 7);
-var nonIterableSpread = __webpack_require__(/*! ./nonIterableSpread.js */ 20);
-function _toConsumableArray(arr) {
-  return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
-}
-module.exports = _toConsumableArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ }),
-
 /***/ 18:
 /*!******************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/arrayWithoutHoles.js ***!
@@ -3894,66 +4989,6 @@ function _iterableToArray(iter) {
   if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
 }
 module.exports = _iterableToArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ }),
-
-/***/ 192:
-/*!*****************************************************************************************************!*\
-  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/index.js ***!
-  \*****************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 193));
-var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 194));
-var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 195));
-var _default = {
-  en: _en.default,
-  'zh-Hans': _zhHans.default,
-  'zh-Hant': _zhHant.default
-};
-exports.default = _default;
-
-/***/ }),
-
-/***/ 193:
-/*!****************************************************************************************************!*\
-  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/en.json ***!
-  \****************************************************************************************************/
-/*! exports provided: uni-search-bar.cancel, uni-search-bar.placeholder, default */
-/***/ (function(module) {
-
-module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-bar.placeholder\":\"Search enter content\"}");
-
-/***/ }),
-
-/***/ 194:
-/*!*********************************************************************************************************!*\
-  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/zh-Hans.json ***!
-  \*********************************************************************************************************/
-/*! exports provided: uni-search-bar.cancel, uni-search-bar.placeholder, default */
-/***/ (function(module) {
-
-module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-bar.placeholder\":\"请输入搜索内容\"}");
-
-/***/ }),
-
-/***/ 195:
-/*!*********************************************************************************************************!*\
-  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/zh-Hant.json ***!
-  \*********************************************************************************************************/
-/*! exports provided: uni-search-bar.cancel, uni-search-bar.placeholder, default */
-/***/ (function(module) {
-
-module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-bar.placeholder\":\"請輸入搜索內容\"}");
 
 /***/ }),
 
@@ -4002,7 +5037,613 @@ module.exports = _nonIterableSpread, module.exports.__esModule = true, module.ex
 
 /***/ }),
 
-/***/ 203:
+/***/ 21:
+/*!*************************************************************!*\
+  !*** ./node_modules/@dcloudio/uni-i18n/dist/uni-i18n.es.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni, global) {
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LOCALE_ZH_HANT = exports.LOCALE_ZH_HANS = exports.LOCALE_FR = exports.LOCALE_ES = exports.LOCALE_EN = exports.I18n = exports.Formatter = void 0;
+exports.compileI18nJsonStr = compileI18nJsonStr;
+exports.hasI18nJson = hasI18nJson;
+exports.initVueI18n = initVueI18n;
+exports.isI18nStr = isI18nStr;
+exports.isString = void 0;
+exports.normalizeLocale = normalizeLocale;
+exports.parseI18nJson = parseI18nJson;
+exports.resolveLocale = resolveLocale;
+var _slicedToArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ 4));
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 22));
+var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 23));
+var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 12));
+var isArray = Array.isArray;
+var isObject = function isObject(val) {
+  return val !== null && (0, _typeof2.default)(val) === 'object';
+};
+var defaultDelimiters = ['{', '}'];
+var BaseFormatter = /*#__PURE__*/function () {
+  function BaseFormatter() {
+    (0, _classCallCheck2.default)(this, BaseFormatter);
+    this._caches = Object.create(null);
+  }
+  (0, _createClass2.default)(BaseFormatter, [{
+    key: "interpolate",
+    value: function interpolate(message, values) {
+      var delimiters = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : defaultDelimiters;
+      if (!values) {
+        return [message];
+      }
+      var tokens = this._caches[message];
+      if (!tokens) {
+        tokens = parse(message, delimiters);
+        this._caches[message] = tokens;
+      }
+      return compile(tokens, values);
+    }
+  }]);
+  return BaseFormatter;
+}();
+exports.Formatter = BaseFormatter;
+var RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
+var RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
+function parse(format, _ref) {
+  var _ref2 = (0, _slicedToArray2.default)(_ref, 2),
+    startDelimiter = _ref2[0],
+    endDelimiter = _ref2[1];
+  var tokens = [];
+  var position = 0;
+  var text = '';
+  while (position < format.length) {
+    var char = format[position++];
+    if (char === startDelimiter) {
+      if (text) {
+        tokens.push({
+          type: 'text',
+          value: text
+        });
+      }
+      text = '';
+      var sub = '';
+      char = format[position++];
+      while (char !== undefined && char !== endDelimiter) {
+        sub += char;
+        char = format[position++];
+      }
+      var isClosed = char === endDelimiter;
+      var type = RE_TOKEN_LIST_VALUE.test(sub) ? 'list' : isClosed && RE_TOKEN_NAMED_VALUE.test(sub) ? 'named' : 'unknown';
+      tokens.push({
+        value: sub,
+        type: type
+      });
+    }
+    //  else if (char === '%') {
+    //   // when found rails i18n syntax, skip text capture
+    //   if (format[position] !== '{') {
+    //     text += char
+    //   }
+    // }
+    else {
+      text += char;
+    }
+  }
+  text && tokens.push({
+    type: 'text',
+    value: text
+  });
+  return tokens;
+}
+function compile(tokens, values) {
+  var compiled = [];
+  var index = 0;
+  var mode = isArray(values) ? 'list' : isObject(values) ? 'named' : 'unknown';
+  if (mode === 'unknown') {
+    return compiled;
+  }
+  while (index < tokens.length) {
+    var token = tokens[index];
+    switch (token.type) {
+      case 'text':
+        compiled.push(token.value);
+        break;
+      case 'list':
+        compiled.push(values[parseInt(token.value, 10)]);
+        break;
+      case 'named':
+        if (mode === 'named') {
+          compiled.push(values[token.value]);
+        } else {
+          if (true) {
+            console.warn("Type of token '".concat(token.type, "' and format of value '").concat(mode, "' don't match!"));
+          }
+        }
+        break;
+      case 'unknown':
+        if (true) {
+          console.warn("Detect 'unknown' type of token!");
+        }
+        break;
+    }
+    index++;
+  }
+  return compiled;
+}
+var LOCALE_ZH_HANS = 'zh-Hans';
+exports.LOCALE_ZH_HANS = LOCALE_ZH_HANS;
+var LOCALE_ZH_HANT = 'zh-Hant';
+exports.LOCALE_ZH_HANT = LOCALE_ZH_HANT;
+var LOCALE_EN = 'en';
+exports.LOCALE_EN = LOCALE_EN;
+var LOCALE_FR = 'fr';
+exports.LOCALE_FR = LOCALE_FR;
+var LOCALE_ES = 'es';
+exports.LOCALE_ES = LOCALE_ES;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var hasOwn = function hasOwn(val, key) {
+  return hasOwnProperty.call(val, key);
+};
+var defaultFormatter = new BaseFormatter();
+function include(str, parts) {
+  return !!parts.find(function (part) {
+    return str.indexOf(part) !== -1;
+  });
+}
+function startsWith(str, parts) {
+  return parts.find(function (part) {
+    return str.indexOf(part) === 0;
+  });
+}
+function normalizeLocale(locale, messages) {
+  if (!locale) {
+    return;
+  }
+  locale = locale.trim().replace(/_/g, '-');
+  if (messages && messages[locale]) {
+    return locale;
+  }
+  locale = locale.toLowerCase();
+  if (locale.indexOf('zh') === 0) {
+    if (locale.indexOf('-hans') > -1) {
+      return LOCALE_ZH_HANS;
+    }
+    if (locale.indexOf('-hant') > -1) {
+      return LOCALE_ZH_HANT;
+    }
+    if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
+      return LOCALE_ZH_HANT;
+    }
+    return LOCALE_ZH_HANS;
+  }
+  var lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
+  if (lang) {
+    return lang;
+  }
+}
+var I18n = /*#__PURE__*/function () {
+  function I18n(_ref3) {
+    var locale = _ref3.locale,
+      fallbackLocale = _ref3.fallbackLocale,
+      messages = _ref3.messages,
+      watcher = _ref3.watcher,
+      formater = _ref3.formater;
+    (0, _classCallCheck2.default)(this, I18n);
+    this.locale = LOCALE_EN;
+    this.fallbackLocale = LOCALE_EN;
+    this.message = {};
+    this.messages = {};
+    this.watchers = [];
+    if (fallbackLocale) {
+      this.fallbackLocale = fallbackLocale;
+    }
+    this.formater = formater || defaultFormatter;
+    this.messages = messages || {};
+    this.setLocale(locale || LOCALE_EN);
+    if (watcher) {
+      this.watchLocale(watcher);
+    }
+  }
+  (0, _createClass2.default)(I18n, [{
+    key: "setLocale",
+    value: function setLocale(locale) {
+      var _this = this;
+      var oldLocale = this.locale;
+      this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+      if (!this.messages[this.locale]) {
+        // 可能初始化时不存在
+        this.messages[this.locale] = {};
+      }
+      this.message = this.messages[this.locale];
+      // 仅发生变化时，通知
+      if (oldLocale !== this.locale) {
+        this.watchers.forEach(function (watcher) {
+          watcher(_this.locale, oldLocale);
+        });
+      }
+    }
+  }, {
+    key: "getLocale",
+    value: function getLocale() {
+      return this.locale;
+    }
+  }, {
+    key: "watchLocale",
+    value: function watchLocale(fn) {
+      var _this2 = this;
+      var index = this.watchers.push(fn) - 1;
+      return function () {
+        _this2.watchers.splice(index, 1);
+      };
+    }
+  }, {
+    key: "add",
+    value: function add(locale, message) {
+      var override = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      var curMessages = this.messages[locale];
+      if (curMessages) {
+        if (override) {
+          Object.assign(curMessages, message);
+        } else {
+          Object.keys(message).forEach(function (key) {
+            if (!hasOwn(curMessages, key)) {
+              curMessages[key] = message[key];
+            }
+          });
+        }
+      } else {
+        this.messages[locale] = message;
+      }
+    }
+  }, {
+    key: "f",
+    value: function f(message, values, delimiters) {
+      return this.formater.interpolate(message, values, delimiters).join('');
+    }
+  }, {
+    key: "t",
+    value: function t(key, locale, values) {
+      var message = this.message;
+      if (typeof locale === 'string') {
+        locale = normalizeLocale(locale, this.messages);
+        locale && (message = this.messages[locale]);
+      } else {
+        values = locale;
+      }
+      if (!hasOwn(message, key)) {
+        console.warn("Cannot translate the value of keypath ".concat(key, ". Use the value of keypath as default."));
+        return key;
+      }
+      return this.formater.interpolate(message[key], values).join('');
+    }
+  }]);
+  return I18n;
+}();
+exports.I18n = I18n;
+function watchAppLocale(appVm, i18n) {
+  // 需要保证 watch 的触发在组件渲染之前
+  if (appVm.$watchLocale) {
+    // vue2
+    appVm.$watchLocale(function (newLocale) {
+      i18n.setLocale(newLocale);
+    });
+  } else {
+    appVm.$watch(function () {
+      return appVm.$locale;
+    }, function (newLocale) {
+      i18n.setLocale(newLocale);
+    });
+  }
+}
+function getDefaultLocale() {
+  if (typeof uni !== 'undefined' && uni.getLocale) {
+    return uni.getLocale();
+  }
+  // 小程序平台，uni 和 uni-i18n 互相引用，导致访问不到 uni，故在 global 上挂了 getLocale
+  if (typeof global !== 'undefined' && global.getLocale) {
+    return global.getLocale();
+  }
+  return LOCALE_EN;
+}
+function initVueI18n(locale) {
+  var messages = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var fallbackLocale = arguments.length > 2 ? arguments[2] : undefined;
+  var watcher = arguments.length > 3 ? arguments[3] : undefined;
+  // 兼容旧版本入参
+  if (typeof locale !== 'string') {
+    var _ref4 = [messages, locale];
+    locale = _ref4[0];
+    messages = _ref4[1];
+  }
+  if (typeof locale !== 'string') {
+    // 因为小程序平台，uni-i18n 和 uni 互相引用，导致此时访问 uni 时，为 undefined
+    locale = getDefaultLocale();
+  }
+  if (typeof fallbackLocale !== 'string') {
+    fallbackLocale = typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale || LOCALE_EN;
+  }
+  var i18n = new I18n({
+    locale: locale,
+    fallbackLocale: fallbackLocale,
+    messages: messages,
+    watcher: watcher
+  });
+  var _t = function t(key, values) {
+    if (typeof getApp !== 'function') {
+      // app view
+      /* eslint-disable no-func-assign */
+      _t = function t(key, values) {
+        return i18n.t(key, values);
+      };
+    } else {
+      var isWatchedAppLocale = false;
+      _t = function t(key, values) {
+        var appVm = getApp().$vm;
+        // 可能$vm还不存在，比如在支付宝小程序中，组件定义较早，在props的default里使用了t()函数（如uni-goods-nav），此时app还未初始化
+        // options: {
+        // 	type: Array,
+        // 	default () {
+        // 		return [{
+        // 			icon: 'shop',
+        // 			text: t("uni-goods-nav.options.shop"),
+        // 		}, {
+        // 			icon: 'cart',
+        // 			text: t("uni-goods-nav.options.cart")
+        // 		}]
+        // 	}
+        // },
+        if (appVm) {
+          // 触发响应式
+          appVm.$locale;
+          if (!isWatchedAppLocale) {
+            isWatchedAppLocale = true;
+            watchAppLocale(appVm, i18n);
+          }
+        }
+        return i18n.t(key, values);
+      };
+    }
+    return _t(key, values);
+  };
+  return {
+    i18n: i18n,
+    f: function f(message, values, delimiters) {
+      return i18n.f(message, values, delimiters);
+    },
+    t: function t(key, values) {
+      return _t(key, values);
+    },
+    add: function add(locale, message) {
+      var override = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      return i18n.add(locale, message, override);
+    },
+    watch: function watch(fn) {
+      return i18n.watchLocale(fn);
+    },
+    getLocale: function getLocale() {
+      return i18n.getLocale();
+    },
+    setLocale: function setLocale(newLocale) {
+      return i18n.setLocale(newLocale);
+    }
+  };
+}
+var isString = function isString(val) {
+  return typeof val === 'string';
+};
+exports.isString = isString;
+var formater;
+function hasI18nJson(jsonObj, delimiters) {
+  if (!formater) {
+    formater = new BaseFormatter();
+  }
+  return walkJsonObj(jsonObj, function (jsonObj, key) {
+    var value = jsonObj[key];
+    if (isString(value)) {
+      if (isI18nStr(value, delimiters)) {
+        return true;
+      }
+    } else {
+      return hasI18nJson(value, delimiters);
+    }
+  });
+}
+function parseI18nJson(jsonObj, values, delimiters) {
+  if (!formater) {
+    formater = new BaseFormatter();
+  }
+  walkJsonObj(jsonObj, function (jsonObj, key) {
+    var value = jsonObj[key];
+    if (isString(value)) {
+      if (isI18nStr(value, delimiters)) {
+        jsonObj[key] = compileStr(value, values, delimiters);
+      }
+    } else {
+      parseI18nJson(value, values, delimiters);
+    }
+  });
+  return jsonObj;
+}
+function compileI18nJsonStr(jsonStr, _ref5) {
+  var locale = _ref5.locale,
+    locales = _ref5.locales,
+    delimiters = _ref5.delimiters;
+  if (!isI18nStr(jsonStr, delimiters)) {
+    return jsonStr;
+  }
+  if (!formater) {
+    formater = new BaseFormatter();
+  }
+  var localeValues = [];
+  Object.keys(locales).forEach(function (name) {
+    if (name !== locale) {
+      localeValues.push({
+        locale: name,
+        values: locales[name]
+      });
+    }
+  });
+  localeValues.unshift({
+    locale: locale,
+    values: locales[locale]
+  });
+  try {
+    return JSON.stringify(compileJsonObj(JSON.parse(jsonStr), localeValues, delimiters), null, 2);
+  } catch (e) {}
+  return jsonStr;
+}
+function isI18nStr(value, delimiters) {
+  return value.indexOf(delimiters[0]) > -1;
+}
+function compileStr(value, values, delimiters) {
+  return formater.interpolate(value, values, delimiters).join('');
+}
+function compileValue(jsonObj, key, localeValues, delimiters) {
+  var value = jsonObj[key];
+  if (isString(value)) {
+    // 存在国际化
+    if (isI18nStr(value, delimiters)) {
+      jsonObj[key] = compileStr(value, localeValues[0].values, delimiters);
+      if (localeValues.length > 1) {
+        // 格式化国际化语言
+        var valueLocales = jsonObj[key + 'Locales'] = {};
+        localeValues.forEach(function (localValue) {
+          valueLocales[localValue.locale] = compileStr(value, localValue.values, delimiters);
+        });
+      }
+    }
+  } else {
+    compileJsonObj(value, localeValues, delimiters);
+  }
+}
+function compileJsonObj(jsonObj, localeValues, delimiters) {
+  walkJsonObj(jsonObj, function (jsonObj, key) {
+    compileValue(jsonObj, key, localeValues, delimiters);
+  });
+  return jsonObj;
+}
+function walkJsonObj(jsonObj, walk) {
+  if (isArray(jsonObj)) {
+    for (var i = 0; i < jsonObj.length; i++) {
+      if (walk(jsonObj, i)) {
+        return true;
+      }
+    }
+  } else if (isObject(jsonObj)) {
+    for (var key in jsonObj) {
+      if (walk(jsonObj, key)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+function resolveLocale(locales) {
+  return function (locale) {
+    if (!locale) {
+      return locale;
+    }
+    locale = normalizeLocale(locale) || locale;
+    return resolveLocaleChain(locale).find(function (locale) {
+      return locales.indexOf(locale) > -1;
+    });
+  };
+}
+function resolveLocaleChain(locale) {
+  var chain = [];
+  var tokens = locale.split('-');
+  while (tokens.length) {
+    chain.push(tokens.join('-'));
+    tokens.pop();
+  }
+  return chain;
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"], __webpack_require__(/*! ./../../../webpack/buildin/global.js */ 2)))
+
+/***/ }),
+
+/***/ 213:
+/*!*****************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/index.js ***!
+  \*****************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 214));
+var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 215));
+var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 216));
+var _default = {
+  en: _en.default,
+  'zh-Hans': _zhHans.default,
+  'zh-Hant': _zhHant.default
+};
+exports.default = _default;
+
+/***/ }),
+
+/***/ 214:
+/*!****************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/en.json ***!
+  \****************************************************************************************************/
+/*! exports provided: uni-search-bar.cancel, uni-search-bar.placeholder, default */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-bar.placeholder\":\"Search enter content\"}");
+
+/***/ }),
+
+/***/ 215:
+/*!*********************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/zh-Hans.json ***!
+  \*********************************************************************************************************/
+/*! exports provided: uni-search-bar.cancel, uni-search-bar.placeholder, default */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-bar.placeholder\":\"请输入搜索内容\"}");
+
+/***/ }),
+
+/***/ 216:
+/*!*********************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/zh-Hant.json ***!
+  \*********************************************************************************************************/
+/*! exports provided: uni-search-bar.cancel, uni-search-bar.placeholder, default */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-bar.placeholder\":\"請輸入搜索內容\"}");
+
+/***/ }),
+
+/***/ 22:
+/*!***************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/classCallCheck.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+module.exports = _classCallCheck, module.exports.__esModule = true, module.exports["default"] = module.exports;
+
+/***/ }),
+
+/***/ 224:
 /*!**************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-icons/components/uni-icons/icons.js ***!
   \**************************************************************************************/
@@ -5020,1711 +6661,6 @@ var _default = {
     "unicode_decimal": 58929
   }]
 };
-exports.default = _default;
-
-/***/ }),
-
-/***/ 21:
-/*!*************************************************************!*\
-  !*** ./node_modules/@dcloudio/uni-i18n/dist/uni-i18n.es.js ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni, global) {
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.LOCALE_ZH_HANT = exports.LOCALE_ZH_HANS = exports.LOCALE_FR = exports.LOCALE_ES = exports.LOCALE_EN = exports.I18n = exports.Formatter = void 0;
-exports.compileI18nJsonStr = compileI18nJsonStr;
-exports.hasI18nJson = hasI18nJson;
-exports.initVueI18n = initVueI18n;
-exports.isI18nStr = isI18nStr;
-exports.isString = void 0;
-exports.normalizeLocale = normalizeLocale;
-exports.parseI18nJson = parseI18nJson;
-exports.resolveLocale = resolveLocale;
-var _slicedToArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ 4));
-var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 22));
-var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 23));
-var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 12));
-var isArray = Array.isArray;
-var isObject = function isObject(val) {
-  return val !== null && (0, _typeof2.default)(val) === 'object';
-};
-var defaultDelimiters = ['{', '}'];
-var BaseFormatter = /*#__PURE__*/function () {
-  function BaseFormatter() {
-    (0, _classCallCheck2.default)(this, BaseFormatter);
-    this._caches = Object.create(null);
-  }
-  (0, _createClass2.default)(BaseFormatter, [{
-    key: "interpolate",
-    value: function interpolate(message, values) {
-      var delimiters = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : defaultDelimiters;
-      if (!values) {
-        return [message];
-      }
-      var tokens = this._caches[message];
-      if (!tokens) {
-        tokens = parse(message, delimiters);
-        this._caches[message] = tokens;
-      }
-      return compile(tokens, values);
-    }
-  }]);
-  return BaseFormatter;
-}();
-exports.Formatter = BaseFormatter;
-var RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
-var RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
-function parse(format, _ref) {
-  var _ref2 = (0, _slicedToArray2.default)(_ref, 2),
-    startDelimiter = _ref2[0],
-    endDelimiter = _ref2[1];
-  var tokens = [];
-  var position = 0;
-  var text = '';
-  while (position < format.length) {
-    var char = format[position++];
-    if (char === startDelimiter) {
-      if (text) {
-        tokens.push({
-          type: 'text',
-          value: text
-        });
-      }
-      text = '';
-      var sub = '';
-      char = format[position++];
-      while (char !== undefined && char !== endDelimiter) {
-        sub += char;
-        char = format[position++];
-      }
-      var isClosed = char === endDelimiter;
-      var type = RE_TOKEN_LIST_VALUE.test(sub) ? 'list' : isClosed && RE_TOKEN_NAMED_VALUE.test(sub) ? 'named' : 'unknown';
-      tokens.push({
-        value: sub,
-        type: type
-      });
-    }
-    //  else if (char === '%') {
-    //   // when found rails i18n syntax, skip text capture
-    //   if (format[position] !== '{') {
-    //     text += char
-    //   }
-    // }
-    else {
-      text += char;
-    }
-  }
-  text && tokens.push({
-    type: 'text',
-    value: text
-  });
-  return tokens;
-}
-function compile(tokens, values) {
-  var compiled = [];
-  var index = 0;
-  var mode = isArray(values) ? 'list' : isObject(values) ? 'named' : 'unknown';
-  if (mode === 'unknown') {
-    return compiled;
-  }
-  while (index < tokens.length) {
-    var token = tokens[index];
-    switch (token.type) {
-      case 'text':
-        compiled.push(token.value);
-        break;
-      case 'list':
-        compiled.push(values[parseInt(token.value, 10)]);
-        break;
-      case 'named':
-        if (mode === 'named') {
-          compiled.push(values[token.value]);
-        } else {
-          if (true) {
-            console.warn("Type of token '".concat(token.type, "' and format of value '").concat(mode, "' don't match!"));
-          }
-        }
-        break;
-      case 'unknown':
-        if (true) {
-          console.warn("Detect 'unknown' type of token!");
-        }
-        break;
-    }
-    index++;
-  }
-  return compiled;
-}
-var LOCALE_ZH_HANS = 'zh-Hans';
-exports.LOCALE_ZH_HANS = LOCALE_ZH_HANS;
-var LOCALE_ZH_HANT = 'zh-Hant';
-exports.LOCALE_ZH_HANT = LOCALE_ZH_HANT;
-var LOCALE_EN = 'en';
-exports.LOCALE_EN = LOCALE_EN;
-var LOCALE_FR = 'fr';
-exports.LOCALE_FR = LOCALE_FR;
-var LOCALE_ES = 'es';
-exports.LOCALE_ES = LOCALE_ES;
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var hasOwn = function hasOwn(val, key) {
-  return hasOwnProperty.call(val, key);
-};
-var defaultFormatter = new BaseFormatter();
-function include(str, parts) {
-  return !!parts.find(function (part) {
-    return str.indexOf(part) !== -1;
-  });
-}
-function startsWith(str, parts) {
-  return parts.find(function (part) {
-    return str.indexOf(part) === 0;
-  });
-}
-function normalizeLocale(locale, messages) {
-  if (!locale) {
-    return;
-  }
-  locale = locale.trim().replace(/_/g, '-');
-  if (messages && messages[locale]) {
-    return locale;
-  }
-  locale = locale.toLowerCase();
-  if (locale.indexOf('zh') === 0) {
-    if (locale.indexOf('-hans') > -1) {
-      return LOCALE_ZH_HANS;
-    }
-    if (locale.indexOf('-hant') > -1) {
-      return LOCALE_ZH_HANT;
-    }
-    if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
-      return LOCALE_ZH_HANT;
-    }
-    return LOCALE_ZH_HANS;
-  }
-  var lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
-  if (lang) {
-    return lang;
-  }
-}
-var I18n = /*#__PURE__*/function () {
-  function I18n(_ref3) {
-    var locale = _ref3.locale,
-      fallbackLocale = _ref3.fallbackLocale,
-      messages = _ref3.messages,
-      watcher = _ref3.watcher,
-      formater = _ref3.formater;
-    (0, _classCallCheck2.default)(this, I18n);
-    this.locale = LOCALE_EN;
-    this.fallbackLocale = LOCALE_EN;
-    this.message = {};
-    this.messages = {};
-    this.watchers = [];
-    if (fallbackLocale) {
-      this.fallbackLocale = fallbackLocale;
-    }
-    this.formater = formater || defaultFormatter;
-    this.messages = messages || {};
-    this.setLocale(locale || LOCALE_EN);
-    if (watcher) {
-      this.watchLocale(watcher);
-    }
-  }
-  (0, _createClass2.default)(I18n, [{
-    key: "setLocale",
-    value: function setLocale(locale) {
-      var _this = this;
-      var oldLocale = this.locale;
-      this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
-      if (!this.messages[this.locale]) {
-        // 可能初始化时不存在
-        this.messages[this.locale] = {};
-      }
-      this.message = this.messages[this.locale];
-      // 仅发生变化时，通知
-      if (oldLocale !== this.locale) {
-        this.watchers.forEach(function (watcher) {
-          watcher(_this.locale, oldLocale);
-        });
-      }
-    }
-  }, {
-    key: "getLocale",
-    value: function getLocale() {
-      return this.locale;
-    }
-  }, {
-    key: "watchLocale",
-    value: function watchLocale(fn) {
-      var _this2 = this;
-      var index = this.watchers.push(fn) - 1;
-      return function () {
-        _this2.watchers.splice(index, 1);
-      };
-    }
-  }, {
-    key: "add",
-    value: function add(locale, message) {
-      var override = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-      var curMessages = this.messages[locale];
-      if (curMessages) {
-        if (override) {
-          Object.assign(curMessages, message);
-        } else {
-          Object.keys(message).forEach(function (key) {
-            if (!hasOwn(curMessages, key)) {
-              curMessages[key] = message[key];
-            }
-          });
-        }
-      } else {
-        this.messages[locale] = message;
-      }
-    }
-  }, {
-    key: "f",
-    value: function f(message, values, delimiters) {
-      return this.formater.interpolate(message, values, delimiters).join('');
-    }
-  }, {
-    key: "t",
-    value: function t(key, locale, values) {
-      var message = this.message;
-      if (typeof locale === 'string') {
-        locale = normalizeLocale(locale, this.messages);
-        locale && (message = this.messages[locale]);
-      } else {
-        values = locale;
-      }
-      if (!hasOwn(message, key)) {
-        console.warn("Cannot translate the value of keypath ".concat(key, ". Use the value of keypath as default."));
-        return key;
-      }
-      return this.formater.interpolate(message[key], values).join('');
-    }
-  }]);
-  return I18n;
-}();
-exports.I18n = I18n;
-function watchAppLocale(appVm, i18n) {
-  // 需要保证 watch 的触发在组件渲染之前
-  if (appVm.$watchLocale) {
-    // vue2
-    appVm.$watchLocale(function (newLocale) {
-      i18n.setLocale(newLocale);
-    });
-  } else {
-    appVm.$watch(function () {
-      return appVm.$locale;
-    }, function (newLocale) {
-      i18n.setLocale(newLocale);
-    });
-  }
-}
-function getDefaultLocale() {
-  if (typeof uni !== 'undefined' && uni.getLocale) {
-    return uni.getLocale();
-  }
-  // 小程序平台，uni 和 uni-i18n 互相引用，导致访问不到 uni，故在 global 上挂了 getLocale
-  if (typeof global !== 'undefined' && global.getLocale) {
-    return global.getLocale();
-  }
-  return LOCALE_EN;
-}
-function initVueI18n(locale) {
-  var messages = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var fallbackLocale = arguments.length > 2 ? arguments[2] : undefined;
-  var watcher = arguments.length > 3 ? arguments[3] : undefined;
-  // 兼容旧版本入参
-  if (typeof locale !== 'string') {
-    var _ref4 = [messages, locale];
-    locale = _ref4[0];
-    messages = _ref4[1];
-  }
-  if (typeof locale !== 'string') {
-    // 因为小程序平台，uni-i18n 和 uni 互相引用，导致此时访问 uni 时，为 undefined
-    locale = getDefaultLocale();
-  }
-  if (typeof fallbackLocale !== 'string') {
-    fallbackLocale = typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale || LOCALE_EN;
-  }
-  var i18n = new I18n({
-    locale: locale,
-    fallbackLocale: fallbackLocale,
-    messages: messages,
-    watcher: watcher
-  });
-  var _t = function t(key, values) {
-    if (typeof getApp !== 'function') {
-      // app view
-      /* eslint-disable no-func-assign */
-      _t = function t(key, values) {
-        return i18n.t(key, values);
-      };
-    } else {
-      var isWatchedAppLocale = false;
-      _t = function t(key, values) {
-        var appVm = getApp().$vm;
-        // 可能$vm还不存在，比如在支付宝小程序中，组件定义较早，在props的default里使用了t()函数（如uni-goods-nav），此时app还未初始化
-        // options: {
-        // 	type: Array,
-        // 	default () {
-        // 		return [{
-        // 			icon: 'shop',
-        // 			text: t("uni-goods-nav.options.shop"),
-        // 		}, {
-        // 			icon: 'cart',
-        // 			text: t("uni-goods-nav.options.cart")
-        // 		}]
-        // 	}
-        // },
-        if (appVm) {
-          // 触发响应式
-          appVm.$locale;
-          if (!isWatchedAppLocale) {
-            isWatchedAppLocale = true;
-            watchAppLocale(appVm, i18n);
-          }
-        }
-        return i18n.t(key, values);
-      };
-    }
-    return _t(key, values);
-  };
-  return {
-    i18n: i18n,
-    f: function f(message, values, delimiters) {
-      return i18n.f(message, values, delimiters);
-    },
-    t: function t(key, values) {
-      return _t(key, values);
-    },
-    add: function add(locale, message) {
-      var override = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-      return i18n.add(locale, message, override);
-    },
-    watch: function watch(fn) {
-      return i18n.watchLocale(fn);
-    },
-    getLocale: function getLocale() {
-      return i18n.getLocale();
-    },
-    setLocale: function setLocale(newLocale) {
-      return i18n.setLocale(newLocale);
-    }
-  };
-}
-var isString = function isString(val) {
-  return typeof val === 'string';
-};
-exports.isString = isString;
-var formater;
-function hasI18nJson(jsonObj, delimiters) {
-  if (!formater) {
-    formater = new BaseFormatter();
-  }
-  return walkJsonObj(jsonObj, function (jsonObj, key) {
-    var value = jsonObj[key];
-    if (isString(value)) {
-      if (isI18nStr(value, delimiters)) {
-        return true;
-      }
-    } else {
-      return hasI18nJson(value, delimiters);
-    }
-  });
-}
-function parseI18nJson(jsonObj, values, delimiters) {
-  if (!formater) {
-    formater = new BaseFormatter();
-  }
-  walkJsonObj(jsonObj, function (jsonObj, key) {
-    var value = jsonObj[key];
-    if (isString(value)) {
-      if (isI18nStr(value, delimiters)) {
-        jsonObj[key] = compileStr(value, values, delimiters);
-      }
-    } else {
-      parseI18nJson(value, values, delimiters);
-    }
-  });
-  return jsonObj;
-}
-function compileI18nJsonStr(jsonStr, _ref5) {
-  var locale = _ref5.locale,
-    locales = _ref5.locales,
-    delimiters = _ref5.delimiters;
-  if (!isI18nStr(jsonStr, delimiters)) {
-    return jsonStr;
-  }
-  if (!formater) {
-    formater = new BaseFormatter();
-  }
-  var localeValues = [];
-  Object.keys(locales).forEach(function (name) {
-    if (name !== locale) {
-      localeValues.push({
-        locale: name,
-        values: locales[name]
-      });
-    }
-  });
-  localeValues.unshift({
-    locale: locale,
-    values: locales[locale]
-  });
-  try {
-    return JSON.stringify(compileJsonObj(JSON.parse(jsonStr), localeValues, delimiters), null, 2);
-  } catch (e) {}
-  return jsonStr;
-}
-function isI18nStr(value, delimiters) {
-  return value.indexOf(delimiters[0]) > -1;
-}
-function compileStr(value, values, delimiters) {
-  return formater.interpolate(value, values, delimiters).join('');
-}
-function compileValue(jsonObj, key, localeValues, delimiters) {
-  var value = jsonObj[key];
-  if (isString(value)) {
-    // 存在国际化
-    if (isI18nStr(value, delimiters)) {
-      jsonObj[key] = compileStr(value, localeValues[0].values, delimiters);
-      if (localeValues.length > 1) {
-        // 格式化国际化语言
-        var valueLocales = jsonObj[key + 'Locales'] = {};
-        localeValues.forEach(function (localValue) {
-          valueLocales[localValue.locale] = compileStr(value, localValue.values, delimiters);
-        });
-      }
-    }
-  } else {
-    compileJsonObj(value, localeValues, delimiters);
-  }
-}
-function compileJsonObj(jsonObj, localeValues, delimiters) {
-  walkJsonObj(jsonObj, function (jsonObj, key) {
-    compileValue(jsonObj, key, localeValues, delimiters);
-  });
-  return jsonObj;
-}
-function walkJsonObj(jsonObj, walk) {
-  if (isArray(jsonObj)) {
-    for (var i = 0; i < jsonObj.length; i++) {
-      if (walk(jsonObj, i)) {
-        return true;
-      }
-    }
-  } else if (isObject(jsonObj)) {
-    for (var key in jsonObj) {
-      if (walk(jsonObj, key)) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-function resolveLocale(locales) {
-  return function (locale) {
-    if (!locale) {
-      return locale;
-    }
-    locale = normalizeLocale(locale) || locale;
-    return resolveLocaleChain(locale).find(function (locale) {
-      return locales.indexOf(locale) > -1;
-    });
-  };
-}
-function resolveLocaleChain(locale) {
-  var chain = [];
-  var tokens = locale.split('-');
-  while (tokens.length) {
-    chain.push(tokens.join('-'));
-    tokens.pop();
-  }
-  return chain;
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"], __webpack_require__(/*! ./../../../webpack/buildin/global.js */ 2)))
-
-/***/ }),
-
-/***/ 22:
-/*!***************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/classCallCheck.js ***!
-  \***************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-module.exports = _classCallCheck, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ }),
-
-/***/ 225:
-/*!***************************************************************************************************!*\
-  !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-uni.js ***!
-  \***************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = MeScroll;
-var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 12));
-/* mescroll
- * version 1.3.7
- * 2021-04-12 wenju
- * https://www.mescroll.com
- */
-
-function MeScroll(options, isScrollBody) {
-  var me = this;
-  me.version = '1.3.7'; // mescroll版本号
-  me.options = options || {}; // 配置
-  me.isScrollBody = isScrollBody || false; // 滚动区域是否为原生页面滚动; 默认为scroll-view
-
-  me.isDownScrolling = false; // 是否在执行下拉刷新的回调
-  me.isUpScrolling = false; // 是否在执行上拉加载的回调
-  var hasDownCallback = me.options.down && me.options.down.callback; // 是否配置了down的callback
-
-  // 初始化下拉刷新
-  me.initDownScroll();
-  // 初始化上拉加载,则初始化
-  me.initUpScroll();
-
-  // 自动加载
-  setTimeout(function () {
-    // 待主线程执行完毕再执行,避免new MeScroll未初始化,在回调获取不到mescroll的实例
-    // 自动触发下拉刷新 (只有配置了down的callback才自动触发下拉刷新)
-    if ((me.optDown.use || me.optDown.native) && me.optDown.auto && hasDownCallback) {
-      if (me.optDown.autoShowLoading) {
-        me.triggerDownScroll(); // 显示下拉进度,执行下拉回调
-      } else {
-        me.optDown.callback && me.optDown.callback(me); // 不显示下拉进度,直接执行下拉回调
-      }
-    }
-    // 自动触发上拉加载
-    if (!me.isUpAutoLoad) {
-      // 部分小程序(头条小程序)emit是异步, 会导致isUpAutoLoad判断有误, 先延时确保先执行down的callback,再执行up的callback
-      setTimeout(function () {
-        me.optUp.use && me.optUp.auto && !me.isUpAutoLoad && me.triggerUpScroll();
-      }, 100);
-    }
-  }, 30); // 需让me.optDown.inited和me.optUp.inited先执行
-}
-
-/* 配置参数:下拉刷新 */
-MeScroll.prototype.extendDownScroll = function (optDown) {
-  // 下拉刷新的配置
-  MeScroll.extend(optDown, {
-    use: true,
-    // 是否启用下拉刷新; 默认true
-    auto: true,
-    // 是否在初始化完毕之后自动执行下拉刷新的回调; 默认true
-    native: false,
-    // 是否使用系统自带的下拉刷新; 默认false; 仅mescroll-body生效 (值为true时,还需在pages配置enablePullDownRefresh:true;详请参考mescroll-native的案例)
-    autoShowLoading: false,
-    // 如果设置auto=true(在初始化完毕之后自动执行下拉刷新的回调),那么是否显示下拉刷新的进度; 默认false
-    isLock: false,
-    // 是否锁定下拉刷新,默认false;
-    offset: 80,
-    // 在列表顶部,下拉大于80px,松手即可触发下拉刷新的回调
-    startTop: 100,
-    // scroll-view快速滚动到顶部时,此时的scroll-top可能大于0, 此值用于控制最大的误差
-    inOffsetRate: 1,
-    // 在列表顶部,下拉的距离小于offset时,改变下拉区域高度比例;值小于1且越接近0,高度变化越小,表现为越往下越难拉
-    outOffsetRate: 0.2,
-    // 在列表顶部,下拉的距离大于offset时,改变下拉区域高度比例;值小于1且越接近0,高度变化越小,表现为越往下越难拉
-    bottomOffset: 20,
-    // 当手指touchmove位置在距离body底部20px范围内的时候结束上拉刷新,避免Webview嵌套导致touchend事件不执行
-    minAngle: 45,
-    // 向下滑动最少偏移的角度,取值区间  [0,90];默认45度,即向下滑动的角度大于45度则触发下拉;而小于45度,将不触发下拉,避免与左右滑动的轮播等组件冲突;
-    textInOffset: '下拉刷新',
-    // 下拉的距离在offset范围内的提示文本
-    textOutOffset: '释放更新',
-    // 下拉的距离大于offset范围的提示文本
-    textLoading: '加载中 ...',
-    // 加载中的提示文本
-    textSuccess: '加载成功',
-    // 加载成功的文本
-    textErr: '加载失败',
-    // 加载失败的文本
-    beforeEndDelay: 0,
-    // 延时结束的时长 (显示加载成功/失败的时长, android小程序设置此项结束下拉会卡顿, 配置后请注意测试)
-    bgColor: "transparent",
-    // 背景颜色 (建议在pages.json中再设置一下backgroundColorTop)
-    textColor: "gray",
-    // 文本颜色 (当bgColor配置了颜色,而textColor未配置时,则textColor会默认为白色)
-    inited: null,
-    // 下拉刷新初始化完毕的回调
-    inOffset: null,
-    // 下拉的距离进入offset范围内那一刻的回调
-    outOffset: null,
-    // 下拉的距离大于offset那一刻的回调
-    onMoving: null,
-    // 下拉过程中的回调,滑动过程一直在执行; rate下拉区域当前高度与指定距离的比值(inOffset: rate<1; outOffset: rate>=1); downHight当前下拉区域的高度
-    beforeLoading: null,
-    // 准备触发下拉刷新的回调: 如果return true,将不触发showLoading和callback回调; 常用来完全自定义下拉刷新, 参考案例【淘宝 v6.8.0】
-    showLoading: null,
-    // 显示下拉刷新进度的回调
-    afterLoading: null,
-    // 显示下拉刷新进度的回调之后,马上要执行的代码 (如: 在wxs中使用)
-    beforeEndDownScroll: null,
-    // 准备结束下拉的回调. 返回结束下拉的延时执行时间,默认0ms; 常用于结束下拉之前再显示另外一小段动画,才去隐藏下拉刷新的场景, 参考案例【dotJump】
-    endDownScroll: null,
-    // 结束下拉刷新的回调
-    afterEndDownScroll: null,
-    // 结束下拉刷新的回调,马上要执行的代码 (如: 在wxs中使用)
-    callback: function callback(mescroll) {
-      // 下拉刷新的回调;默认重置上拉加载列表为第一页
-      mescroll.resetUpScroll();
-    }
-  });
-};
-
-/* 配置参数:上拉加载 */
-MeScroll.prototype.extendUpScroll = function (optUp) {
-  // 上拉加载的配置
-  MeScroll.extend(optUp, {
-    use: true,
-    // 是否启用上拉加载; 默认true
-    auto: true,
-    // 是否在初始化完毕之后自动执行上拉加载的回调; 默认true
-    isLock: false,
-    // 是否锁定上拉加载,默认false;
-    isBoth: true,
-    // 上拉加载时,如果滑动到列表顶部是否可以同时触发下拉刷新;默认true,两者可同时触发;
-    callback: null,
-    // 上拉加载的回调;function(page,mescroll){ }
-    page: {
-      num: 0,
-      // 当前页码,默认0,回调之前会加1,即callback(page)会从1开始
-      size: 10,
-      // 每页数据的数量
-      time: null // 加载第一页数据服务器返回的时间; 防止用户翻页时,后台新增了数据从而导致下一页数据重复;
-    },
-
-    noMoreSize: 5,
-    // 如果列表已无数据,可设置列表的总数量要大于等于5条才显示无更多数据;避免列表数据过少(比如只有一条数据),显示无更多数据会不好看
-    offset: 150,
-    // 距底部多远时,触发upCallback,仅mescroll-uni生效 ( mescroll-body配置的是pages.json的 onReachBottomDistance )
-    textLoading: '加载中 ...',
-    // 加载中的提示文本
-    textNoMore: '-- END --',
-    // 没有更多数据的提示文本
-    bgColor: "transparent",
-    // 背景颜色 (建议在pages.json中再设置一下backgroundColorBottom)
-    textColor: "gray",
-    // 文本颜色 (当bgColor配置了颜色,而textColor未配置时,则textColor会默认为白色)
-    inited: null,
-    // 初始化完毕的回调
-    showLoading: null,
-    // 显示加载中的回调
-    showNoMore: null,
-    // 显示无更多数据的回调
-    hideUpScroll: null,
-    // 隐藏上拉加载的回调
-    errDistance: 60,
-    // endErr的时候需往上滑动一段距离,使其往下滑动时再次触发onReachBottom,仅mescroll-body生效
-    toTop: {
-      // 回到顶部按钮,需配置src才显示
-      src: null,
-      // 图片路径,默认null (绝对路径或网络图)
-      offset: 1000,
-      // 列表滚动多少距离才显示回到顶部按钮,默认1000
-      duration: 300,
-      // 回到顶部的动画时长,默认300ms (当值为0或300则使用系统自带回到顶部,更流畅; 其他值则通过step模拟,部分机型可能不够流畅,所以非特殊情况不建议修改此项)
-      btnClick: null,
-      // 点击按钮的回调
-      onShow: null,
-      // 是否显示的回调
-      zIndex: 9990,
-      // fixed定位z-index值
-      left: null,
-      // 到左边的距离, 默认null. 此项有值时,right不生效. (支持20, "20rpx", "20px", "20%"格式的值, 其中纯数字则默认单位rpx)
-      right: 20,
-      // 到右边的距离, 默认20 (支持20, "20rpx", "20px", "20%"格式的值, 其中纯数字则默认单位rpx)
-      bottom: 120,
-      // 到底部的距离, 默认120 (支持20, "20rpx", "20px", "20%"格式的值, 其中纯数字则默认单位rpx)
-      safearea: false,
-      // bottom的偏移量是否加上底部安全区的距离, 默认false, 需要适配iPhoneX时使用 (具体的界面如果不配置此项,则取本vue的safearea值)
-      width: 72,
-      // 回到顶部图标的宽度, 默认72 (支持20, "20rpx", "20px", "20%"格式的值, 其中纯数字则默认单位rpx)
-      radius: "50%" // 圆角, 默认"50%" (支持20, "20rpx", "20px", "20%"格式的值, 其中纯数字则默认单位rpx)
-    },
-
-    empty: {
-      use: true,
-      // 是否显示空布局
-      icon: null,
-      // 图标路径
-      tip: '~ 暂无相关数据 ~',
-      // 提示
-      btnText: '',
-      // 按钮
-      btnClick: null,
-      // 点击按钮的回调
-      onShow: null,
-      // 是否显示的回调
-      fixed: false,
-      // 是否使用fixed定位,默认false; 配置fixed为true,以下的top和zIndex才生效 (transform会使fixed失效,最终会降级为absolute)
-      top: "100rpx",
-      // fixed定位的top值 (完整的单位值,如 "10%"; "100rpx")
-      zIndex: 99 // fixed定位z-index值
-    },
-
-    onScroll: false // 是否监听滚动事件
-  });
-};
-
-/* 配置参数 */
-MeScroll.extend = function (userOption, defaultOption) {
-  if (!userOption) return defaultOption;
-  for (var key in defaultOption) {
-    if (userOption[key] == null) {
-      var def = defaultOption[key];
-      if (def != null && (0, _typeof2.default)(def) === 'object') {
-        userOption[key] = MeScroll.extend({}, def); // 深度匹配
-      } else {
-        userOption[key] = def;
-      }
-    } else if ((0, _typeof2.default)(userOption[key]) === 'object') {
-      MeScroll.extend(userOption[key], defaultOption[key]); // 深度匹配
-    }
-  }
-
-  return userOption;
-};
-
-/* 简单判断是否配置了颜色 (非透明,非白色) */
-MeScroll.prototype.hasColor = function (color) {
-  if (!color) return false;
-  var c = color.toLowerCase();
-  return c != "#fff" && c != "#ffffff" && c != "transparent" && c != "white";
-};
-
-/* -------初始化下拉刷新------- */
-MeScroll.prototype.initDownScroll = function () {
-  var me = this;
-  // 配置参数
-  me.optDown = me.options.down || {};
-  if (!me.optDown.textColor && me.hasColor(me.optDown.bgColor)) me.optDown.textColor = "#fff"; // 当bgColor有值且textColor未设置,则textColor默认白色
-  me.extendDownScroll(me.optDown);
-
-  // 如果是mescroll-body且配置了native,则禁止自定义的下拉刷新
-  if (me.isScrollBody && me.optDown.native) {
-    me.optDown.use = false;
-  } else {
-    me.optDown.native = false; // 仅mescroll-body支持,mescroll-uni不支持
-  }
-
-  me.downHight = 0; // 下拉区域的高度
-
-  // 在页面中加入下拉布局
-  if (me.optDown.use && me.optDown.inited) {
-    // 初始化完毕的回调
-    setTimeout(function () {
-      // 待主线程执行完毕再执行,避免new MeScroll未初始化,在回调获取不到mescroll的实例
-      me.optDown.inited(me);
-    }, 0);
-  }
-};
-
-/* 列表touchstart事件 */
-MeScroll.prototype.touchstartEvent = function (e) {
-  if (!this.optDown.use) return;
-  this.startPoint = this.getPoint(e); // 记录起点
-  this.startTop = this.getScrollTop(); // 记录此时的滚动条位置
-  this.startAngle = 0; // 初始角度
-  this.lastPoint = this.startPoint; // 重置上次move的点
-  this.maxTouchmoveY = this.getBodyHeight() - this.optDown.bottomOffset; // 手指触摸的最大范围(写在touchstart避免body获取高度为0的情况)
-  this.inTouchend = false; // 标记不是touchend
-};
-
-/* 列表touchmove事件 */
-MeScroll.prototype.touchmoveEvent = function (e) {
-  if (!this.optDown.use) return;
-  var me = this;
-  var scrollTop = me.getScrollTop(); // 当前滚动条的距离
-  var curPoint = me.getPoint(e); // 当前点
-
-  var moveY = curPoint.y - me.startPoint.y; // 和起点比,移动的距离,大于0向下拉,小于0向上拉
-
-  // 向下拉 && 在顶部
-  // mescroll-body,直接判定在顶部即可
-  // scroll-view在滚动时不会触发touchmove,当触顶/底/左/右时,才会触发touchmove
-  // scroll-view滚动到顶部时,scrollTop不一定为0,也有可能大于0; 在iOS的APP中scrollTop可能为负数,不一定和startTop相等
-  if (moveY > 0 && (me.isScrollBody && scrollTop <= 0 || !me.isScrollBody && (scrollTop <= 0 || scrollTop <= me.optDown.startTop && scrollTop === me.startTop))) {
-    // 可下拉的条件
-    if (!me.inTouchend && !me.isDownScrolling && !me.optDown.isLock && (!me.isUpScrolling || me.isUpScrolling && me.optUp.isBoth)) {
-      // 下拉的初始角度是否在配置的范围内
-      if (!me.startAngle) me.startAngle = me.getAngle(me.lastPoint, curPoint); // 两点之间的角度,区间 [0,90]
-      if (me.startAngle < me.optDown.minAngle) return; // 如果小于配置的角度,则不往下执行下拉刷新
-
-      // 如果手指的位置超过配置的距离,则提前结束下拉,避免Webview嵌套导致touchend无法触发
-      if (me.maxTouchmoveY > 0 && curPoint.y >= me.maxTouchmoveY) {
-        me.inTouchend = true; // 标记执行touchend
-        me.touchendEvent(); // 提前触发touchend
-        return;
-      }
-      me.preventDefault(e); // 阻止默认事件
-
-      var diff = curPoint.y - me.lastPoint.y; // 和上次比,移动的距离 (大于0向下,小于0向上)
-
-      // 下拉距离  < 指定距离
-      if (me.downHight < me.optDown.offset) {
-        if (me.movetype !== 1) {
-          me.movetype = 1; // 加入标记,保证只执行一次
-          me.isDownEndSuccess = null; // 重置是否加载成功的状态 (wxs执行的是wxs.wxs)
-          me.optDown.inOffset && me.optDown.inOffset(me); // 进入指定距离范围内那一刻的回调,只执行一次
-          me.isMoveDown = true; // 标记下拉区域高度改变,在touchend重置回来
-        }
-
-        me.downHight += diff * me.optDown.inOffsetRate; // 越往下,高度变化越小
-
-        // 指定距离  <= 下拉距离
-      } else {
-        if (me.movetype !== 2) {
-          me.movetype = 2; // 加入标记,保证只执行一次
-          me.optDown.outOffset && me.optDown.outOffset(me); // 下拉超过指定距离那一刻的回调,只执行一次
-          me.isMoveDown = true; // 标记下拉区域高度改变,在touchend重置回来
-        }
-
-        if (diff > 0) {
-          // 向下拉
-          me.downHight += diff * me.optDown.outOffsetRate; // 越往下,高度变化越小
-        } else {
-          // 向上收
-          me.downHight += diff; // 向上收回高度,则向上滑多少收多少高度
-        }
-      }
-
-      me.downHight = Math.round(me.downHight); // 取整
-      var rate = me.downHight / me.optDown.offset; // 下拉区域当前高度与指定距离的比值
-      me.optDown.onMoving && me.optDown.onMoving(me, rate, me.downHight); // 下拉过程中的回调,一直在执行
-    }
-  }
-
-  me.lastPoint = curPoint; // 记录本次移动的点
-};
-
-/* 列表touchend事件 */
-MeScroll.prototype.touchendEvent = function (e) {
-  if (!this.optDown.use) return;
-  // 如果下拉区域高度已改变,则需重置回来
-  if (this.isMoveDown) {
-    if (this.downHight >= this.optDown.offset) {
-      // 符合触发刷新的条件
-      this.triggerDownScroll();
-    } else {
-      // 不符合的话 则重置
-      this.downHight = 0;
-      this.endDownScrollCall(this);
-    }
-    this.movetype = 0;
-    this.isMoveDown = false;
-  } else if (!this.isScrollBody && this.getScrollTop() === this.startTop) {
-    // scroll-view到顶/左/右/底的滑动事件
-    var isScrollUp = this.getPoint(e).y - this.startPoint.y < 0; // 和起点比,移动的距离,大于0向下拉,小于0向上拉
-    // 上滑
-    if (isScrollUp) {
-      // 需检查滑动的角度
-      var angle = this.getAngle(this.getPoint(e), this.startPoint); // 两点之间的角度,区间 [0,90]
-      if (angle > 80) {
-        // 检查并触发上拉
-        this.triggerUpScroll(true);
-      }
-    }
-  }
-};
-
-/* 根据点击滑动事件获取第一个手指的坐标 */
-MeScroll.prototype.getPoint = function (e) {
-  if (!e) {
-    return {
-      x: 0,
-      y: 0
-    };
-  }
-  if (e.touches && e.touches[0]) {
-    return {
-      x: e.touches[0].pageX,
-      y: e.touches[0].pageY
-    };
-  } else if (e.changedTouches && e.changedTouches[0]) {
-    return {
-      x: e.changedTouches[0].pageX,
-      y: e.changedTouches[0].pageY
-    };
-  } else {
-    return {
-      x: e.clientX,
-      y: e.clientY
-    };
-  }
-};
-
-/* 计算两点之间的角度: 区间 [0,90]*/
-MeScroll.prototype.getAngle = function (p1, p2) {
-  var x = Math.abs(p1.x - p2.x);
-  var y = Math.abs(p1.y - p2.y);
-  var z = Math.sqrt(x * x + y * y);
-  var angle = 0;
-  if (z !== 0) {
-    angle = Math.asin(y / z) / Math.PI * 180;
-  }
-  return angle;
-};
-
-/* 触发下拉刷新 */
-MeScroll.prototype.triggerDownScroll = function () {
-  if (this.optDown.beforeLoading && this.optDown.beforeLoading(this)) {
-    //return true则处于完全自定义状态
-  } else {
-    this.showDownScroll(); // 下拉刷新中...
-    !this.optDown.native && this.optDown.callback && this.optDown.callback(this); // 执行回调,联网加载数据
-  }
-};
-
-/* 显示下拉进度布局 */
-MeScroll.prototype.showDownScroll = function () {
-  this.isDownScrolling = true; // 标记下拉中
-  if (this.optDown.native) {
-    uni.startPullDownRefresh(); // 系统自带的下拉刷新
-    this.showDownLoadingCall(0); // 仍触发showLoading,因为上拉加载用到
-  } else {
-    this.downHight = this.optDown.offset; // 更新下拉区域高度
-    this.showDownLoadingCall(this.downHight); // 下拉刷新中...
-  }
-};
-
-MeScroll.prototype.showDownLoadingCall = function (downHight) {
-  this.optDown.showLoading && this.optDown.showLoading(this, downHight); // 下拉刷新中...
-  this.optDown.afterLoading && this.optDown.afterLoading(this, downHight); // 下拉刷新中...触发之后马上要执行的代码
-};
-
-/* 显示系统自带的下拉刷新时需要处理的业务 */
-MeScroll.prototype.onPullDownRefresh = function () {
-  this.isDownScrolling = true; // 标记下拉中
-  this.showDownLoadingCall(0); // 仍触发showLoading,因为上拉加载用到
-  this.optDown.callback && this.optDown.callback(this); // 执行回调,联网加载数据
-};
-
-/* 结束下拉刷新 */
-MeScroll.prototype.endDownScroll = function () {
-  if (this.optDown.native) {
-    // 结束原生下拉刷新
-    this.isDownScrolling = false;
-    this.endDownScrollCall(this);
-    uni.stopPullDownRefresh();
-    return;
-  }
-  var me = this;
-  // 结束下拉刷新的方法
-  var endScroll = function endScroll() {
-    me.downHight = 0;
-    me.isDownScrolling = false;
-    me.endDownScrollCall(me);
-    if (!me.isScrollBody) {
-      me.setScrollHeight(0); // scroll-view重置滚动区域,使数据不满屏时仍可检查触发翻页
-      me.scrollTo(0, 0); // scroll-view需重置滚动条到顶部,避免startTop大于0时,对下拉刷新的影响
-    }
-  };
-  // 结束下拉刷新时的回调
-  var delay = 0;
-  if (me.optDown.beforeEndDownScroll) {
-    delay = me.optDown.beforeEndDownScroll(me); // 结束下拉刷新的延时,单位ms
-    if (me.isDownEndSuccess == null) delay = 0; // 没有执行加载中,则不延时
-  }
-
-  if (typeof delay === 'number' && delay > 0) {
-    setTimeout(endScroll, delay);
-  } else {
-    endScroll();
-  }
-};
-MeScroll.prototype.endDownScrollCall = function () {
-  this.optDown.endDownScroll && this.optDown.endDownScroll(this);
-  this.optDown.afterEndDownScroll && this.optDown.afterEndDownScroll(this);
-};
-
-/* 锁定下拉刷新:isLock=ture,null锁定;isLock=false解锁 */
-MeScroll.prototype.lockDownScroll = function (isLock) {
-  if (isLock == null) isLock = true;
-  this.optDown.isLock = isLock;
-};
-
-/* 锁定上拉加载:isLock=ture,null锁定;isLock=false解锁 */
-MeScroll.prototype.lockUpScroll = function (isLock) {
-  if (isLock == null) isLock = true;
-  this.optUp.isLock = isLock;
-};
-
-/* -------初始化上拉加载------- */
-MeScroll.prototype.initUpScroll = function () {
-  var me = this;
-  // 配置参数
-  me.optUp = me.options.up || {
-    use: false
-  };
-  if (!me.optUp.textColor && me.hasColor(me.optUp.bgColor)) me.optUp.textColor = "#fff"; // 当bgColor有值且textColor未设置,则textColor默认白色
-  me.extendUpScroll(me.optUp);
-  if (me.optUp.use === false) return; // 配置不使用上拉加载时,则不初始化上拉布局
-  me.optUp.hasNext = true; // 如果使用上拉,则默认有下一页
-  me.startNum = me.optUp.page.num + 1; // 记录page开始的页码
-
-  // 初始化完毕的回调
-  if (me.optUp.inited) {
-    setTimeout(function () {
-      // 待主线程执行完毕再执行,避免new MeScroll未初始化,在回调获取不到mescroll的实例
-      me.optUp.inited(me);
-    }, 0);
-  }
-};
-
-/*滚动到底部的事件 (仅mescroll-body生效)*/
-MeScroll.prototype.onReachBottom = function () {
-  if (this.isScrollBody && !this.isUpScrolling) {
-    // 只能支持下拉刷新的时候同时可以触发上拉加载,否则滚动到底部就需要上滑一点才能触发onReachBottom
-    if (!this.optUp.isLock && this.optUp.hasNext) {
-      this.triggerUpScroll();
-    }
-  }
-};
-
-/*列表滚动事件 (仅mescroll-body生效)*/
-MeScroll.prototype.onPageScroll = function (e) {
-  if (!this.isScrollBody) return;
-
-  // 更新滚动条的位置 (主要用于判断下拉刷新时,滚动条是否在顶部)
-  this.setScrollTop(e.scrollTop);
-
-  // 顶部按钮的显示隐藏
-  if (e.scrollTop >= this.optUp.toTop.offset) {
-    this.showTopBtn();
-  } else {
-    this.hideTopBtn();
-  }
-};
-
-/*列表滚动事件*/
-MeScroll.prototype.scroll = function (e, onScroll) {
-  // 更新滚动条的位置
-  this.setScrollTop(e.scrollTop);
-  // 更新滚动内容高度
-  this.setScrollHeight(e.scrollHeight);
-
-  // 向上滑还是向下滑动
-  if (this.preScrollY == null) this.preScrollY = 0;
-  this.isScrollUp = e.scrollTop - this.preScrollY > 0;
-  this.preScrollY = e.scrollTop;
-
-  // 上滑 && 检查并触发上拉
-  this.isScrollUp && this.triggerUpScroll(true);
-
-  // 顶部按钮的显示隐藏
-  if (e.scrollTop >= this.optUp.toTop.offset) {
-    this.showTopBtn();
-  } else {
-    this.hideTopBtn();
-  }
-
-  // 滑动监听
-  this.optUp.onScroll && onScroll && onScroll();
-};
-
-/* 触发上拉加载 */
-MeScroll.prototype.triggerUpScroll = function (isCheck) {
-  if (!this.isUpScrolling && this.optUp.use && this.optUp.callback) {
-    // 是否校验在底部; 默认不校验
-    if (isCheck === true) {
-      var canUp = false;
-      // 还有下一页 && 没有锁定 && 不在下拉中
-      if (this.optUp.hasNext && !this.optUp.isLock && !this.isDownScrolling) {
-        if (this.getScrollBottom() <= this.optUp.offset) {
-          // 到底部
-          canUp = true; // 标记可上拉
-        }
-      }
-
-      if (canUp === false) return;
-    }
-    this.showUpScroll(); // 上拉加载中...
-    this.optUp.page.num++; // 预先加一页,如果失败则减回
-    this.isUpAutoLoad = true; // 标记上拉已经自动执行过,避免初始化时多次触发上拉回调
-    this.num = this.optUp.page.num; // 把最新的页数赋值在mescroll上,避免对page的影响
-    this.size = this.optUp.page.size; // 把最新的页码赋值在mescroll上,避免对page的影响
-    this.time = this.optUp.page.time; // 把最新的页码赋值在mescroll上,避免对page的影响
-    this.optUp.callback(this); // 执行回调,联网加载数据
-  }
-};
-
-/* 显示上拉加载中 */
-MeScroll.prototype.showUpScroll = function () {
-  this.isUpScrolling = true; // 标记上拉加载中
-  this.optUp.showLoading && this.optUp.showLoading(this); // 回调
-};
-
-/* 显示上拉无更多数据 */
-MeScroll.prototype.showNoMore = function () {
-  this.optUp.hasNext = false; // 标记无更多数据
-  this.optUp.showNoMore && this.optUp.showNoMore(this); // 回调
-};
-
-/* 隐藏上拉区域**/
-MeScroll.prototype.hideUpScroll = function () {
-  this.optUp.hideUpScroll && this.optUp.hideUpScroll(this); // 回调
-};
-
-/* 结束上拉加载 */
-MeScroll.prototype.endUpScroll = function (isShowNoMore) {
-  if (isShowNoMore != null) {
-    // isShowNoMore=null,不处理下拉状态,下拉刷新的时候调用
-    if (isShowNoMore) {
-      this.showNoMore(); // isShowNoMore=true,显示无更多数据
-    } else {
-      this.hideUpScroll(); // isShowNoMore=false,隐藏上拉加载
-    }
-  }
-
-  this.isUpScrolling = false; // 标记结束上拉加载
-};
-
-/* 重置上拉加载列表为第一页
- *isShowLoading 是否显示进度布局;
- * 1.默认null,不传参,则显示上拉加载的进度布局
- * 2.传参true, 则显示下拉刷新的进度布局
- * 3.传参false,则不显示上拉和下拉的进度 (常用于静默更新列表数据)
- */
-MeScroll.prototype.resetUpScroll = function (isShowLoading) {
-  if (this.optUp && this.optUp.use) {
-    var page = this.optUp.page;
-    this.prePageNum = page.num; // 缓存重置前的页码,加载失败可退回
-    this.prePageTime = page.time; // 缓存重置前的时间,加载失败可退回
-    page.num = this.startNum; // 重置为第一页
-    page.time = null; // 重置时间为空
-    if (!this.isDownScrolling && isShowLoading !== false) {
-      // 如果不是下拉刷新触发的resetUpScroll并且不配置列表静默更新,则显示进度;
-      if (isShowLoading == null) {
-        this.removeEmpty(); // 移除空布局
-        this.showUpScroll(); // 不传参,默认显示上拉加载的进度布局
-      } else {
-        this.showDownScroll(); // 传true,显示下拉刷新的进度布局,不清空列表
-      }
-    }
-
-    this.isUpAutoLoad = true; // 标记上拉已经自动执行过,避免初始化时多次触发上拉回调
-    this.num = page.num; // 把最新的页数赋值在mescroll上,避免对page的影响
-    this.size = page.size; // 把最新的页码赋值在mescroll上,避免对page的影响
-    this.time = page.time; // 把最新的页码赋值在mescroll上,避免对page的影响
-    this.optUp.callback && this.optUp.callback(this); // 执行上拉回调
-  }
-};
-
-/* 设置page.num的值 */
-MeScroll.prototype.setPageNum = function (num) {
-  this.optUp.page.num = num - 1;
-};
-
-/* 设置page.size的值 */
-MeScroll.prototype.setPageSize = function (size) {
-  this.optUp.page.size = size;
-};
-
-/* 联网回调成功,结束下拉刷新和上拉加载
- * dataSize: 当前页的数据量(必传)
- * totalPage: 总页数(必传)
- * systime: 服务器时间 (可空)
- */
-MeScroll.prototype.endByPage = function (dataSize, totalPage, systime) {
-  var hasNext;
-  if (this.optUp.use && totalPage != null) hasNext = this.optUp.page.num < totalPage; // 是否还有下一页
-  this.endSuccess(dataSize, hasNext, systime);
-};
-
-/* 联网回调成功,结束下拉刷新和上拉加载
- * dataSize: 当前页的数据量(必传)
- * totalSize: 列表所有数据总数量(必传)
- * systime: 服务器时间 (可空)
- */
-MeScroll.prototype.endBySize = function (dataSize, totalSize, systime) {
-  var hasNext;
-  if (this.optUp.use && totalSize != null) {
-    var loadSize = (this.optUp.page.num - 1) * this.optUp.page.size + dataSize; // 已加载的数据总数
-    hasNext = loadSize < totalSize; // 是否还有下一页
-  }
-
-  this.endSuccess(dataSize, hasNext, systime);
-};
-
-/* 联网回调成功,结束下拉刷新和上拉加载
- * dataSize: 当前页的数据个数(不是所有页的数据总和),用于上拉加载判断是否还有下一页.如果不传,则会判断还有下一页
- * hasNext: 是否还有下一页,布尔类型;用来解决这个小问题:比如列表共有20条数据,每页加载10条,共2页.如果只根据dataSize判断,则需翻到第三页才会知道无更多数据,如果传了hasNext,则翻到第二页即可显示无更多数据.
- * systime: 服务器时间(可空);用来解决这个小问题:当准备翻下一页时,数据库新增了几条记录,此时翻下一页,前面的几条数据会和上一页的重复;这里传入了systime,那么upCallback的page.time就会有值,把page.time传给服务器,让后台过滤新加入的那几条记录
- */
-MeScroll.prototype.endSuccess = function (dataSize, hasNext, systime) {
-  var me = this;
-  // 结束下拉刷新
-  if (me.isDownScrolling) {
-    me.isDownEndSuccess = true;
-    me.endDownScroll();
-  }
-
-  // 结束上拉加载
-  if (me.optUp.use) {
-    var isShowNoMore; // 是否已无更多数据
-    if (dataSize != null) {
-      var pageNum = me.optUp.page.num; // 当前页码
-      var pageSize = me.optUp.page.size; // 每页长度
-      // 如果是第一页
-      if (pageNum === 1) {
-        if (systime) me.optUp.page.time = systime; // 设置加载列表数据第一页的时间
-      }
-
-      if (dataSize < pageSize || hasNext === false) {
-        // 返回的数据不满一页时,则说明已无更多数据
-        me.optUp.hasNext = false;
-        if (dataSize === 0 && pageNum === 1) {
-          // 如果第一页无任何数据且配置了空布局
-          isShowNoMore = false;
-          me.showEmpty();
-        } else {
-          // 总列表数少于配置的数量,则不显示无更多数据
-          var allDataSize = (pageNum - 1) * pageSize + dataSize;
-          if (allDataSize < me.optUp.noMoreSize) {
-            isShowNoMore = false;
-          } else {
-            isShowNoMore = true;
-          }
-          me.removeEmpty(); // 移除空布局
-        }
-      } else {
-        // 还有下一页
-        isShowNoMore = false;
-        me.optUp.hasNext = true;
-        me.removeEmpty(); // 移除空布局
-      }
-    }
-
-    // 隐藏上拉
-    me.endUpScroll(isShowNoMore);
-  }
-};
-
-/* 回调失败,结束下拉刷新和上拉加载 */
-MeScroll.prototype.endErr = function (errDistance) {
-  // 结束下拉,回调失败重置回原来的页码和时间
-  if (this.isDownScrolling) {
-    this.isDownEndSuccess = false;
-    var page = this.optUp.page;
-    if (page && this.prePageNum) {
-      page.num = this.prePageNum;
-      page.time = this.prePageTime;
-    }
-    this.endDownScroll();
-  }
-  // 结束上拉,回调失败重置回原来的页码
-  if (this.isUpScrolling) {
-    this.optUp.page.num--;
-    this.endUpScroll(false);
-    // 如果是mescroll-body,则需往回滚一定距离
-    if (this.isScrollBody && errDistance !== 0) {
-      // 不处理0
-      if (!errDistance) errDistance = this.optUp.errDistance; // 不传,则取默认
-      this.scrollTo(this.getScrollTop() - errDistance, 0); // 往上回滚的距离
-    }
-  }
-};
-
-/* 显示空布局 */
-MeScroll.prototype.showEmpty = function () {
-  this.optUp.empty.use && this.optUp.empty.onShow && this.optUp.empty.onShow(true);
-};
-
-/* 移除空布局 */
-MeScroll.prototype.removeEmpty = function () {
-  this.optUp.empty.use && this.optUp.empty.onShow && this.optUp.empty.onShow(false);
-};
-
-/* 显示回到顶部的按钮 */
-MeScroll.prototype.showTopBtn = function () {
-  if (!this.topBtnShow) {
-    this.topBtnShow = true;
-    this.optUp.toTop.onShow && this.optUp.toTop.onShow(true);
-  }
-};
-
-/* 隐藏回到顶部的按钮 */
-MeScroll.prototype.hideTopBtn = function () {
-  if (this.topBtnShow) {
-    this.topBtnShow = false;
-    this.optUp.toTop.onShow && this.optUp.toTop.onShow(false);
-  }
-};
-
-/* 获取滚动条的位置 */
-MeScroll.prototype.getScrollTop = function () {
-  return this.scrollTop || 0;
-};
-
-/* 记录滚动条的位置 */
-MeScroll.prototype.setScrollTop = function (y) {
-  this.scrollTop = y;
-};
-
-/* 滚动到指定位置 */
-MeScroll.prototype.scrollTo = function (y, t) {
-  this.myScrollTo && this.myScrollTo(y, t); // scrollview需自定义回到顶部方法
-};
-
-/* 自定义scrollTo */
-MeScroll.prototype.resetScrollTo = function (myScrollTo) {
-  this.myScrollTo = myScrollTo;
-};
-
-/* 滚动条到底部的距离 */
-MeScroll.prototype.getScrollBottom = function () {
-  return this.getScrollHeight() - this.getClientHeight() - this.getScrollTop();
-};
-
-/* 计步器
- star: 开始值
- end: 结束值
- callback(step,timer): 回调step值,计步器timer,可自行通过window.clearInterval(timer)结束计步器;
- t: 计步时长,传0则直接回调end值;不传则默认300ms
- rate: 周期;不传则默认30ms计步一次
- * */
-MeScroll.prototype.getStep = function (star, end, callback, t, rate) {
-  var diff = end - star; // 差值
-  if (t === 0 || diff === 0) {
-    callback && callback(end);
-    return;
-  }
-  t = t || 300; // 时长 300ms
-  rate = rate || 30; // 周期 30ms
-  var count = t / rate; // 次数
-  var step = diff / count; // 步长
-  var i = 0; // 计数
-  var timer = setInterval(function () {
-    if (i < count - 1) {
-      star += step;
-      callback && callback(star, timer);
-      i++;
-    } else {
-      callback && callback(end, timer); // 最后一次直接设置end,避免计算误差
-      clearInterval(timer);
-    }
-  }, rate);
-};
-
-/* 滚动容器的高度 */
-MeScroll.prototype.getClientHeight = function (isReal) {
-  var h = this.clientHeight || 0;
-  if (h === 0 && isReal !== true) {
-    // 未获取到容器的高度,可临时取body的高度 (可能会有误差)
-    h = this.getBodyHeight();
-  }
-  return h;
-};
-MeScroll.prototype.setClientHeight = function (h) {
-  this.clientHeight = h;
-};
-
-/* 滚动内容的高度 */
-MeScroll.prototype.getScrollHeight = function () {
-  return this.scrollHeight || 0;
-};
-MeScroll.prototype.setScrollHeight = function (h) {
-  this.scrollHeight = h;
-};
-
-/* body的高度 */
-MeScroll.prototype.getBodyHeight = function () {
-  return this.bodyHeight || 0;
-};
-MeScroll.prototype.setBodyHeight = function (h) {
-  this.bodyHeight = h;
-};
-
-/* 阻止浏览器默认滚动事件 */
-MeScroll.prototype.preventDefault = function (e) {
-  // 小程序不支持e.preventDefault, 已在wxs中禁止
-  // app的bounce只能通过配置pages.json的style.app-plus.bounce为"none"来禁止, 或使用renderjs禁止
-  // cancelable:是否可以被禁用; defaultPrevented:是否已经被禁用
-  if (e && e.cancelable && !e.defaultPrevented) e.preventDefault();
-};
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-
-/***/ 226:
-/*!**********************************************************************************************************!*\
-  !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-uni-option.js ***!
-  \**********************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// 全局配置
-// mescroll-body 和 mescroll-uni 通用
-var GlobalOption = {
-  down: {
-    // 其他down的配置参数也可以写,这里只展示了常用的配置:
-    offset: 80,
-    // 在列表顶部,下拉大于80px,松手即可触发下拉刷新的回调
-    native: false // 是否使用系统自带的下拉刷新; 默认false; 仅在mescroll-body生效 (值为true时,还需在pages配置enablePullDownRefresh:true;详请参考mescroll-native的案例)
-  },
-
-  up: {
-    // 其他up的配置参数也可以写,这里只展示了常用的配置:
-    offset: 150,
-    // 距底部多远时,触发upCallback,仅mescroll-uni生效 ( mescroll-body配置的是pages.json的 onReachBottomDistance )
-    toTop: {
-      // 回到顶部按钮,需配置src才显示
-      src: "https://www.mescroll.com/img/mescroll-totop.png",
-      // 图片路径 (建议放入static目录, 如 /static/img/mescroll-totop.png )
-      offset: 1000,
-      // 列表滚动多少距离才显示回到顶部按钮,默认1000px
-      right: 20,
-      // 到右边的距离, 默认20 (支持"20rpx", "20px", "20%"格式的值, 纯数字则默认单位rpx)
-      bottom: 120,
-      // 到底部的距离, 默认120 (支持"20rpx", "20px", "20%"格式的值, 纯数字则默认单位rpx)
-      width: 72 // 回到顶部图标的宽度, 默认72 (支持"20rpx", "20px", "20%"格式的值, 纯数字则默认单位rpx)
-    },
-
-    empty: {
-      use: true,
-      // 是否显示空布局
-      icon: "https://www.mescroll.com/img/mescroll-empty.png" // 图标路径 (建议放入static目录, 如 /static/img/mescroll-empty.png )
-    }
-  },
-
-  // 国际化配置
-  i18n: {
-    // 中文
-    zh: {
-      down: {
-        textInOffset: '下拉刷新',
-        // 下拉的距离在offset范围内的提示文本
-        textOutOffset: '释放更新',
-        // 下拉的距离大于offset范围的提示文本
-        textLoading: '加载中 ...',
-        // 加载中的提示文本
-        textSuccess: '加载成功',
-        // 加载成功的文本
-        textErr: '加载失败' // 加载失败的文本
-      },
-
-      up: {
-        textLoading: '加载中 ...',
-        // 加载中的提示文本
-        textNoMore: '-- END --',
-        // 没有更多数据的提示文本
-        empty: {
-          tip: '~ 空空如也 ~' // 空提示
-        }
-      }
-    },
-
-    // 英文
-    en: {
-      down: {
-        textInOffset: 'drop down refresh',
-        textOutOffset: 'release updates',
-        textLoading: 'loading ...',
-        textSuccess: 'loaded successfully',
-        textErr: 'loading failed'
-      },
-      up: {
-        textLoading: 'loading ...',
-        textNoMore: '-- END --',
-        empty: {
-          tip: '~ absolutely empty ~'
-        }
-      }
-    }
-  }
-};
-var _default = GlobalOption;
-exports.default = _default;
-
-/***/ }),
-
-/***/ 227:
-/*!****************************************************************************************************!*\
-  !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-i18n.js ***!
-  \****************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// 国际化工具类
-var mescrollI18n = {
-  // 默认语言
-  def: "zh",
-  // 获取当前语言类型
-  getType: function getType() {
-    return uni.getStorageSync("mescroll-i18n") || this.def;
-  },
-  // 设置当前语言类型
-  setType: function setType(type) {
-    uni.setStorageSync("mescroll-i18n", type);
-  }
-};
-var _default = mescrollI18n;
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-
-/***/ 228:
-/*!*************************************************************************************************!*\
-  !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/wxs/mixins.js ***!
-  \*************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// 定义在wxs (含renderjs) 逻辑层的数据和方法, 与视图层相互通信
-var WxsMixin = {
-  data: function data() {
-    return {
-      // 传入wxs视图层的数据 (响应式)
-      wxsProp: {
-        optDown: {},
-        // 下拉刷新的配置
-        scrollTop: 0,
-        // 滚动条的距离
-        bodyHeight: 0,
-        // body的高度
-        isDownScrolling: false,
-        // 是否正在下拉刷新中
-        isUpScrolling: false,
-        // 是否正在上拉加载中
-        isScrollBody: true,
-        // 是否为mescroll-body滚动
-        isUpBoth: true,
-        // 上拉加载时,是否同时可以下拉刷新
-        t: 0 // 数据更新的标记 (只有数据更新了,才会触发wxs的Observer)
-      },
-
-      // 标记调用wxs视图层的方法
-      callProp: {
-        callType: '',
-        // 方法名
-        t: 0 // 数据更新的标记 (只有数据更新了,才会触发wxs的Observer)
-      },
-
-      // 不用wxs的平台使用此处的wxsBiz对象,抹平wxs的写法 (微信小程序和APP使用的wxsBiz对象是./wxs/wxs.wxs)
-
-      // 不用renderjs的平台使用此处的renderBiz对象,抹平renderjs的写法 (app 和 h5 使用的renderBiz对象是./wxs/renderjs.js)
-
-      renderBiz: {
-        propObserver: function propObserver() {} // 抹平renderjs的写法
-      }
-    };
-  },
-  methods: {
-    // wxs视图层调用逻辑层的回调
-    wxsCall: function wxsCall(msg) {
-      if (msg.type === 'setWxsProp') {
-        // 更新wxsProp数据 (值改变才触发更新)
-        this.wxsProp = {
-          optDown: this.mescroll.optDown,
-          scrollTop: this.mescroll.getScrollTop(),
-          bodyHeight: this.mescroll.getBodyHeight(),
-          isDownScrolling: this.mescroll.isDownScrolling,
-          isUpScrolling: this.mescroll.isUpScrolling,
-          isUpBoth: this.mescroll.optUp.isBoth,
-          isScrollBody: this.mescroll.isScrollBody,
-          t: Date.now()
-        };
-      } else if (msg.type === 'setLoadType') {
-        // 设置inOffset,outOffset的状态
-        this.downLoadType = msg.downLoadType;
-        // 状态挂载到mescroll对象, 以便在其他组件中使用, 比如<me-video>中
-        this.$set(this.mescroll, 'downLoadType', this.downLoadType);
-        // 重置是否加载成功的状态
-        this.$set(this.mescroll, 'isDownEndSuccess', null);
-      } else if (msg.type === 'triggerDownScroll') {
-        // 主动触发下拉刷新
-        this.mescroll.triggerDownScroll();
-      } else if (msg.type === 'endDownScroll') {
-        // 结束下拉刷新
-        this.mescroll.endDownScroll();
-      } else if (msg.type === 'triggerUpScroll') {
-        // 主动触发上拉加载
-        this.mescroll.triggerUpScroll(true);
-      }
-    }
-  },
-  mounted: function mounted() {
-    var _this = this;
-    // 配置主动触发wxs显示加载进度的回调
-    this.mescroll.optDown.afterLoading = function () {
-      _this.callProp = {
-        callType: "showLoading",
-        t: Date.now()
-      }; // 触发wxs的方法 (值改变才触发更新)
-    };
-    // 配置主动触发wxs隐藏加载进度的回调
-    this.mescroll.optDown.afterEndDownScroll = function () {
-      _this.callProp = {
-        callType: "endDownScroll",
-        t: Date.now()
-      }; // 触发wxs的方法 (值改变才触发更新)
-      var delay = 300 + (_this.mescroll.optDown.beforeEndDelay || 0);
-      setTimeout(function () {
-        if (_this.downLoadType === 4 || _this.downLoadType === 0) {
-          _this.callProp = {
-            callType: "clearTransform",
-            t: Date.now()
-          }; // 触发wxs的方法 (值改变才触发更新)
-        }
-        // 状态挂载到mescroll对象, 以便在其他组件中使用, 比如<me-video>中
-        _this.$set(_this.mescroll, 'downLoadType', _this.downLoadType);
-      }, delay);
-    };
-    // 初始化wxs的数据
-    this.wxsCall({
-      type: 'setWxsProp'
-    });
-  }
-};
-var _default = WxsMixin;
 exports.default = _default;
 
 /***/ }),
@@ -12297,7 +12233,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"blog-uni","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"blog-uni","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -12318,14 +12254,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"blog-uni","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"blog-uni","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"blog-uni","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"blog-uni","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -12421,7 +12357,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"blog-uni","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"blog-uni","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -12850,141 +12786,6 @@ internalMixin(Vue);
 
 /***/ }),
 
-/***/ 289:
-/*!**********************************************************************************************************!*\
-  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
-  \**********************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.createAnimation = createAnimation;
-var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 10));
-var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 22));
-var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 23));
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-// const defaultOption = {
-// 	duration: 300,
-// 	timingFunction: 'linear',
-// 	delay: 0,
-// 	transformOrigin: '50% 50% 0'
-// }
-var MPAnimation = /*#__PURE__*/function () {
-  function MPAnimation(options, _this) {
-    (0, _classCallCheck2.default)(this, MPAnimation);
-    this.options = options;
-    // 在iOS10+QQ小程序平台下，传给原生的对象一定是个普通对象而不是Proxy对象，否则会报parameter should be Object instead of ProxyObject的错误
-    this.animation = uni.createAnimation(_objectSpread({}, options));
-    this.currentStepAnimates = {};
-    this.next = 0;
-    this.$ = _this;
-  }
-  (0, _createClass2.default)(MPAnimation, [{
-    key: "_nvuePushAnimates",
-    value: function _nvuePushAnimates(type, args) {
-      var aniObj = this.currentStepAnimates[this.next];
-      var styles = {};
-      if (!aniObj) {
-        styles = {
-          styles: {},
-          config: {}
-        };
-      } else {
-        styles = aniObj;
-      }
-      if (animateTypes1.includes(type)) {
-        if (!styles.styles.transform) {
-          styles.styles.transform = '';
-        }
-        var unit = '';
-        if (type === 'rotate') {
-          unit = 'deg';
-        }
-        styles.styles.transform += "".concat(type, "(").concat(args + unit, ") ");
-      } else {
-        styles.styles[type] = "".concat(args);
-      }
-      this.currentStepAnimates[this.next] = styles;
-    }
-  }, {
-    key: "_animateRun",
-    value: function _animateRun() {
-      var styles = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var ref = this.$.$refs['ani'].ref;
-      if (!ref) return;
-      return new Promise(function (resolve, reject) {
-        nvueAnimation.transition(ref, _objectSpread({
-          styles: styles
-        }, config), function (res) {
-          resolve();
-        });
-      });
-    }
-  }, {
-    key: "_nvueNextAnimate",
-    value: function _nvueNextAnimate(animates) {
-      var _this2 = this;
-      var step = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-      var fn = arguments.length > 2 ? arguments[2] : undefined;
-      var obj = animates[step];
-      if (obj) {
-        var styles = obj.styles,
-          config = obj.config;
-        this._animateRun(styles, config).then(function () {
-          step += 1;
-          _this2._nvueNextAnimate(animates, step, fn);
-        });
-      } else {
-        this.currentStepAnimates = {};
-        typeof fn === 'function' && fn();
-        this.isEnd = true;
-      }
-    }
-  }, {
-    key: "step",
-    value: function step() {
-      var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      this.animation.step(config);
-      return this;
-    }
-  }, {
-    key: "run",
-    value: function run(fn) {
-      this.$.animationData = this.animation.export();
-      this.$.timer = setTimeout(function () {
-        typeof fn === 'function' && fn();
-      }, this.$.durationTime);
-    }
-  }]);
-  return MPAnimation;
-}();
-var animateTypes1 = ['matrix', 'matrix3d', 'rotate', 'rotate3d', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scale3d', 'scaleX', 'scaleY', 'scaleZ', 'skew', 'skewX', 'skewY', 'translate', 'translate3d', 'translateX', 'translateY', 'translateZ'];
-var animateTypes2 = ['opacity', 'backgroundColor'];
-var animateTypes3 = ['width', 'height', 'left', 'right', 'top', 'bottom'];
-animateTypes1.concat(animateTypes2, animateTypes3).forEach(function (type) {
-  MPAnimation.prototype[type] = function () {
-    var _this$animation;
-    (_this$animation = this.animation)[type].apply(_this$animation, arguments);
-    return this;
-  };
-});
-function createAnimation(option, _this) {
-  if (!_this) return;
-  clearTimeout(_this.timer);
-  return new MPAnimation(option, _this);
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-
 /***/ 3:
 /*!**********************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/interopRequireDefault.js ***!
@@ -13130,30 +12931,138 @@ function normalizeComponent (
 
 /***/ }),
 
-/***/ 314:
-/*!**************************************************!*\
-  !*** D:/Html/githubPro/blog-uni/api/hotVideo.js ***!
-  \**************************************************/
+/***/ 318:
+/*!**********************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
+  \**********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(uni) {
 
 var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getHotVideoList = getHotVideoList;
-var _request = _interopRequireDefault(__webpack_require__(/*! ../utils/request.js */ 40));
-//热播列表
-function getHotVideoList(data) {
-  return (0, _request.default)({
-    url: '/video/list',
-    method: 'GET',
-    data: data
-  });
+exports.createAnimation = createAnimation;
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 10));
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 22));
+var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 23));
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+// const defaultOption = {
+// 	duration: 300,
+// 	timingFunction: 'linear',
+// 	delay: 0,
+// 	transformOrigin: '50% 50% 0'
+// }
+var MPAnimation = /*#__PURE__*/function () {
+  function MPAnimation(options, _this) {
+    (0, _classCallCheck2.default)(this, MPAnimation);
+    this.options = options;
+    // 在iOS10+QQ小程序平台下，传给原生的对象一定是个普通对象而不是Proxy对象，否则会报parameter should be Object instead of ProxyObject的错误
+    this.animation = uni.createAnimation(_objectSpread({}, options));
+    this.currentStepAnimates = {};
+    this.next = 0;
+    this.$ = _this;
+  }
+  (0, _createClass2.default)(MPAnimation, [{
+    key: "_nvuePushAnimates",
+    value: function _nvuePushAnimates(type, args) {
+      var aniObj = this.currentStepAnimates[this.next];
+      var styles = {};
+      if (!aniObj) {
+        styles = {
+          styles: {},
+          config: {}
+        };
+      } else {
+        styles = aniObj;
+      }
+      if (animateTypes1.includes(type)) {
+        if (!styles.styles.transform) {
+          styles.styles.transform = '';
+        }
+        var unit = '';
+        if (type === 'rotate') {
+          unit = 'deg';
+        }
+        styles.styles.transform += "".concat(type, "(").concat(args + unit, ") ");
+      } else {
+        styles.styles[type] = "".concat(args);
+      }
+      this.currentStepAnimates[this.next] = styles;
+    }
+  }, {
+    key: "_animateRun",
+    value: function _animateRun() {
+      var styles = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var ref = this.$.$refs['ani'].ref;
+      if (!ref) return;
+      return new Promise(function (resolve, reject) {
+        nvueAnimation.transition(ref, _objectSpread({
+          styles: styles
+        }, config), function (res) {
+          resolve();
+        });
+      });
+    }
+  }, {
+    key: "_nvueNextAnimate",
+    value: function _nvueNextAnimate(animates) {
+      var _this2 = this;
+      var step = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+      var fn = arguments.length > 2 ? arguments[2] : undefined;
+      var obj = animates[step];
+      if (obj) {
+        var styles = obj.styles,
+          config = obj.config;
+        this._animateRun(styles, config).then(function () {
+          step += 1;
+          _this2._nvueNextAnimate(animates, step, fn);
+        });
+      } else {
+        this.currentStepAnimates = {};
+        typeof fn === 'function' && fn();
+        this.isEnd = true;
+      }
+    }
+  }, {
+    key: "step",
+    value: function step() {
+      var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      this.animation.step(config);
+      return this;
+    }
+  }, {
+    key: "run",
+    value: function run(fn) {
+      this.$.animationData = this.animation.export();
+      this.$.timer = setTimeout(function () {
+        typeof fn === 'function' && fn();
+      }, this.$.durationTime);
+    }
+  }]);
+  return MPAnimation;
+}();
+var animateTypes1 = ['matrix', 'matrix3d', 'rotate', 'rotate3d', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scale3d', 'scaleX', 'scaleY', 'scaleZ', 'skew', 'skewX', 'skewY', 'translate', 'translate3d', 'translateX', 'translateY', 'translateZ'];
+var animateTypes2 = ['opacity', 'backgroundColor'];
+var animateTypes3 = ['width', 'height', 'left', 'right', 'top', 'bottom'];
+animateTypes1.concat(animateTypes2, animateTypes3).forEach(function (type) {
+  MPAnimation.prototype[type] = function () {
+    var _this$animation;
+    (_this$animation = this.animation)[type].apply(_this$animation, arguments);
+    return this;
+  };
+});
+function createAnimation(option, _this) {
+  if (!_this) return;
+  clearTimeout(_this.timer);
+  return new MPAnimation(option, _this);
 }
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 
@@ -13176,6 +13085,7 @@ var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 24));
 var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 33));
 var _search = _interopRequireDefault(__webpack_require__(/*! ./modules/search */ 34));
 var _user = _interopRequireDefault(__webpack_require__(/*! ./modules/user */ 35));
+var _video = _interopRequireDefault(__webpack_require__(/*! ./modules/video */ 366));
 //1.导入vue和vuex实例
 
 //2.安装vuex插件
@@ -13186,7 +13096,8 @@ var store = new _vuex.default.Store({
   modules: {
     search: _search.default,
     //模块名称
-    user: _user.default
+    user: _user.default,
+    video: _video.default
   }
 });
 var _default = store;
@@ -14691,6 +14602,37 @@ module.exports = runtime;
 
 /***/ }),
 
+/***/ 366:
+/*!*********************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/store/modules/video.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  namespaced: true,
+  state: function state() {
+    return {
+      videoData: {}
+    };
+  },
+  mutations: {
+    setVideoData: function setVideoData(state, data) {
+      state.videoData = data;
+    }
+  }
+};
+exports.default = _default;
+
+/***/ }),
+
 /***/ 37:
 /*!*******************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/regeneratorRuntime.js ***!
@@ -15817,6 +15759,107 @@ module.exports = _iterableToArrayLimit, module.exports.__esModule = true, module
 
 /***/ }),
 
+/***/ 61:
+/*!******************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-mixins.js ***!
+  \******************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// mescroll-body 和 mescroll-uni 通用
+var MescrollMixin = {
+  data: function data() {
+    return {
+      mescroll: null //mescroll实例对象
+    };
+  },
+  // 注册系统自带的下拉刷新 (配置down.native为true时生效, 还需在pages配置enablePullDownRefresh:true;详请参考mescroll-native的案例)
+  onPullDownRefresh: function onPullDownRefresh() {
+    this.mescroll && this.mescroll.onPullDownRefresh();
+  },
+  // 注册列表滚动事件,用于判定在顶部可下拉刷新,在指定位置可显示隐藏回到顶部按钮 (此方法为页面生命周期,无法在子组件中触发, 仅在mescroll-body生效)
+  onPageScroll: function onPageScroll(e) {
+    this.mescroll && this.mescroll.onPageScroll(e);
+  },
+  // 注册滚动到底部的事件,用于上拉加载 (此方法为页面生命周期,无法在子组件中触发, 仅在mescroll-body生效)
+  onReachBottom: function onReachBottom() {
+    this.mescroll && this.mescroll.onReachBottom();
+  },
+  methods: {
+    // mescroll组件初始化的回调,可获取到mescroll对象
+    mescrollInit: function mescrollInit(mescroll) {
+      this.mescroll = mescroll;
+    },
+    // 下拉刷新的回调 (mixin默认resetUpScroll)
+    downCallback: function downCallback() {
+      var _this = this;
+      if (this.mescroll.optUp.use) {
+        this.mescroll.resetUpScroll();
+      } else {
+        setTimeout(function () {
+          _this.mescroll.endSuccess();
+        }, 500);
+      }
+    },
+    // 上拉加载的回调
+    upCallback: function upCallback() {
+      var _this2 = this;
+      // mixin默认延时500自动结束加载
+      setTimeout(function () {
+        _this2.mescroll.endErr();
+      }, 500);
+    }
+  }
+};
+var _default = MescrollMixin;
+exports.default = _default;
+
+/***/ }),
+
+/***/ 62:
+/*!**************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/api/hotVideo.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getHotVideoList = getHotVideoList;
+exports.getVideoDanmuList = getVideoDanmuList;
+var _request = _interopRequireDefault(__webpack_require__(/*! ../utils/request.js */ 40));
+//热播列表
+function getHotVideoList(data) {
+  return (0, _request.default)({
+    url: '/video/list',
+    method: 'GET',
+    data: data
+  });
+}
+
+//弹幕列表
+function getVideoDanmuList(data) {
+  return (0, _request.default)({
+    url: '/video/danmu',
+    method: 'GET',
+    data: data
+  });
+}
+
+/***/ }),
+
 /***/ 7:
 /*!***************************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js ***!
@@ -15837,7 +15880,7 @@ module.exports = _unsupportedIterableToArray, module.exports.__esModule = true, 
 
 /***/ }),
 
-/***/ 73:
+/***/ 75:
 /*!************************************************!*\
   !*** D:/Html/githubPro/blog-uni/api/search.js ***!
   \************************************************/
@@ -15882,7 +15925,7 @@ function getSearchResult(param) {
 
 /***/ }),
 
-/***/ 74:
+/***/ 76:
 /*!***********************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/mescroll-uni/components/mescroll-uni/mixins/mescroll-comp.js ***!
   \***********************************************************************************************************/
@@ -15966,7 +16009,7 @@ module.exports = _arrayLikeToArray, module.exports.__esModule = true, module.exp
 
 /***/ }),
 
-/***/ 83:
+/***/ 85:
 /*!*************************************************!*\
   !*** D:/Html/githubPro/blog-uni/api/article.js ***!
   \*************************************************/
