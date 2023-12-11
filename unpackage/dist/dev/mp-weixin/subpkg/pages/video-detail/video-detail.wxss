@@ -21,4 +21,13 @@
   width: 100%;
   height: 250px;
 }
+.video-detail-container .danmu-wrap.data-v-10db780f {
+  padding: 16rpx 20rpx;
+  margin-top: 16rpx;
+  box-shadow: 0 -1px 2px 0 #bababa;
+}
+.video-detail-container .danmu-wrap .danmu-tit.data-v-10db780f {
+  font-size: 20px;
+  color: #333;
+}
 

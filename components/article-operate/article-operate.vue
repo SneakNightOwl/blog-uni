@@ -39,7 +39,8 @@
 		props: {
 			articleData: {
 				type: Object,
-				required: true
+				default:()=>({ })
+				//默认给个空对象就行了，因为其他页面也可能用到这个组件
 			}
 			// isCollect:{
 			// 	type: Boolean,

@@ -197,12 +197,14 @@
 					uni.showLoading({
 						title:'加载中'
 					})
-					const { data: res } = await userPraise({
+					const res = await userPraise({
 						articleId: this.articleId,
 						isPraise: !this.articleData.isPraise
 					})
-					// console.log(res,'点赞');
-					this.articleData.isPraise = res.isPraise;
+					console.log(res,'点赞');
+					if(res.success) {
+					  this.articleData.isPraise = !this.articleData.isPraise;
+					}
 					uni.hideLoading();//强制关闭loading
 				}
 			},
@@ -216,12 +218,14 @@
 					uni.showLoading({
 						title:'加载中'
 					})
-					const { data: res } = await userCollect({
+					const res = await userCollect({
 						articleId: this.articleId,
 						isCollect: !this.articleData.isCollect
 					})
 					// console.log(res,'收藏');
-					this.articleData.isCollect = res.isCollect;
+					if(res.success) {
+					  this.articleData.isCollect = !this.articleData.isCollect;	
+					}
 					uni.hideLoading();//强制关闭loading
 				}
 			}

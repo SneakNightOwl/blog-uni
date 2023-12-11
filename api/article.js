@@ -26,7 +26,7 @@ export function fllowUser(data) {
 	})
 }
 
-//发送评论
+//发送评论(弹幕)
 export function sendComment(data) {
 	return request({
 		url:'/user/article/comment',
@@ -37,7 +37,7 @@ export function sendComment(data) {
 
 //点赞
 export function userPraise(data) {
-	return({
+	return request({
 		url:'/user/praise',
 		method: 'GET',
 		data
@@ -46,7 +46,7 @@ export function userPraise(data) {
 
 //收藏
 export function userCollect(data) {
-	return({
+	return request({
 		url:'/user/collect',
 		method: 'GET',
 		data
