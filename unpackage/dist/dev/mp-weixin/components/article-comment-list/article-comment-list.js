@@ -80,7 +80,7 @@ var components
 try {
   components = {
     articleCommentItem: function () {
-      return __webpack_require__.e(/*! import() | components/article-comment-item/article-comment-item */ "components/article-comment-item/article-comment-item").then(__webpack_require__.bind(null, /*! @/components/article-comment-item/article-comment-item.vue */ 301))
+      return __webpack_require__.e(/*! import() | components/article-comment-item/article-comment-item */ "components/article-comment-item/article-comment-item").then(__webpack_require__.bind(null, /*! @/components/article-comment-item/article-comment-item.vue */ 224))
     },
     mescrollBody: function () {
       return Promise.all(/*! import() | uni_modules/mescroll-uni/components/mescroll-body/mescroll-body */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/mescroll-uni/components/mescroll-body/mescroll-body")]).then(__webpack_require__.bind(null, /*! @/uni_modules/mescroll-uni/components/mescroll-body/mescroll-body.vue */ 135))

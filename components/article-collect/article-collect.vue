@@ -14,7 +14,7 @@
 			articleData: {
 				type: Object,
 				required: true,
-				default:()=>({})
+				// default:()=>({})
 			}
 			// isCollect:{
 			// 	type: Boolean,

@@ -129,15 +129,13 @@ exports.default = void 0;
 //
 //
 //
-var _default2 = {
+var _default = {
   name: "article-collect",
   props: {
     articleData: {
       type: Object,
-      required: true,
-      default: function _default() {
-        return {};
-      }
+      required: true
+      // default:()=>({})
     }
     // isCollect:{
     // 	type: Boolean,
@@ -148,7 +146,7 @@ var _default2 = {
     return {};
   }
 };
-exports.default = _default2;
+exports.default = _default;
 
 /***/ }),
 

@@ -1,7 +1,14 @@
 <template>
 	<view class="hot-video-container">
 		<!-- 使用mescroll-body 包裹列表 -->
-		<mescroll-body ref="mescrollRef" @init="mescrollInit" @down="downCallback" @up="upCallback">
+		<mescroll-body 
+		      ref="mescrollRef" 
+		     @init="mescrollInit" 
+			 @down="downCallback" 
+			 @up="upCallback"
+			 :up="{
+				 textNoMore:'-- 我也是有极限的 --'
+			 }">
 			<block v-for="(item , index) in hotVideoList" :key="index">
 				<hot-video-item :data="item" @click="onInfoClick"></hot-video-item>
 			</block>
@@ -44,6 +51,10 @@
 					this.hotVideoList = res.list;
 				}else {
 					this.hotVideoList = [...this.hotVideoList, ...res.list];
+					if(res.list.length === 0) {
+						//数据全部加载完 结束加载动画
+						this.mescroll.endSuccess(this.size, res.list.length>0);
+					}
 				}
 				console.log(res,'热播列表')
 			},

@@ -215,6 +215,10 @@ var _default = {
                   _this.hotVideoList = res.list;
                 } else {
                   _this.hotVideoList = [].concat((0, _toConsumableArray2.default)(_this.hotVideoList), (0, _toConsumableArray2.default)(res.list));
+                  if (res.list.length === 0) {
+                    //数据全部加载完 结束加载动画
+                    _this.mescroll.endSuccess(_this.size, res.list.length > 0);
+                  }
                 }
                 console.log(res, '热播列表');
               case 6:

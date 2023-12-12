@@ -5583,33 +5583,6 @@ module.exports = _classCallCheck, module.exports.__esModule = true, module.expor
 
 /***/ }),
 
-/***/ 229:
-/*!*****************************************************************************************************!*\
-  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/index.js ***!
-  \*****************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 230));
-var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 231));
-var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 232));
-var _default = {
-  en: _en.default,
-  'zh-Hans': _zhHans.default,
-  'zh-Hant': _zhHant.default
-};
-exports.default = _default;
-
-/***/ }),
-
 /***/ 23:
 /*!************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/createClass.js ***!
@@ -5639,7 +5612,34 @@ module.exports = _createClass, module.exports.__esModule = true, module.exports[
 
 /***/ }),
 
-/***/ 230:
+/***/ 236:
+/*!*****************************************************************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/index.js ***!
+  \*****************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 237));
+var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 238));
+var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 239));
+var _default = {
+  en: _en.default,
+  'zh-Hans': _zhHans.default,
+  'zh-Hant': _zhHant.default
+};
+exports.default = _default;
+
+/***/ }),
+
+/***/ 237:
 /*!****************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/en.json ***!
   \****************************************************************************************************/
@@ -5650,7 +5650,7 @@ module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-
 
 /***/ }),
 
-/***/ 231:
+/***/ 238:
 /*!*********************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/zh-Hans.json ***!
   \*********************************************************************************************************/
@@ -5661,7 +5661,7 @@ module.exports = JSON.parse("{\"uni-search-bar.cancel\":\"cancel\",\"uni-search-
 
 /***/ }),
 
-/***/ 232:
+/***/ 239:
 /*!*********************************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-search-bar/components/uni-search-bar/i18n/zh-Hant.json ***!
   \*********************************************************************************************************/
@@ -11753,7 +11753,7 @@ internalMixin(Vue);
 
 /***/ }),
 
-/***/ 240:
+/***/ 247:
 /*!**************************************************************************************!*\
   !*** D:/Html/githubPro/blog-uni/uni_modules/uni-icons/components/uni-icons/icons.js ***!
   \**************************************************************************************/
@@ -14924,6 +14924,32 @@ module.exports = _regeneratorRuntime, module.exports.__esModule = true, module.e
 
 /***/ }),
 
+/***/ 370:
+/*!*************************************************!*\
+  !*** D:/Html/githubPro/blog-uni/utils/index.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getRandomColor = getRandomColor;
+function getRandomColor() {
+  var rgb = [];
+  for (var i = 0; i < 3; ++i) {
+    var color = Math.floor(Math.random() * 256).toString(16);
+    color = color.length == 1 ? '0' + color : color;
+    rgb.push(color);
+  }
+  return '#' + rgb.join('');
+}
+
+/***/ }),
+
 /***/ 38:
 /*!*****************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/asyncToGenerator.js ***!
@@ -15087,10 +15113,14 @@ exports.default = _default;
 "use strict";
 
 
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 3);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 10));
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var _default = {
   namespaced: true,
   state: function state() {
@@ -15101,6 +15131,11 @@ var _default = {
   mutations: {
     setVideoData: function setVideoData(state, data) {
       state.videoData = data;
+    },
+    //修改videoData
+    editVideoData: function editVideoData(state, data) {
+      //深拷贝 解构赋值  合并对象
+      state.videoData = _objectSpread(_objectSpread({}, state.videoData), data);
     }
   }
 };

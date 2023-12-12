@@ -22,7 +22,7 @@
   height: 250px;
 }
 .video-detail-container .danmu-wrap.data-v-10db780f {
-  padding: 16rpx 20rpx;
+  padding: 16rpx 20rpx 80px;
   margin-top: 16rpx;
   box-shadow: 0 -1px 2px 0 #bababa;
 }

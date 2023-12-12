@@ -16,12 +16,14 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 36));
+var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 12));
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/toConsumableArray */ 17));
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 38));
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 10));
 var _vuex = __webpack_require__(/*! vuex */ 33);
 var _hotVideo = __webpack_require__(/*! ../../../api/hotVideo.js */ 63);
 var _article = __webpack_require__(/*! ../../../api/article.js */ 86);
+var _index = __webpack_require__(/*! ../../../utils/index.js */ 370);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var _default = {
@@ -34,7 +36,8 @@ var _default = {
       isCommitShow: true,
       // 是否显示评论区的文本域
       //danmuValue: '',  //需要渲染的弹幕内容
-      videoContext: null
+      videoContext: null,
+      isshowLoading: true //默认处于加载中
     };
   },
   created: function created() {
@@ -44,7 +47,7 @@ var _default = {
     this.videoContext = uni.createVideoContext('myVideo');
   },
   computed: _objectSpread({}, (0, _vuex.mapState)('video', ['videoData'])),
-  methods: {
+  methods: _objectSpread(_objectSpread(_objectSpread({}, (0, _vuex.mapMutations)('video', ['editVideoData'])), (0, _vuex.mapActions)('user', ['isLogin'])), {}, {
     loadDanmuList: function loadDanmuList() {
       var _this = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
@@ -62,9 +65,10 @@ var _default = {
                 res = _yield$getVideoDanmuL.data;
                 _this.danmuList = (0, _toConsumableArray2.default)(res.list); //深拷贝防止数据污染
                 _this.commentList = (0, _toConsumableArray2.default)(res.list);
+                _this.isshowLoading = false;
                 console.log(res.list, '弹幕列表');
                 // console.log(this.videoData,'videoData');
-              case 7:
+              case 8:
               case "end":
                 return _context.stop();
             }
@@ -132,7 +136,8 @@ var _default = {
     sendDanmuEnd: function sendDanmuEnd(data) {
       this.videoContext.sendDanmu({
         text: data.info.content,
-        color: '#33ff33'
+        color: (0, _index.getRandomColor)()
+        // color: '#33ff33'
       });
       //添加弹幕到数据源
       this.commentList.unshift(data.info);
@@ -143,8 +148,106 @@ var _default = {
       //关闭标记
       this.isCommitShow = false;
       // this.danmuValue = '';
+    },
+    //点赞
+    onPraiseClick: function onPraiseClick() {
+      var _this4 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        var islogin, res;
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return _this4.isLogin();
+              case 2:
+                islogin = _context3.sent;
+                if (islogin) {
+                  _context3.next = 7;
+                  break;
+                }
+                return _context3.abrupt("return");
+              case 7:
+                uni.showLoading({
+                  title: '加载中'
+                });
+                //这个估计是扒的接口，videoData里面本身没有isPraise和isCollect属性
+                if ((0, _typeof2.default)(_this4.videoData.isPraise) == undefined) {
+                  _this4.videoData.isPraise = false;
+                }
+                _context3.next = 11;
+                return (0, _article.userPraise)({
+                  articleId: _this4.videoData.id,
+                  isPraise: !_this4.videoData.isPraise
+                });
+              case 11:
+                res = _context3.sent;
+                // console.log(res,'点赞');
+                if (res.success) {
+                  _this4.videoData.isPraise = !_this4.videoData.isPraise;
+                  _this4.editVideoData(_this4.videoData);
+                  // console.log(this.videoData,'操作后的videoData')
+                }
+
+                uni.hideLoading(); //强制关闭loading
+              case 14:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    //收藏
+    onCollectClick: function onCollectClick() {
+      var _this5 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        var islogin, res;
+        return _regenerator.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return _this5.isLogin();
+              case 2:
+                islogin = _context4.sent;
+                if (islogin) {
+                  _context4.next = 7;
+                  break;
+                }
+                return _context4.abrupt("return");
+              case 7:
+                uni.showLoading({
+                  title: '加载中'
+                });
+                // console.log(this.videoData,'收藏前的videoData')
+                if ((0, _typeof2.default)(_this5.videoData.isCollect) == undefined) {
+                  _this5.videoData.isCollect = false;
+                }
+                _context4.next = 11;
+                return (0, _article.userCollect)({
+                  articleId: _this5.videoData.id,
+                  isCollect: !_this5.videoData.isCollect
+                });
+              case 11:
+                res = _context4.sent;
+                // console.log(res,'点赞');
+                if (res.success) {
+                  _this5.videoData.isCollect = !_this5.videoData.isCollect;
+                  _this5.editVideoData(_this5.videoData);
+                  // console.log(this.videoData,'收藏后的videoData');
+                }
+
+                uni.hideLoading(); //强制关闭loading
+              case 14:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
     }
-  }
+  })
 };
 exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
@@ -283,8 +386,14 @@ try {
     hotVideoInfo: function () {
       return __webpack_require__.e(/*! import() | components/hot-video-info/hot-video-info */ "components/hot-video-info/hot-video-info").then(__webpack_require__.bind(null, /*! @/components/hot-video-info/hot-video-info.vue */ 217))
     },
+    uniLoadMore: function () {
+      return Promise.all(/*! import() | uni_modules/uni-load-more/components/uni-load-more/uni-load-more */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uni-load-more/components/uni-load-more/uni-load-more")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uni-load-more/components/uni-load-more/uni-load-more.vue */ 117))
+    },
+    emptyData: function () {
+      return __webpack_require__.e(/*! import() | components/empty-data/empty-data */ "components/empty-data/empty-data").then(__webpack_require__.bind(null, /*! @/components/empty-data/empty-data.vue */ 271))
+    },
     articleCommentItem: function () {
-      return __webpack_require__.e(/*! import() | components/article-comment-item/article-comment-item */ "components/article-comment-item/article-comment-item").then(__webpack_require__.bind(null, /*! @/components/article-comment-item/article-comment-item.vue */ 301))
+      return __webpack_require__.e(/*! import() | components/article-comment-item/article-comment-item */ "components/article-comment-item/article-comment-item").then(__webpack_require__.bind(null, /*! @/components/article-comment-item/article-comment-item.vue */ 224))
     },
     articleOperate: function () {
       return __webpack_require__.e(/*! import() | components/article-operate/article-operate */ "components/article-operate/article-operate").then(__webpack_require__.bind(null, /*! @/components/article-operate/article-operate.vue */ 196))
