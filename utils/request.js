@@ -12,7 +12,7 @@ function request({url, data, method}) {
 		    method,
 			header: {
 				'content-type': "application/x-www-form-urlencoded",
-				'icode':"ACC05A058B1BB439",
+				'icode':"6BC8ECC322146854",
 				Authorization: store.state.user.token
 			},
 		    success: ({data, statusCode, header}) => {

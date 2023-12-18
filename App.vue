@@ -1,14 +1,21 @@
 <script>
 	export default {
 		onLaunch: function() {
-			console.warn('当前组件仅支持 uni_modules 目录结构 ，请升级 HBuilderX 到 3.1.0 版本以上！')
-			console.log('App Launch')
+			// console.warn('当前组件仅支持 uni_modules 目录结构 ，请升级 HBuilderX 到 3.1.0 版本以上！')
+			// console.log('App Launch')
 		},
 		onShow: function() {
-			console.log('App Show')
+			// console.log('App Show')
+			//#ifdef H5
+			console.log('当前打印内容仅在h5呈现 0011')
+			//#endif
+			
+			//#ifndef H5
+			console.log('当前打印内容在非h5端呈现 0022')
+			//#endif
 		},
 		onHide: function() {
-			console.log('App Hide')
+			// console.log('App Hide')
 		}
 	}
 </script>
