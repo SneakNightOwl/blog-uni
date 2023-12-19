@@ -45,7 +45,7 @@
 			// 	required: true
 			// },
 			articleId: {
-				type: Number,
+				type: String,
 				required: true
 			}
 		},

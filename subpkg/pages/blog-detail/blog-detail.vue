@@ -1,6 +1,9 @@
 <template>
 	<!-- 使用page-meta时必须要作为第一个节点 -->
+	<!-- 仅在非H5端使用，主要用于小程序 -->
+	<!-- #ifndef H5 -->
 	<page-meta root-font-size="52px">
+	<!-- #endif -->
 	  <view class="article-container">
 	  	<block v-if="articleData">
 	  		<view class="title">{{articleData.articleTitle}}</view>
@@ -49,7 +52,9 @@
 	  <uni-popup ref="popup" type="bottom" @change="popupChange">
 		  <article-comment-commit  v-if="isCommitShow" @onSendCommit="onSendCommit"></article-comment-commit>
 	  </uni-popup>
-	</page-meta>
+	 <!-- #ifndef H5 -->
+	 </page-meta>
+	 <!-- #endif -->
 </template>
 
 <script>
@@ -236,7 +241,7 @@
 <style lang="scss">
 	
  @import '../../../styles/global.scss';	
- @import '~@/styles/article-detail.css';
+ // @import '~@/styles/article-detail.css';
 	
 .article-container {
 	padding:$uni-spacing-col-base $uni-spacing-row-base;

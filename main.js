@@ -5,7 +5,9 @@ import App from './App'
 //引入vuex的仓库
 import store from './store/index';
 //引入公共样式
-import './styles/global.scss'
+import './styles/global.scss';
+//引入文章详情的样式
+import './styles/article-detail.css';
 //注册过滤器(复习必看)
 import * as filters from './filters/index.js'
 //拿到filters所有的key，然后使用Vue.filter方法注册，以key为键，以filters[key]为值
